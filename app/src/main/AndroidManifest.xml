@@ -12,6 +12,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.home.HomeActivity"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,7 +20,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.lesson.LessonActivity"></activity>
+        <activity
+            android:name=".ui.lesson.LessonActivity"
+            android:parentActivityName=".ui.home.HomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.home.HomeActivity" />
+        </activity>
     </application>
 
 </manifest>
