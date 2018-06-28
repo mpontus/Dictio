@@ -12,7 +12,7 @@ public class Prompt {
 
     private String text;
 
-    private String language;
+    private Locale language;
 
     private PromptType type;
 
@@ -26,7 +26,7 @@ public class Prompt {
         return text;
     }
 
-    public String getLanguage() {
+    public Locale getLanguage() {
         return language;
     }
 

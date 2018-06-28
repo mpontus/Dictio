@@ -1,6 +1,7 @@
 package com.mpontus.dictio.ui.lesson;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mpontus.dictio.R;
@@ -13,10 +14,20 @@ import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
 
-public class LessonActivity extends DaggerAppCompatActivity implements LessonCard.Callback {
+public class LessonActivity extends DaggerAppCompatActivity
+        implements LessonCard.Callback {
+
+    private static final String UTTERANCE_ID = "UTTERANCE_ID";
 
     @Inject
     PromptsRepository promptsRepository;
+
+    @Inject
+    Speaker speaker;
+
+    @Nullable
+    private Prompt currentPrompt;
+
     private SwipePlaceHolderView swipeView;
 
     @Override
@@ -27,7 +38,6 @@ public class LessonActivity extends DaggerAppCompatActivity implements LessonCar
         Objects.requireNonNull(getSupportActionBar())
                 .setDisplayHomeAsUpEnabled(true);
 
-//        ((TextView) findViewById(R.id.textView)).setText(promptsRepository.getRandomPrompt("foo", "bar").getText());
         swipeView = (SwipePlaceHolderView) findViewById(R.id.swipeView);
 
         swipeView.getBuilder().setDisplayViewCount(3);
@@ -38,7 +48,14 @@ public class LessonActivity extends DaggerAppCompatActivity implements LessonCar
     }
 
     @Override
-    public void onDismissed() {
+    public void onShown(LessonCard card) {
+        Prompt prompt = card.getPrompt();
+
+        speaker.speak(prompt);
+    }
+
+    @Override
+    public void onDismissed(LessonCard card) {
         addCard();
     }
 
