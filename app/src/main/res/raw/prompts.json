@@ -1,0 +1,77 @@
+{
+  "version": "1.0",
+  "prompts": [
+    {
+      "id": "1",
+      "text": "Jacket",
+      "language": "en-US",
+      "category": "word",
+      "translations": {
+        "ru": "Куртка"
+      }
+    },
+    {
+      "id": "2",
+      "text": "Yourself",
+      "language": "en-US",
+      "category": "word",
+      "translations": {
+        "ru": "Сам"
+      }
+    },
+    {
+      "id": "3",
+      "text": "Complain",
+      "language": "en-US",
+      "category": "word",
+      "translations": {
+        "ru": "Жаловаться"
+      }
+    },
+    {
+      "id": "4",
+      "text": "Bottle",
+      "language": "en-US",
+      "category": "word",
+      "translations": {
+        "ru": "Бутылка"
+      }
+    },
+    {
+      "id": "5",
+      "text": "Telescope",
+      "language": "en-US",
+      "category": "word",
+      "translations": {
+        "ru": "Телескоп"
+      }
+    },
+    {
+      "id": "6",
+      "text": "Priority",
+      "language": "en-US",
+      "category": "word",
+      "translations": {
+        "ru": "Приоритет"
+      }
+    },
+    {
+      "id": "7",
+      "text": "Enterprise",
+      "language": "en-US",
+      "category": "word",
+      "translations": {
+        "ru": "Предприятие"
+      }
+    },
+    {
+      "id": "8",
+      "text": "Explosion",
+      "language": "en-US",
+      "category": "word",
+      "translations": {
+        "ru": "Взрыв"
+      }
+    }
+  ]
+}

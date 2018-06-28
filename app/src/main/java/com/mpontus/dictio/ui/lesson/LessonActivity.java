@@ -2,13 +2,22 @@ package com.mpontus.dictio.ui.lesson;
 
 import android.os.Bundle;
 
+import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mpontus.dictio.R;
+import com.mpontus.dictio.data.PromptsRepository;
+import com.mpontus.dictio.data.model.Prompt;
 
 import java.util.Objects;
 
+import javax.inject.Inject;
+
 import dagger.android.support.DaggerAppCompatActivity;
 
-public class LessonActivity extends DaggerAppCompatActivity {
+public class LessonActivity extends DaggerAppCompatActivity implements LessonCard.Callback {
+
+    @Inject
+    PromptsRepository promptsRepository;
+    private SwipePlaceHolderView swipeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,5 +26,26 @@ public class LessonActivity extends DaggerAppCompatActivity {
 
         Objects.requireNonNull(getSupportActionBar())
                 .setDisplayHomeAsUpEnabled(true);
+
+//        ((TextView) findViewById(R.id.textView)).setText(promptsRepository.getRandomPrompt("foo", "bar").getText());
+        swipeView = (SwipePlaceHolderView) findViewById(R.id.swipeView);
+
+        swipeView.getBuilder().setDisplayViewCount(3);
+
+        for (int i = 0; i < 3; ++i) {
+            addCard();
+        }
+    }
+
+    @Override
+    public void onDismissed() {
+        addCard();
+    }
+
+    private void addCard() {
+        Prompt prompt = promptsRepository.getRandomPrompt("foo", "bar");
+        LessonCard card = new LessonCard(this, prompt);
+
+        swipeView.addView(card);
     }
 }

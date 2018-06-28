@@ -11,6 +11,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
 
 @Component(modules = {
         ActivityBindingModule.class,
+        ApplicationModule.class,
         AndroidSupportInjectionModule.class
 })
 public interface ApplicationComponent extends AndroidInjector<DictioApplication> {
