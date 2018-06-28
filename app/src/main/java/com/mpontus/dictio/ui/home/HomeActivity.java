@@ -1,9 +1,12 @@
-package com.mpontus.dictio;
+package com.mpontus.dictio.ui.home;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class HomeActivity extends AppCompatActivity {
+import com.mpontus.dictio.R;
+
+import dagger.android.support.DaggerAppCompatActivity;
+
+public class HomeActivity extends DaggerAppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
