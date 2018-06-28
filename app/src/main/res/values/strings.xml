@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Dictio</string>
+    <string name="language">Language</string>
+    <string name="words">Words</string>
+    <string name="phrases">Phrases</string>
 </resources>
