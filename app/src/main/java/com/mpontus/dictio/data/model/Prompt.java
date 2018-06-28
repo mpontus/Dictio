@@ -38,6 +38,7 @@ public class Prompt {
         return translations;
     }
 
+    // TODO: Provide fallback translation to English
     @Nullable
     public String getTranslation(Locale locale) {
         String language = locale.getLanguage();
