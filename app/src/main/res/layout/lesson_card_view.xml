@@ -30,7 +30,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.mpontus.dictio.ui.lesson.PromptView
+            <TextView
                 android:id="@+id/prompt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

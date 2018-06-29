@@ -19,7 +19,7 @@ import java.util.Locale;
 public class LessonCard {
 
     @View(R.id.prompt)
-    public PromptView promptView;
+    public TextView promptView;
 
     @View(R.id.translation)
     public TextView translationView;

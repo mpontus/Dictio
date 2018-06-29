@@ -5,7 +5,6 @@ import android.util.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,7 +19,7 @@ public class PhraseMatcher {
         return getPhraseFromCache(original).match(candidate);
     }
 
-    public Match bestMatch(String original, Set<String> candidates) {
+    public Match bestMatch(String original, Iterable<String> candidates) {
         Phrase phrase = getPhraseFromCache(original);
 
         int bestMatchCount = -1;

@@ -37,6 +37,11 @@ public class LessonActivityModule {
     }
 
     @Provides
+    PromptPainter providePromptPainter(Context context) {
+        return new PromptPainter(context, R.style.prompt_matched_word, R.style.prompt_mismatched_word);
+    }
+
+    @Provides
     AccessTokenCache provideAccessTokenCache(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 

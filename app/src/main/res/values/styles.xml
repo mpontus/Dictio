@@ -16,4 +16,11 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="prompt_matched_word">
+        <item name="android:textColor">@color/colorWordMatched</item>
+    </style>
+
+    <style name="prompt_mismatched_word">
+        <item name="android:textColor">@color/colorWordMismatched</item>
+    </style>
 </resources>
