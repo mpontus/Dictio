@@ -5,12 +5,6 @@
     android:layout_width="match_parent"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/test"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Response" />
-
     <com.mindorks.placeholderview.SwipePlaceHolderView
         android:id="@+id/swipeView"
         android:layout_width="match_parent"

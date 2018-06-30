@@ -17,7 +17,6 @@ import com.mpontus.dictio.utils.LocaleUtils;
 import com.mpontus.speech.SpeechRecognition;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
-import java.util.Collections;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -25,7 +24,6 @@ import java.util.Set;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.OnTextChanged;
 import dagger.android.support.DaggerAppCompatActivity;
 import timber.log.Timber;
 
@@ -94,6 +92,12 @@ public class LessonActivity extends DaggerAppCompatActivity
             addCard();
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         permissions.request(Manifest.permission.RECORD_AUDIO)
                 .filter(granted -> granted)
                 .subscribe(granted -> {
@@ -101,14 +105,8 @@ public class LessonActivity extends DaggerAppCompatActivity
 
                     speechRecognition.start();
 
-                    startRecognizing();
+                    speak();
                 });
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         speechRecognition.addListener(this);
         speaker.addListener(this);
@@ -118,6 +116,7 @@ public class LessonActivity extends DaggerAppCompatActivity
     protected void onStop() {
         speaker.removeListener(this);
         speechRecognition.removeListener(this);
+        speechRecognition.stop();
 
         super.onStop();
     }
@@ -128,11 +127,15 @@ public class LessonActivity extends DaggerAppCompatActivity
     }
 
     @Override
+    public void onUtteranceCompleted() {
+        startRecognizing();
+    }
+
+    @Override
     public void onShown(LessonCard card) {
         currentCard = card;
 
         speak();
-        startRecognizing();
     }
 
     @Override
@@ -144,12 +147,7 @@ public class LessonActivity extends DaggerAppCompatActivity
 
     @Override
     public void onSpeakClick() {
-        this.speak();
-    }
-
-    @OnTextChanged(R.id.test)
-    public void onTextChanged(CharSequence text, int start, int count, int after) {
-        this.test(Collections.singletonList(text.toString()));
+        speak();
     }
 
     private void test(Iterable<String> alternatives) {
@@ -182,9 +180,11 @@ public class LessonActivity extends DaggerAppCompatActivity
     }
 
     private void speak() {
-        if (!speaker.isInitialized() || currentCard == null) {
+        if (currentCard == null || !speaker.isInitialized() || !permissionGranted) {
             return;
         }
+
+        speechRecognition.stopRecognizing();
 
         Prompt prompt = currentCard.getPrompt();
 

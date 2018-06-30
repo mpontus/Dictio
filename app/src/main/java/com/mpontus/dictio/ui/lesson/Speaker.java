@@ -3,6 +3,7 @@ package com.mpontus.dictio.ui.lesson;
 import android.content.Context;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.support.annotation.Nullable;
 
 import com.mpontus.dictio.data.model.Prompt;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class Speaker implements TextToSpeech.OnInitListener {
+public class Speaker extends UtteranceProgressListener implements TextToSpeech.OnInitListener {
 
     private static final String UTTERANCE_ID = "UTTERANCE_ID";
 
@@ -32,6 +33,8 @@ public class Speaker implements TextToSpeech.OnInitListener {
     @Override
     public void onInit(int status) {
         initialized = true;
+
+        textToSpeech.setOnUtteranceProgressListener(this);
 
         for (Listener listener : listeners) {
             listener.onInitialized();
@@ -90,7 +93,26 @@ public class Speaker implements TextToSpeech.OnInitListener {
         textToSpeech.stop();
     }
 
+    @Override
+    public void onStart(String utteranceId) {
+
+    }
+
+    @Override
+    public void onDone(String utteranceId) {
+        for (Listener listener : listeners) {
+            listener.onUtteranceCompleted();
+        }
+    }
+
+    @Override
+    public void onError(String utteranceId) {
+
+    }
+
     interface Listener {
         void onInitialized();
+
+        void onUtteranceCompleted();
     }
 }

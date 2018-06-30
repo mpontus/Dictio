@@ -75,6 +75,7 @@ public class SpeechRecognition {
     }
 
     public void stop() {
+        stopRecognizing();
         recognitionClient.stop();
     }
 
