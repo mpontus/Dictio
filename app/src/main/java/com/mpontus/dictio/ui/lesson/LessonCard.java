@@ -2,6 +2,7 @@ package com.mpontus.dictio.ui.lesson;
 
 import android.widget.TextView;
 
+import com.mindorks.placeholderview.annotations.Click;
 import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.NonReusable;
 import com.mindorks.placeholderview.annotations.Resolve;
@@ -52,7 +53,12 @@ public class LessonCard {
     @SwipeIn
     @SwipeOut
     public void onDismissed() {
-        this.callback.onDismissed(this);
+        this.callback.onDismissed();
+    }
+
+    @Click(R.id.speak)
+    public void onSpeakClick() {
+        this.callback.onSpeakClick();
     }
 
     public Prompt getPrompt() {
@@ -62,6 +68,8 @@ public class LessonCard {
     public interface Callback {
         void onShown(LessonCard card);
 
-        void onDismissed(LessonCard card);
+        void onDismissed();
+
+        void onSpeakClick();
     }
 }

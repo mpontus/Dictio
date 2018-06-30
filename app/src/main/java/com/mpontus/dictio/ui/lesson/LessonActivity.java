@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mpontus.dictio.R;
@@ -24,7 +25,7 @@ import butterknife.OnTextChanged;
 import dagger.android.support.DaggerAppCompatActivity;
 
 public class LessonActivity extends DaggerAppCompatActivity
-        implements LessonCard.Callback {
+        implements LessonCard.Callback, Speaker.Listener {
     private static final String EXTRA_LANGUAGE = "LANGUAGE";
     private static final String EXTRA_TYPE = "TYPE";
 
@@ -77,9 +78,9 @@ public class LessonActivity extends DaggerAppCompatActivity
 
         swipeView = findViewById(R.id.swipeView);
 
-        swipeView.getBuilder().setDisplayViewCount(3);
+        swipeView.getBuilder().setDisplayViewCount(2);
 
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < 2; ++i) {
             addCard();
         }
     }
@@ -87,25 +88,37 @@ public class LessonActivity extends DaggerAppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
+
+        speaker.addListener(this);
     }
 
     @Override
     protected void onStop() {
+        speaker.removeListener(this);
+
         super.onStop();
+    }
+
+    @Override
+    public void onInitialized() {
+        speak();
     }
 
     @Override
     public void onShown(LessonCard card) {
         currentCard = card;
 
-        Prompt prompt = card.getPrompt();
-
-        speaker.speak(prompt);
+        this.speak();
     }
 
     @Override
-    public void onDismissed(LessonCard card) {
+    public void onDismissed() {
         addCard();
+    }
+
+    @Override
+    public void onSpeakClick() {
+        this.speak();
     }
 
     @OnTextChanged(R.id.test)
@@ -135,5 +148,21 @@ public class LessonActivity extends DaggerAppCompatActivity
         LessonCard card = new LessonCard(this, prompt);
 
         swipeView.addView(card);
+    }
+
+    private void speak() {
+        if (!speaker.isInitialized() || currentCard == null) {
+            return;
+        }
+
+        Prompt prompt = currentCard.getPrompt();
+
+        if (!speaker.isLanguageAvailable(prompt)) {
+            Toast.makeText(this, "Language not supported", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        speaker.speak(prompt);
     }
 }

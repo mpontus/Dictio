@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import com.mpontus.dictio.data.model.Prompt;
 import com.mpontus.dictio.utils.LocaleUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class Speaker implements TextToSpeech.OnInitListener {
@@ -17,6 +19,8 @@ public class Speaker implements TextToSpeech.OnInitListener {
     private final TextToSpeech textToSpeech;
 
     private boolean initialized = false;
+
+    private List<Listener> listeners = new ArrayList<>();
 
     @Nullable
     private Prompt nextPrompt;
@@ -29,15 +33,39 @@ public class Speaker implements TextToSpeech.OnInitListener {
     public void onInit(int status) {
         initialized = true;
 
-        if (nextPrompt != null) {
-            speak(nextPrompt);
+        for (Listener listener : listeners) {
+            listener.onInitialized();
         }
+    }
+
+    public void addListener(Listener listener) {
+        listeners.add(listener);
+
+        if (initialized) {
+            listener.onInitialized();
+        }
+    }
+
+    public void removeListener(Listener listener) {
+        listeners.remove(listener);
+    }
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    public boolean isLanguageAvailable(Prompt prompt) {
+        if (!initialized) {
+            return false;
+        }
+
+        Locale locale = LocaleUtils.getLocaleFromCode(prompt.getLanguage());
+
+        return textToSpeech.isLanguageAvailable(locale) >= TextToSpeech.LANG_AVAILABLE;
     }
 
     public void speak(Prompt prompt) {
         if (!initialized) {
-            nextPrompt = prompt;
-
             return;
         }
 
@@ -60,5 +88,9 @@ public class Speaker implements TextToSpeech.OnInitListener {
 
     public void cancel() {
         textToSpeech.stop();
+    }
+
+    interface Listener {
+        void onInitialized();
     }
 }
