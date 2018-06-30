@@ -1,5 +1,6 @@
 package com.mpontus.dictio.ui.lesson;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,20 +13,24 @@ import com.mpontus.dictio.R;
 import com.mpontus.dictio.data.PhraseMatcher;
 import com.mpontus.dictio.data.PromptsRepository;
 import com.mpontus.dictio.data.model.Prompt;
+import com.mpontus.dictio.utils.LocaleUtils;
 import com.mpontus.speech.SpeechRecognition;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.OnTextChanged;
 import dagger.android.support.DaggerAppCompatActivity;
+import timber.log.Timber;
 
 public class LessonActivity extends DaggerAppCompatActivity
-        implements LessonCard.Callback, Speaker.Listener {
+        implements LessonCard.Callback, Speaker.Listener, SpeechRecognition.Listener {
     private static final String EXTRA_LANGUAGE = "LANGUAGE";
     private static final String EXTRA_TYPE = "TYPE";
 
@@ -37,6 +42,9 @@ public class LessonActivity extends DaggerAppCompatActivity
 
         return intent;
     }
+
+    @Inject
+    RxPermissions permissions;
 
     @Inject
     PromptsRepository promptsRepository;
@@ -62,6 +70,8 @@ public class LessonActivity extends DaggerAppCompatActivity
 
     private String type;
 
+    private boolean permissionGranted = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,18 +93,31 @@ public class LessonActivity extends DaggerAppCompatActivity
         for (int i = 0; i < 2; ++i) {
             addCard();
         }
+
+        permissions.request(Manifest.permission.RECORD_AUDIO)
+                .filter(granted -> granted)
+                .subscribe(granted -> {
+                    permissionGranted = true;
+
+                    speechRecognition.start();
+
+                    startRecognizing();
+                });
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
+        speechRecognition.addListener(this);
         speaker.addListener(this);
     }
 
     @Override
     protected void onStop() {
         speaker.removeListener(this);
+        speechRecognition.removeListener(this);
 
         super.onStop();
     }
@@ -108,12 +131,15 @@ public class LessonActivity extends DaggerAppCompatActivity
     public void onShown(LessonCard card) {
         currentCard = card;
 
-        this.speak();
+        speak();
+        startRecognizing();
     }
 
     @Override
     public void onDismissed() {
         addCard();
+
+        speechRecognition.stopRecognizing();
     }
 
     @Override
@@ -126,21 +152,26 @@ public class LessonActivity extends DaggerAppCompatActivity
         this.test(Collections.singletonList(text.toString()));
     }
 
-    private void test(List<String> alternatives) {
+    private void test(Iterable<String> alternatives) {
         if (currentCard == null) {
             return;
         }
 
         String promptText = currentCard.getPrompt().getText();
 
+        for (String alternative : alternatives) {
+            Timber.d("Comaring \"%s\" with \"%s\"", promptText, alternative);
+        }
 
         PhraseMatcher.Match match = phraseMatcher.bestMatch(promptText, alternatives);
 
-        currentCard.promptView.setText(promptPainter.colorToMatch(promptText, match), TextView.BufferType.SPANNABLE);
+        runOnUiThread(() -> {
+            currentCard.promptView.setText(promptPainter.colorToMatch(promptText, match), TextView.BufferType.SPANNABLE);
 
-        if (match.isCompleteMatch()) {
-            swipeView.doSwipe(false);
-        }
+            if (match.isCompleteMatch()) {
+                swipeView.doSwipe(false);
+            }
+        });
     }
 
     private void addCard() {
@@ -164,5 +195,44 @@ public class LessonActivity extends DaggerAppCompatActivity
         }
 
         speaker.speak(prompt);
+    }
+
+    private void startRecognizing() {
+        if (!permissionGranted || currentCard == null) {
+            return;
+        }
+
+        Locale locale = LocaleUtils.getLocaleFromCode(currentCard.getPrompt().getLanguage());
+        this.speechRecognition.startRecognizing(locale);
+    }
+
+    @Override
+    public void onVoiceStart(int sampleRate) {
+
+    }
+
+    @Override
+    public void onVoice(byte[] data, int length) {
+
+    }
+
+    @Override
+    public void onVoiceEnd() {
+
+    }
+
+    @Override
+    public void onRecognitionStart() {
+
+    }
+
+    @Override
+    public void onRecognized(Set<String> alternatives) {
+        test(alternatives);
+    }
+
+    @Override
+    public void onRecognitionFinish() {
+
     }
 }

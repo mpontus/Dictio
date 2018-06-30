@@ -13,6 +13,7 @@ import com.mpontus.speech.google.AccessTokenRetriever;
 import com.mpontus.speech.google.ServiceCredentialsAccessTokenRetriever;
 import com.mpontus.speech.google.SharedPreferencesAccessTokenCache;
 import com.mpontus.speech.google.SpeechRecognitionClient;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.InputStream;
 
@@ -39,6 +40,11 @@ public class LessonActivityModule {
     @Provides
     PromptPainter providePromptPainter(Context context) {
         return new PromptPainter(context, R.style.prompt_matched_word, R.style.prompt_mismatched_word);
+    }
+
+    @Provides
+    RxPermissions provideRxPersmissions(LessonActivity activity) {
+        return new RxPermissions(activity);
     }
 
     @Provides

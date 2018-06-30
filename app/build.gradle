@@ -44,6 +44,7 @@ dependencies {
     // Intall the collection of Rx libraries for reactive programming support
     implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar'
 
     // Install PlaceHolderView for card swipe layout
     implementation('com.mindorks.android:placeholderview:1.0.3') {
@@ -60,6 +61,9 @@ dependencies {
 
     // Speech Recognition module
     implementation project(':speech')
+
+    // Install Timber for logging
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
