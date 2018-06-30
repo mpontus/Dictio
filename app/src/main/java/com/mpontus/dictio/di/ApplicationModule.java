@@ -4,6 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 
+import com.mpontus.dictio.ui.shared.LangaugeResources;
+
+import javax.inject.Singleton;
+
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
@@ -16,5 +20,11 @@ public abstract class ApplicationModule {
     @Provides
     static Resources provideResources(Context context) {
         return context.getResources();
+    }
+
+    @Singleton
+    @Provides
+    static LangaugeResources provideLanguageResources(Resources resources) {
+        return new LangaugeResources(resources);
     }
 }
