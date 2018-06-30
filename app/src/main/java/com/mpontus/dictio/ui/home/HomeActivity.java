@@ -69,12 +69,12 @@ public class HomeActivity extends DaggerAppCompatActivity
 
     @OnClick(R.id.words)
     void onClickWords() {
-        startActivity(new Intent(this, LessonActivity.class));
+        startActivity(LessonActivity.createIntent(this, language, "word"));
     }
 
     @OnClick(R.id.phrases)
     void onClickPhrases() {
-        startActivity(new Intent(this, LessonActivity.class));
+        startActivity(LessonActivity.createIntent(this, language, "phrase"));
     }
 
     @Override

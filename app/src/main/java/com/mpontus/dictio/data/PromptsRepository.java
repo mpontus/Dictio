@@ -16,14 +16,11 @@ import io.reactivex.Observable;
 
 public class PromptsRepository {
     private Context context;
-    private ResourceFile resourceFile;
+    private ResourceFile resourceFile = null;
 
     public PromptsRepository(Context context) {
         this.context = context;
     }
-
-
-
 
     public List<String> getLanguages() {
         return Observable.fromIterable(getResourceFile().getPrompts())

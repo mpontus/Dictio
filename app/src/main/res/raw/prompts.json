@@ -5,2569 +5,2569 @@
       "id": "0",
       "text": "institution",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "1",
       "text": "debate",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "2",
       "text": "electricity",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "3",
       "text": "population",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "4",
       "text": "daughter",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "5",
       "text": "diversity",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "6",
       "text": "tournament",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "7",
       "text": "demonstration",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "8",
       "text": "history",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "9",
       "text": "appreciate",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "10",
       "text": "brilliant",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "11",
       "text": "fortune",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "12",
       "text": "occasion",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "13",
       "text": "reservation",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "14",
       "text": "participation",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "15",
       "text": "satellite",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "16",
       "text": "management",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "17",
       "text": "intensity",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "18",
       "text": "enterprise",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "19",
       "text": "murder",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "20",
       "text": "secret",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "21",
       "text": "somebody",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "22",
       "text": "practical",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "23",
       "text": "conclude",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "24",
       "text": "dependent",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "25",
       "text": "corporate",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "26",
       "text": "editor",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "27",
       "text": "athletic",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "28",
       "text": "homeless",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "29",
       "text": "seriously",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "30",
       "text": "apartment",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "31",
       "text": "scholarship",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "32",
       "text": "",
       "language": "en-US",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "33",
       "text": "What about you? Where have you been all this time?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "34",
       "text": "Now will you please tell me what this is all about?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "35",
       "text": "They do it because they love you and they want to.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "36",
       "text": "But if you could know these people as I know them.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "37",
       "text": "Too much because of you, because I was away from you.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "38",
       "text": "If they find you here, then they find you, is all.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "39",
       "text": "Put him out, and never let him come in here again!",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "40",
       "text": "You know what they say, there is nothing like home.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "41",
       "text": "Please, would you stop by and have a talk with her?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "42",
       "text": "Not much of one, maybe, but something to go on with.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "43",
       "text": "What you got that you like so much better than this?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "44",
       "text": "You mean that all those people are here because of him?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "45",
       "text": "You are a nothing and you have always been a nothing!",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "46",
       "text": "I never thought I could say it but you were right.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "47",
       "text": "And I really thought you had something going with him.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "48",
       "text": "You know what I think, even before I thought of it.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "49",
       "text": "When we get back home everything will be as always.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "50",
       "text": "And you know everything there is to know about people.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "51",
       "text": "I told you to do something right for the first time.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "52",
       "text": "What were you up to last night? Last night? Nothing.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "53",
       "text": "Now look, Father is to have nothing to do with it.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "54",
       "text": "Did you ever see anything like that before in your life?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "55",
       "text": "Who said I was going to leave the place or anything?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "56",
       "text": "Who said I was going to leave the place or anything?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "57",
       "text": "I know much better what the right place for me is.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "58",
       "text": "You get out of this place and never come back here.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "59",
       "text": "Did she ever find out just how you feel about her?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "60",
       "text": "Did they really say, that you could stay with them?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "61",
       "text": "What are you going to do, stay out there all night?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "62",
       "text": "Believe me when I say, nothing would please me any more.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "63",
       "text": "Three years away, there is too much to look after.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "64",
       "text": "And because anything you say to me, I want to hear.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "65",
       "text": "You think a little girl like me could understand them?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "66",
       "text": "How could they make her understand? How would she know?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "67",
       "text": "A girl like you could have everything in the world.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "68",
       "text": "People come from all over the world just to see you.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "69",
       "text": "People come from all over the world just to see you.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "70",
       "text": "Then how will we ever get enough money for a place?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "71",
       "text": "Well, you look old enough to know better, Come in,",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "72",
       "text": "If they had had money, they would have been fine people.",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "73",
       "text": "Because I thought about you, every day and every night,",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "74",
       "text": "What made you believe it was him every other time?",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "75",
       "text": "Is there nothing you can remember? I remember nothing.\t",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "76",
       "text": "",
       "language": "en-US",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "77",
       "text": "такой",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "78",
       "text": "москва",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "79",
       "text": "далекий",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "80",
       "text": "русский",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "81",
       "text": "россия",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "82",
       "text": "тяжелый",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "83",
       "text": "зеленый",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "84",
       "text": "вперед",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "85",
       "text": "самолет",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "86",
       "text": "желтый",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "87",
       "text": "счет",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "88",
       "text": "протянуть",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "89",
       "text": "долгий",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "90",
       "text": "причем",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "91",
       "text": "столь",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "92",
       "text": "передать",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "93",
       "text": "лечение",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "94",
       "text": "высший",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "95",
       "text": "сутки",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "96",
       "text": "вставать",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "97",
       "text": "операция",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "98",
       "text": "пространство",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "99",
       "text": "спокойный",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "100",
       "text": "одежда",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "101",
       "text": "кусок",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "102",
       "text": "тема",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "103",
       "text": "животный",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "104",
       "text": "снимать",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "105",
       "text": "искусство",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "106",
       "text": "умный",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "107",
       "text": "малый",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "108",
       "text": "курс",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "109",
       "text": "звонить",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "110",
       "text": "очередной",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "111",
       "text": "чудо",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "112",
       "text": "ощущение",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "113",
       "text": "крайний",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "114",
       "text": "напоминать",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "115",
       "text": "придумать",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "116",
       "text": "падать",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "117",
       "text": "здание",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "118",
       "text": "свежий",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "119",
       "text": "поговорить",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "120",
       "text": "начинаться",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "121",
       "text": "милиция",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "122",
       "text": "приказать",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "123",
       "text": "несмотря",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "124",
       "text": "оттуда",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "125",
       "text": "засмеяться",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "126",
       "text": "волна",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "127",
       "text": "задача",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "128",
       "text": "касаться",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "129",
       "text": "старуха",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "130",
       "text": "войско",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "131",
       "text": "срок",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "132",
       "text": "ужас",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "133",
       "text": "узкий",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "134",
       "text": "материал",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "135",
       "text": "приняться",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "136",
       "text": "нормальный",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "137",
       "text": "крик",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "138",
       "text": "знание",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "139",
       "text": "трое",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "140",
       "text": "четвертый",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "141",
       "text": "шум",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "142",
       "text": "заставить",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "143",
       "text": "автомат",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "144",
       "text": "резко",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "145",
       "text": "тетя",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "146",
       "text": "впечатление",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "147",
       "text": "пауза",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "148",
       "text": "глубина",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "149",
       "text": "доллар",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "150",
       "text": "сотня",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "151",
       "text": "виноватый",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "152",
       "text": "студент",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "153",
       "text": "боевой",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "154",
       "text": "очко",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "155",
       "text": "нож",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "156",
       "text": "подниматься",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "157",
       "text": "мировой",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "158",
       "text": "предмет",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "159",
       "text": "плохой",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "160",
       "text": "майор",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "161",
       "text": "ударить",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "162",
       "text": "разуметься",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "163",
       "text": "точный",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "164",
       "text": "всякий",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "165",
       "text": "деятельность",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "166",
       "text": "инженер",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "167",
       "text": "программа",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "168",
       "text": "костюм",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "169",
       "text": "женский",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "170",
       "text": "крепкий",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "171",
       "text": "театр",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "172",
       "text": "встречаться",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "173",
       "text": "различный",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "174",
       "text": "хвост",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "175",
       "text": "танк",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "176",
       "text": "социальный",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "177",
       "text": "мертвый",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "178",
       "text": "попытаться",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "179",
       "text": "явно",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "180",
       "text": "",
       "language": "ru-RU",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "181",
       "text": "Это очень красиво.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "182",
       "text": "Она моложе меня.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "183",
       "text": "Этот велосипед принадлежит мне.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "184",
       "text": "Нам действительно пора идти.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "185",
       "text": "Ты такая красивая!",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "186",
       "text": "Я тебя разбудил.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "187",
       "text": "Я почти готова.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "188",
       "text": "Мне нужна команда.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "189",
       "text": "Я ещё не ел.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "190",
       "text": "Им нечего есть.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "191",
       "text": "Я не твоя любовь.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "192",
       "text": "Дом принадлежит ему.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "193",
       "text": "Он ничего не сказал.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "194",
       "text": "Нам надо идти.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "195",
       "text": "Это мой старый велосипед.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "196",
       "text": "Я люблю свою мать.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "197",
       "text": "Мне больше нечего сказать.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "198",
       "text": "Я ещё не закончил.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "199",
       "text": "Вот эта книга.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "200",
       "text": "Я плохо вижу.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "201",
       "text": "Я этого не заслуживаю.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "202",
       "text": "Я хочу поблагодарить тебя.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "203",
       "text": "Это сумка моя.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "204",
       "text": "Теперь Вы можете идти.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "205",
       "text": "Я часто читаю.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "206",
       "text": "Мы только начали.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "207",
       "text": "Это не мы сделали.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "208",
       "text": "Я знаю твоё лицо.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "209",
       "text": "Не открывай дверь.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "210",
       "text": "Это моя мать.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "211",
       "text": "Можно сказать и так.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "212",
       "text": "Я хорошо провёл время.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "213",
       "text": "Я останусь до завтра.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "214",
       "text": "Эта книга новая.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "215",
       "text": "Это мой брат.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "216",
       "text": "Она опять это сделала.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "217",
       "text": "Ты очень красивый мужчина.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "218",
       "text": "У меня никого нет.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "219",
       "text": "Ты должен поблагодарить его.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "220",
       "text": "У меня есть компьютер.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "221",
       "text": "Вы были дома вчера.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "222",
       "text": "Мы должны идти.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "223",
       "text": "Ты выглядишь моложе.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "224",
       "text": "Это так красиво!",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "225",
       "text": "Эта машина как новая.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "226",
       "text": "Можете говорить, сколько хотите.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "227",
       "text": "Он сильнее, чем я.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "228",
       "text": "Я слишком много знал.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "229",
       "text": "Мы искали её.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "230",
       "text": "Она будет готова.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "231",
       "text": "Я знаю о вас.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "232",
       "text": "Достаточно на сегодня.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "233",
       "text": "На сегодня достаточно.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "234",
       "text": "Мы доверяли тебе.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "235",
       "text": "Это было красиво.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "236",
       "text": "Я хочу быть тобой.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "237",
       "text": "Я возьму вот этот.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "238",
       "text": "Никого не было дома.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "239",
       "text": "Я буду дома рано.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "240",
       "text": "Ты пишешь лучше меня.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "241",
       "text": "Он мой брат.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "242",
       "text": "Он ждёт тебя дома.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "243",
       "text": "Время работает на нас.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "244",
       "text": "Это звучит ужасно.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "245",
       "text": "Это принадлежит им.",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "246",
       "text": "",
       "language": "ru-RU",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "247",
       "text": "majs",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "248",
       "text": "jämföra",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "249",
       "text": "dikt",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "250",
       "text": "sträng",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "251",
       "text": "klocka",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "252",
       "text": "bero",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "253",
       "text": "kött",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "254",
       "text": "gnida",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "255",
       "text": "röret",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "256",
       "text": "känd",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "257",
       "text": "dollarn",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "258",
       "text": "ström",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "259",
       "text": "rädsla",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "260",
       "text": "syn",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "261",
       "text": "tunn",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "262",
       "text": "triangel",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "263",
       "text": "planet",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "264",
       "text": "skynda",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "265",
       "text": "chef",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "266",
       "text": "koloni",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "267",
       "text": "klocka",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "268",
       "text": "gruva",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "269",
       "text": "slips",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "270",
       "text": "ange",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "271",
       "text": "större",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "272",
       "text": "färsk",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "273",
       "text": "sök",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "274",
       "text": "skicka",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "275",
       "text": "gul",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "276",
       "text": "pistol",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "277",
       "text": "tillåta",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "278",
       "text": "tryck",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "279",
       "text": "död",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "280",
       "text": "fläck",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "281",
       "text": "öken",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "282",
       "text": "kostym",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "283",
       "text": "ström",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "284",
       "text": "lift",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "285",
       "text": "ros",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "286",
       "text": "anländer",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "287",
       "text": "mästare",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "288",
       "text": "spår",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "289",
       "text": "förälder",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "290",
       "text": "stranden",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "291",
       "text": "delning",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "292",
       "text": "ark",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "293",
       "text": "substans",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "294",
       "text": "gynna",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "295",
       "text": "ansluta",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "296",
       "text": "inlägg",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "297",
       "text": "spendera",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "298",
       "text": "ackord",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "299",
       "text": "fett",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "300",
       "text": "glad",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "301",
       "text": "original",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "302",
       "text": "andel",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "303",
       "text": "station",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "304",
       "text": "pappa",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "305",
       "text": "bröd",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "306",
       "text": "",
       "language": "sv-SE",
-      "category": "word",
+      "type": "word",
       "translations": {}
     },
     {
       "id": "307",
       "text": "Jag vill inte ha det här.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "308",
       "text": "Jag gillar det inte.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "309",
       "text": "Jag med.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "310",
       "text": "Det vet du inte.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "311",
       "text": "Jag vill inte ha den här.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "312",
       "text": "Du tycker inte om mig.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "313",
       "text": "Jag tycker inte om det.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "314",
       "text": "Tycker du inte om mig?",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "315",
       "text": "Är det vad du vill?",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "316",
       "text": "Jag kommer.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "317",
       "text": "Jag kommer.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "318",
       "text": "Du kan gå om du vill.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "319",
       "text": "Vad är det här för?",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "320",
       "text": "Det är mitt.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "321",
       "text": "Jag har dig.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "322",
       "text": "Vad är det här till?",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "323",
       "text": "Det kommer inte att gå.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "324",
       "text": "Tycker du om det?",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "325",
       "text": "Jag kommer att vara här.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "326",
       "text": "Jag vill inte ha dig här.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "327",
       "text": "Det kan vi inte göra.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "328",
       "text": "Vi kan inte göra det.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "329",
       "text": "Vi kan inte göra det.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "330",
       "text": "Det kan vi inte göra.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "331",
       "text": "Det är där jag kommer att vara.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "332",
       "text": "Jag måste inte vara här.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "333",
       "text": "Var det du som gjorde det här?",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "334",
       "text": "Vad är den här till?",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "335",
       "text": "Vad har du på dig?",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "336",
       "text": "Det är för mycket att göra.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "337",
       "text": "Det är upp till dig.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "338",
       "text": "Det är upp till dig.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "339",
       "text": "Jag tror inte på det.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "340",
       "text": "Jag gick inte.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "341",
       "text": "Vad har du?",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "342",
       "text": "Jag kommer till dig.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "343",
       "text": "Jag vet inte vad det är.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "344",
       "text": "Jag vet inte vad det är.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "345",
       "text": "Det är mycket.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "346",
       "text": "Jag vet var han är.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "347",
       "text": "Jag gör det för att jag måste.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "348",
       "text": "Här kommer han.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "349",
       "text": "Jag tycker inte om det där.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "350",
       "text": "Jag vill vara här.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "351",
       "text": "Jag vet inte.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "352",
       "text": "Du kan gå.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "353",
       "text": "Gör inte det här.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "354",
       "text": "Gjorde du det här?",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "355",
       "text": "Jag gjorde det inte.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "356",
       "text": "Vad vill du att jag ska göra?",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "357",
       "text": "Gör inte om det.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "358",
       "text": "Jag tror inte att han kommer.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "359",
       "text": "Jag behöver dig här.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "360",
       "text": "Har inte du något att göra?",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "361",
       "text": "Han är inte en av oss.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "362",
       "text": "Jag är här för att hjälpa dig.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "363",
       "text": "Vad vill du?",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "364",
       "text": "Jag vet inte vad jag vill.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "365",
       "text": "Jag borde inte vara här.",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     },
     {
       "id": "366",
       "text": "",
       "language": "sv-SE",
-      "category": "phrase",
+      "type": "phrase",
       "translations": {}
     }
   ]

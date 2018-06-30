@@ -1,5 +1,7 @@
 package com.mpontus.dictio.ui.lesson;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
@@ -23,7 +25,17 @@ import dagger.android.support.DaggerAppCompatActivity;
 
 public class LessonActivity extends DaggerAppCompatActivity
         implements LessonCard.Callback {
-    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
+    private static final String EXTRA_LANGUAGE = "LANGUAGE";
+    private static final String EXTRA_TYPE = "TYPE";
+
+    public static Intent createIntent(Context context, String language, String category) {
+        Intent intent = new Intent(context, LessonActivity.class);
+
+        intent.putExtra(EXTRA_LANGUAGE, language);
+        intent.putExtra(EXTRA_TYPE, category);
+
+        return intent;
+    }
 
     @Inject
     PromptsRepository promptsRepository;
@@ -45,6 +57,10 @@ public class LessonActivity extends DaggerAppCompatActivity
 
     private SwipePlaceHolderView swipeView;
 
+    private String language;
+
+    private String type;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +69,11 @@ public class LessonActivity extends DaggerAppCompatActivity
 
         Objects.requireNonNull(getSupportActionBar())
                 .setDisplayHomeAsUpEnabled(true);
+
+        Intent intent = getIntent();
+
+        language = intent.getStringExtra(EXTRA_LANGUAGE);
+        type = intent.getStringExtra(EXTRA_TYPE);
 
         swipeView = findViewById(R.id.swipeView);
 
@@ -110,7 +131,7 @@ public class LessonActivity extends DaggerAppCompatActivity
     }
 
     private void addCard() {
-        Prompt prompt = promptsRepository.getRandomPrompt("foo", "bar");
+        Prompt prompt = promptsRepository.getRandomPrompt(language, type);
         LessonCard card = new LessonCard(this, prompt);
 
         swipeView.addView(card);
