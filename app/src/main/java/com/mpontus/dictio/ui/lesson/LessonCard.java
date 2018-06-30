@@ -1,5 +1,6 @@
 package com.mpontus.dictio.ui.lesson;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mindorks.placeholderview.annotations.Click;
@@ -18,6 +19,9 @@ import java.util.Locale;
 @NonReusable
 @Layout(R.layout.lesson_card_view)
 public class LessonCard {
+
+    @View(R.id.speak)
+    public ImageView speakButton;
 
     @View(R.id.prompt)
     public TextView promptView;

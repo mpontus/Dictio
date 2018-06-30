@@ -6,4 +6,6 @@
 
     <color name="colorWordMatched">#699F38</color>
     <color name="colorWordMismatched">#EF6C00</color>
+
+    <color name="colorGrey">#9E9E9E</color>
 </resources>

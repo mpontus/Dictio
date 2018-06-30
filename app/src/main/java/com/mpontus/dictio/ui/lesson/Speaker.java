@@ -90,7 +90,9 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
 
     @Override
     public void onStart(String utteranceId) {
-
+        for (Listener listener : listeners) {
+            listener.onUtteranceStarted();
+        }
     }
 
     @Override
@@ -107,6 +109,8 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
 
     interface Listener {
         void onInitialized();
+
+        void onUtteranceStarted();
 
         void onUtteranceCompleted();
     }

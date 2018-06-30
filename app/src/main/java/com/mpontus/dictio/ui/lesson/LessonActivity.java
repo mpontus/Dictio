@@ -137,8 +137,27 @@ public class LessonActivity extends DaggerAppCompatActivity
     }
 
     @Override
+    public void onUtteranceStarted() {
+        runOnUiThread(() -> {
+            if (currentCard == null) {
+                return;
+            }
+
+            currentCard.speakButton.getBackground().setState(new int[]{android.R.attr.state_activated});
+        });
+    }
+
+    @Override
     public void onUtteranceCompleted() {
         startRecognizing();
+
+        runOnUiThread(() -> {
+            if (currentCard == null) {
+                return;
+            }
+
+            currentCard.speakButton.getBackground().setState(new int[]{-android.R.attr.state_activated});
+        });
     }
 
     @Override

@@ -20,14 +20,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/speak"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
+                android:backgroundTint="@drawable/speak_button_bg"
                 android:background="@drawable/ic_volume_up_black_24dp"
-                android:backgroundTint="?android:attr/textColorSecondary"
                 app:layout_constraintStart_toStartOf="parent"
                 android:contentDescription="@string/speak"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -39,9 +39,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="18dp"
-                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/speak"
                 app:layout_constraintTop_toTopOf="parent"
