@@ -89,18 +89,17 @@ public class VoiceRecorder {
     /**
      * Starts recording audio.
      * <p>
-     * <p>The caller is responsible for calling {@link #stop()} later.</p>
+     * <p>The caller is responsible for calling {@link #release()} later.</p>
      */
-    public void start() {
+    public void init() {
         // Stop recording if it is currently ongoing.
-        stop();
+        release();
         // Try to create a new recording session.
         mAudioRecord = createAudioRecord();
         if (mAudioRecord == null) {
             throw new RuntimeException("Cannot instantiate VoiceRecorder");
         }
-        // Start recording.
-        mAudioRecord.startRecording();
+
         // Start processing the captured audio.
         mThread = new Thread(new ProcessVoice());
         mThread.start();
@@ -109,7 +108,7 @@ public class VoiceRecorder {
     /**
      * Stops recording audio.
      */
-    public void stop() {
+    public void release() {
         synchronized (mLock) {
             dismiss();
             if (mThread != null) {
@@ -123,6 +122,15 @@ public class VoiceRecorder {
             }
             mBuffer = null;
         }
+    }
+
+    void start() {
+        // Start recording.
+        mAudioRecord.startRecording();
+    }
+
+    void stop() {
+        mAudioRecord.stop();
     }
 
     /**

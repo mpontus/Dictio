@@ -1,5 +1,7 @@
 package com.mpontus.speech;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Set;
@@ -7,6 +9,7 @@ import java.util.Set;
 import io.reactivex.annotations.NonNull;
 
 public class SpeechRecognition {
+    public static final String TAG = "SpeechRecognition";
 
     @NonNull
     private SpeechRecognitionClient recognitionClient;
@@ -18,6 +21,8 @@ public class SpeechRecognition {
     private VoiceRecorder voiceRecorder = new VoiceRecorder(new VoiceRecorder.Callback() {
         @Override
         public void onVoiceStart() {
+            Log.d(TAG, "onVoiceStart");
+
             int sampleRate = voiceRecorder.getSampleRate();
 
             recognitionClient.startRecognizing(locale, sampleRate);
@@ -29,6 +34,8 @@ public class SpeechRecognition {
 
         @Override
         public void onVoice(byte[] data, int size) {
+            Log.d(TAG, "onVoice");
+
             recognitionClient.recognize(data, size);
 
             for (Listener listener : listeners) {
@@ -38,6 +45,8 @@ public class SpeechRecognition {
 
         @Override
         public void onVoiceEnd() {
+            Log.d(TAG, "onVoiceEnd");
+
             recognitionClient.finishRecognizing();
 
             for (Listener listener : listeners) {
@@ -53,6 +62,8 @@ public class SpeechRecognition {
         recognitionClient.addListener(new SpeechRecognitionClient.Listener() {
             @Override
             public void onSpeechRecognized(Set<String> results) {
+                Log.d(TAG, "onRecognized");
+
                 for (Listener listener : listeners) {
                     listener.onRecognized(results);
                 }
@@ -60,6 +71,8 @@ public class SpeechRecognition {
 
             @Override
             public void onFinish() {
+                Log.d(TAG, "onRecognitionEnd");
+
                 for (Listener listener : listeners) {
                     listener.onRecognitionFinish();
                 }
@@ -70,22 +83,31 @@ public class SpeechRecognition {
     }
 
 
-    public void start() {
+    public void init() {
+        Log.d(TAG, "init");
+
+        voiceRecorder.init();
         recognitionClient.start();
     }
 
-    public void stop() {
-        stopRecognizing();
+    public void release() {
+        Log.d(TAG, "release");
+
+        voiceRecorder.release();
         recognitionClient.stop();
     }
 
     public void startRecognizing(Locale locale) {
+        Log.d(TAG, "startRecognizing");
+
         this.locale = locale;
 
         voiceRecorder.start();
     }
 
     public void stopRecognizing() {
+        Log.d(TAG, "stopRecognizing");
+
         voiceRecorder.stop();
     }
 

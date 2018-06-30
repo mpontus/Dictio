@@ -81,12 +81,7 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
             return;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            textToSpeech.speak(prompt.getText(), TextToSpeech.QUEUE_FLUSH, null, UTTERANCE_ID);
-        } else {
-            textToSpeech.speak(prompt.getText(), TextToSpeech.QUEUE_FLUSH, null);
-        }
-
+        new Thread(new Speak(prompt.getText())).run();
     }
 
     public void cancel() {
@@ -114,5 +109,22 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
         void onInitialized();
 
         void onUtteranceCompleted();
+    }
+
+    class Speak implements Runnable {
+        private String text;
+
+        Speak(String text) {
+            this.text = text;
+        }
+
+        @Override
+        public void run() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, UTTERANCE_ID);
+            } else {
+                textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+            }
+        }
     }
 }

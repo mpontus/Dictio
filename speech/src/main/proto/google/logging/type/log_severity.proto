@@ -41,7 +41,7 @@ enum LogSeverity {
   // Routine information, such as ongoing status or performance.
   INFO = 200;
 
-  // Normal but significant events, such as start up, shut down, or
+  // Normal but significant events, such as init up, shut down, or
   // configuration.
   NOTICE = 300;
 

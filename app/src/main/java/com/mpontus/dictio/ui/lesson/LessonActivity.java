@@ -25,6 +25,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import dagger.android.support.DaggerAppCompatActivity;
+import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
 public class LessonActivity extends DaggerAppCompatActivity
@@ -51,6 +52,9 @@ public class LessonActivity extends DaggerAppCompatActivity
     Speaker speaker;
 
     @Inject
+    CompositeDisposable compositeDisposable;
+
+    @Inject
     PhraseMatcher phraseMatcher;
 
     @Inject
@@ -61,6 +65,9 @@ public class LessonActivity extends DaggerAppCompatActivity
 
     @Nullable
     private LessonCard currentCard;
+
+    @Nullable
+    private PhraseMatcher.Match completeMatch;
 
     private SwipePlaceHolderView swipeView;
 
@@ -98,15 +105,17 @@ public class LessonActivity extends DaggerAppCompatActivity
     protected void onStart() {
         super.onStart();
 
-        permissions.request(Manifest.permission.RECORD_AUDIO)
-                .filter(granted -> granted)
-                .subscribe(granted -> {
-                    permissionGranted = true;
+        compositeDisposable.add(
+                permissions.request(Manifest.permission.RECORD_AUDIO)
+                        .filter(granted -> granted)
+                        .subscribe(granted -> {
+                            permissionGranted = true;
 
-                    speechRecognition.start();
+                            speechRecognition.init();
 
-                    speak();
-                });
+                            speak();
+                        })
+        );
 
         speechRecognition.addListener(this);
         speaker.addListener(this);
@@ -116,7 +125,8 @@ public class LessonActivity extends DaggerAppCompatActivity
     protected void onStop() {
         speaker.removeListener(this);
         speechRecognition.removeListener(this);
-        speechRecognition.stop();
+        speechRecognition.release();
+        compositeDisposable.dispose();
 
         super.onStop();
     }
@@ -134,6 +144,7 @@ public class LessonActivity extends DaggerAppCompatActivity
     @Override
     public void onShown(LessonCard card) {
         currentCard = card;
+        completeMatch = null;
 
         speak();
     }
@@ -148,28 +159,6 @@ public class LessonActivity extends DaggerAppCompatActivity
     @Override
     public void onSpeakClick() {
         speak();
-    }
-
-    private void test(Iterable<String> alternatives) {
-        if (currentCard == null) {
-            return;
-        }
-
-        String promptText = currentCard.getPrompt().getText();
-
-        for (String alternative : alternatives) {
-            Timber.d("Comaring \"%s\" with \"%s\"", promptText, alternative);
-        }
-
-        PhraseMatcher.Match match = phraseMatcher.bestMatch(promptText, alternatives);
-
-        runOnUiThread(() -> {
-            currentCard.promptView.setText(promptPainter.colorToMatch(promptText, match), TextView.BufferType.SPANNABLE);
-
-            if (match.isCompleteMatch()) {
-                swipeView.doSwipe(false);
-            }
-        });
     }
 
     private void addCard() {
@@ -223,16 +212,46 @@ public class LessonActivity extends DaggerAppCompatActivity
 
     @Override
     public void onRecognitionStart() {
+        if (currentCard == null) {
+            return;
+        }
 
+        runOnUiThread(() -> {
+            currentCard.promptView.setText(currentCard.getPrompt().getText());
+        });
     }
 
     @Override
     public void onRecognized(Set<String> alternatives) {
-        test(alternatives);
+        if (currentCard == null || completeMatch != null) {
+            return;
+        }
+
+        String promptText = currentCard.getPrompt().getText();
+
+        for (String alternative : alternatives) {
+            Timber.d("Comaring \"%s\" with \"%s\"", promptText, alternative);
+        }
+
+        PhraseMatcher.Match match = phraseMatcher.bestMatch(promptText, alternatives);
+
+        if (match.isCompleteMatch()) {
+            completeMatch = match;
+        }
+
+        runOnUiThread(() -> {
+            currentCard.promptView.setText(promptPainter.colorToMatch(promptText, match), TextView.BufferType.SPANNABLE);
+        });
     }
 
     @Override
     public void onRecognitionFinish() {
+        if (completeMatch != null) {
+            speechRecognition.stopRecognizing();
 
+            runOnUiThread(() -> {
+                swipeView.doSwipe(false);
+            });
+        }
     }
 }

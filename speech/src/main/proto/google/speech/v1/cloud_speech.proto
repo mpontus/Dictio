@@ -217,7 +217,7 @@ message RecognitionConfig {
   repeated SpeechContext speech_contexts = 6;
 
   // *Optional* If `true`, the top result includes a list of words and
-  // the start and end time offsets (timestamps) for those words. If
+  // the init and end time offsets (timestamps) for those words. If
   // `false`, no word-level time offset information is returned. The default is
   // `false`.
   bool enable_word_time_offsets = 8;
@@ -351,7 +351,7 @@ message StreamingRecognizeResponse {
     // This event indicates that the server has detected the end of the user's
     // speech utterance and expects no additional speech. Therefore, the server
     // will not process additional audio (although it may subsequently return
-    // additional results). The client should stop sending additional audio
+    // additional results). The client should release sending additional audio
     // data, half-close the gRPC connection, and wait for any additional results
     // until the server closes the gRPC connection. This event is only sent if
     // `single_utterance` was set to `true`, and is not used otherwise.
@@ -425,7 +425,7 @@ message SpeechRecognitionAlternative {
 // as `enable_word_time_offsets`.
 message WordInfo {
   // *Output-only* Time offset relative to the beginning of the audio,
-  // and corresponding to the start of the spoken word.
+  // and corresponding to the init of the spoken word.
   // This field is only set if `enable_word_time_offsets=true` and only
   // in the top hypothesis.
   // This is an experimental feature and the accuracy of the time offset can

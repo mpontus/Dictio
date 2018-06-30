@@ -7,6 +7,8 @@ import android.util.Pair;
 
 import com.mpontus.dictio.data.PhraseMatcher;
 
+import io.reactivex.annotations.NonNull;
+
 public class PromptPainter {
     private static PhraseMatcher matcher = new PhraseMatcher();
     private final int styleMatched;
@@ -19,7 +21,7 @@ public class PromptPainter {
         this.styleMismatched = styleMismatched;
     }
 
-    public SpannableString colorToMatch(String prompt, PhraseMatcher.Match match) {
+    public SpannableString colorToMatch(String prompt, @NonNull PhraseMatcher.Match match) {
         SpannableString result = new SpannableString(prompt);
 
         for (int index = 0; index < match.getWordCount(); ++index) {

@@ -75,6 +75,8 @@ public class SpeechRecognitionClient implements com.mpontus.speech.SpeechRecogni
             = new StreamObserver<StreamingRecognizeResponse>() {
         @Override
         public void onNext(StreamingRecognizeResponse response) {
+            Log.d(TAG, "onNext");
+
             Set<String> results = new HashSet<>();
             boolean isFinal = false;
 
@@ -113,6 +115,8 @@ public class SpeechRecognitionClient implements com.mpontus.speech.SpeechRecogni
 
         @Override
         public void onCompleted() {
+            Log.d(TAG, "onCompleted");
+
             for (Listener listener : mListeners) {
                 listener.onFinish();
             }
@@ -189,6 +193,8 @@ public class SpeechRecognitionClient implements com.mpontus.speech.SpeechRecogni
      * @param sampleRate The sample rate of the audio.
      */
     public void startRecognizing(Locale locale, int sampleRate) {
+        Log.d(TAG, "startRecognizing");
+
         if (mApi == null) {
             Log.w(TAG, "API not ready. Ignoring the request.");
             return;
@@ -216,9 +222,12 @@ public class SpeechRecognitionClient implements com.mpontus.speech.SpeechRecogni
      * @param size The number of elements that are actually relevant in the {@code data}.
      */
     public void recognize(byte[] data, int size) {
+        Log.d(TAG, "recognize");
+
         if (mRequestObserver == null) {
             return;
         }
+
         // Call the streaming recognition API
         mRequestObserver.onNext(StreamingRecognizeRequest.newBuilder()
                 .setAudioContent(ByteString.copyFrom(data, 0, size))
@@ -229,6 +238,8 @@ public class SpeechRecognitionClient implements com.mpontus.speech.SpeechRecogni
      * Finishes recognizing speech audio.
      */
     public void finishRecognizing() {
+        Log.d(TAG, "finishRecognizing");
+
         if (mRequestObserver == null) {
             return;
         }

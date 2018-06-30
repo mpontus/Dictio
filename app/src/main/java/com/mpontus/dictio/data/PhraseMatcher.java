@@ -97,7 +97,7 @@ public class PhraseMatcher {
         }
 
         public int getMatchCount() {
-            return original.getWordCount();
+            return matchedWords;
         }
 
         public boolean isCompleteMatch() {
@@ -108,7 +108,7 @@ public class PhraseMatcher {
             String originalWord = original.getWord(originalIndex).toLowerCase();
             String candidateWord = candidate.getWord(candidateIndex).toLowerCase();
 
-            return originalWord.matches(candidateWord);
+            return originalWord.equalsIgnoreCase(candidateWord);
         }
     }
 
