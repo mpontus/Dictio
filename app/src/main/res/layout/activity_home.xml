@@ -20,12 +20,18 @@
         android:layout_height="match_parent"
         tools:context=".ui.home.HomeActivity">
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
+            style="@style/Widget.AppCompat.Spinner.Underlined"
+            android:drawablePadding="@dimen/language_button_drawable_padding"
             android:id="@+id/language"
+            android:paddingLeft="@dimen/language_button_padding_start"
+            android:paddingRight="@dimen/language_button_padding_end"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            app:backgroundTint="@android:color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/language_margin"
-            android:text="@string/language"
+            tools:text="@string/language"
             app:layout_constraintBottom_toTopOf="@+id/words"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -34,6 +40,7 @@
 
         <Button
             android:id="@+id/words"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/words"
@@ -44,6 +51,7 @@
 
         <Button
             android:id="@+id/phrases"
+            style="@android:style/Widget.Material.Light.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/phrases"

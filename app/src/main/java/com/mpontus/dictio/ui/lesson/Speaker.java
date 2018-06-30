@@ -6,6 +6,9 @@ import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 
 import com.mpontus.dictio.data.model.Prompt;
+import com.mpontus.dictio.utils.LocaleUtils;
+
+import java.util.Locale;
 
 public class Speaker implements TextToSpeech.OnInitListener {
 
@@ -40,7 +43,8 @@ public class Speaker implements TextToSpeech.OnInitListener {
 
         this.cancel();
 
-        int languageAvailable = textToSpeech.setLanguage(prompt.getLanguage());
+        Locale locale = LocaleUtils.getLocaleFromCode(prompt.getLanguage());
+        int languageAvailable = textToSpeech.setLanguage(locale);
 
         if (languageAvailable < TextToSpeech.LANG_AVAILABLE) {
             return;

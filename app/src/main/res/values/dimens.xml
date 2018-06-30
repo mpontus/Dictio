@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="language_margin">24dp</dimen>
+    <dimen name="language_button_padding_start">12dp</dimen>
+    <dimen name="language_button_padding_end">44dp</dimen>
+    <dimen name="language_button_drawable_padding">8dp</dimen>
 </resources>

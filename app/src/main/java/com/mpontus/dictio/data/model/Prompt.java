@@ -12,9 +12,9 @@ public class Prompt {
 
     private String text;
 
-    private Locale language;
+    private String language;
 
-    private PromptType type;
+    private String type;
 
     private Map<String, String> translations;
 
@@ -26,11 +26,11 @@ public class Prompt {
         return text;
     }
 
-    public Locale getLanguage() {
+    public String getLanguage() {
         return language;
     }
 
-    public PromptType getType() {
+    public String getType() {
         return type;
     }
 

@@ -3,4 +3,9 @@
     <string name="language">Language</string>
     <string name="words">Words</string>
     <string name="phrases">Phrases</string>
+
+    <string name="language_en">English</string>
+    <string name="language_ru">Russian</string>
+    <string name="language_sv">Swedish</string>
+    <string name="current_language">Current language</string>
 </resources>

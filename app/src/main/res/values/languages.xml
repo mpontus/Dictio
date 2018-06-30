@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="language_codes">
+        <item>en-US</item>
+        <item>ru-RU</item>
+        <item>sv-SE</item>
+    </array>
+
+    <array name="language_names">
+        <item>@string/language_en</item>
+        <item>@string/language_ru</item>
+        <item>@string/language_sv</item>
+    </array>
+
+    <array name="language_icons">
+        <item>@drawable/us</item>
+        <item>@drawable/ru</item>
+        <item>@drawable/se</item>
+    </array>
+</resources>

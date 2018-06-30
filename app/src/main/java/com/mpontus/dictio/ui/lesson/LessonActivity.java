@@ -102,7 +102,7 @@ public class LessonActivity extends DaggerAppCompatActivity
 
         PhraseMatcher.Match match = phraseMatcher.bestMatch(promptText, alternatives);
 
-        currentCard.promptView.setText(promptPainter.colorToMatch(promptText, alternatives), TextView.BufferType.SPANNABLE);
+        currentCard.promptView.setText(promptPainter.colorToMatch(promptText, match), TextView.BufferType.SPANNABLE);
 
         if (match.isCompleteMatch()) {
             swipeView.doSwipe(false);
