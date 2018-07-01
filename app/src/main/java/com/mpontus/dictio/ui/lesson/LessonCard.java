@@ -1,5 +1,6 @@
 package com.mpontus.dictio.ui.lesson;
 
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +23,9 @@ public class LessonCard {
 
     @View(R.id.speak)
     public ImageView speakButton;
+
+    @View(R.id.speech)
+    public FrameLayout speechView;
 
     @View(R.id.prompt)
     public TextView promptView;

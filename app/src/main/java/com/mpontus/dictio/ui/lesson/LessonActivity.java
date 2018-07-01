@@ -260,17 +260,28 @@ public class LessonActivity extends DaggerAppCompatActivity
 
         runOnUiThread(() -> {
             currentCard.promptView.setText(promptPainter.colorToMatch(promptText, match), TextView.BufferType.SPANNABLE);
+
+            currentCard.speechView.getBackground()
+                    .setState(new int[]{android.R.attr.state_activated});
         });
     }
 
     @Override
     public void onRecognitionFinish() {
-        if (completeMatch != null) {
-            speechRecognition.stopRecognizing();
-
-            runOnUiThread(() -> {
-                swipeView.doSwipe(false);
-            });
+        if (currentCard == null) {
+            return;
         }
+
+        runOnUiThread(() -> {
+            currentCard.speechView.getBackground()
+                    .setState(new int[]{-android.R.attr.state_activated});
+
+            if (completeMatch != null) {
+                // Do we need this?
+                speechRecognition.stopRecognizing();
+
+                swipeView.doSwipe(false);
+            }
+        });
     }
 }
