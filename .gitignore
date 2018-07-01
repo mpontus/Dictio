@@ -11,3 +11,4 @@
 .externalNativeBuild
 
 /app/src/main/res/raw/credentials.json
+app/release
