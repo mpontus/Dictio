@@ -1,6 +1,7 @@
 package com.mpontus.dictio.ui.language;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -25,6 +26,14 @@ import dagger.android.support.DaggerAppCompatActivity;
 
 public class LanguageActivity extends DaggerAppCompatActivity {
     public static final String EXTRA_LANGUAGE = "LANGUAGE";
+
+    public static Intent createIntent(Context context, String language) {
+        Intent intent = new Intent(context, LanguageActivity.class);
+
+        intent.putExtra(EXTRA_LANGUAGE, language);
+
+        return intent;
+    }
 
     @Inject
     LangaugeResources langaugeResources;

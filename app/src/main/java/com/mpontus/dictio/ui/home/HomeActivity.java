@@ -1,11 +1,12 @@
 package com.mpontus.dictio.ui.home;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.Button;
 
+import com.f2prateek.rx.preferences2.Preference;
+import com.f2prateek.rx.preferences2.RxSharedPreferences;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.mpontus.dictio.R;
 import com.mpontus.dictio.ui.language.LanguageActivity;
 import com.mpontus.dictio.ui.lesson.LessonActivity;
@@ -15,27 +16,34 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import dagger.android.support.DaggerAppCompatActivity;
+import io.reactivex.Completable;
+import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
+import rx_activity_result2.RxActivityResult;
 
-// TODO: Refactor using RxPreferences
-public class HomeActivity extends DaggerAppCompatActivity
-        implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class HomeActivity extends DaggerAppCompatActivity {
 
-    private static final int LANGUAGE_ACTIVITY_REQUEST_CODE = 1;
-    private static final String PREF_KEY_LANGUAGE = "en-US";
+    private static final String PREF_KEY_LANGUAGE = "language";
     private static final String DEFAULT_LANGUAGE = "en-US";
-
-    @Inject
-    SharedPreferences sharedPreferences;
 
     @Inject
     LangaugeResources langaugeResources;
 
+    @Inject
+    RxSharedPreferences rxSharedPreferences;
+
+    @Inject
+    CompositeDisposable compositeDisposable;
+
     @BindView(R.id.language)
     Button languageButton;
 
-    private String language;
+    @BindView(R.id.words)
+    Button wordsButton;
+
+    @BindView(R.id.phrases)
+    Button phrasesButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,78 +52,48 @@ public class HomeActivity extends DaggerAppCompatActivity
         setSupportActionBar(findViewById(R.id.toolbar));
         ButterKnife.bind(this);
 
-        language = sharedPreferences.getString(PREF_KEY_LANGUAGE, DEFAULT_LANGUAGE);
+        Preference<String> languagePref = rxSharedPreferences.getString(PREF_KEY_LANGUAGE, DEFAULT_LANGUAGE);
 
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        compositeDisposable.add(
+                languagePref.asObservable()
+                        .publish(language -> {
+                            Completable languageClicks = RxView.clicks(languageButton)
+                                    .withLatestFrom(language, (v, l) -> LanguageActivity.createIntent(this, l))
+                                    .switchMap(intent -> RxActivityResult.on(this).startIntent(intent))
+                                    .filter(result -> result.resultCode() == RESULT_OK)
+                                    .map(result -> result.data().getStringExtra(LanguageActivity.EXTRA_LANGUAGE))
+                                    .doOnNext(languagePref.asConsumer())
+                                    .ignoreElements();
 
-        Drawable icon = langaugeResources.getIcon(language);
+                            Completable lessonClicks = Observable.merge(
+                                    RxView.clicks(wordsButton).map(view -> "word"),
+                                    RxView.clicks(phrasesButton).map(view -> "phrase")
+                            ).withLatestFrom(language, (type, lang) -> LessonActivity.createIntent(this, lang, type))
+                                    .doOnNext(this::startActivity)
+                                    .ignoreElements();
 
-        icon.setBounds(0, 0,
-                (int) (icon.getIntrinsicWidth() * 0.3),
-                (int) (icon.getIntrinsicHeight() * 0.3));
+                            return language
+                                    .mergeWith(languageClicks)
+                                    .mergeWith(lessonClicks);
+                        })
+                        .subscribe(lang -> {
+                            Drawable icon = langaugeResources.getIcon(lang);
 
-        languageButton.setCompoundDrawables(icon, null, null, null);
-        languageButton.setText(langaugeResources.getName(language));
-    }
+                            icon.setBounds(0, 0,
+                                    (int) (icon.getIntrinsicWidth() * 0.3),
+                                    (int) (icon.getIntrinsicHeight() * 0.3));
 
-    @OnClick(R.id.language)
-    void onLanguageClick() {
-        Intent intent = new Intent(this, LanguageActivity.class);
+                            languageButton.setCompoundDrawables(icon, null, null, null);
+                            languageButton.setText(langaugeResources.getName(lang));
+                        })
 
-        intent.putExtra(LanguageActivity.EXTRA_LANGUAGE, language);
-
-        startActivityForResult(intent, LANGUAGE_ACTIVITY_REQUEST_CODE);
-    }
-
-    @OnClick(R.id.words)
-    void onClickWords() {
-        startActivity(LessonActivity.createIntent(this, language, "word"));
-    }
-
-    @OnClick(R.id.phrases)
-    void onClickPhrases() {
-        startActivity(LessonActivity.createIntent(this, language, "phrase"));
+        );
     }
 
     @Override
     protected void onDestroy() {
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+        compositeDisposable.dispose();
 
         super.onDestroy();
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == LANGUAGE_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                String language = data.getStringExtra(LanguageActivity.EXTRA_LANGUAGE);
-
-                sharedPreferences.edit()
-                        .putString(PREF_KEY_LANGUAGE, language)
-                        .apply();
-            }
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        switch (key) {
-            case PREF_KEY_LANGUAGE:
-                language = sharedPreferences.getString(PREF_KEY_LANGUAGE, DEFAULT_LANGUAGE);
-
-                Drawable icon = langaugeResources.getIcon(language);
-
-                icon.setBounds(0, 0,
-                        (int) (icon.getIntrinsicWidth() * 0.3),
-                        (int) (icon.getIntrinsicHeight() * 0.3));
-
-                languageButton.setCompoundDrawables(icon, null, null, null);
-                languageButton.setText(langaugeResources.getName(language));
-
-                break;
-        }
-    }
-
 }

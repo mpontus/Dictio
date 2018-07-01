@@ -7,12 +7,15 @@ import com.squareup.leakcanary.LeakCanary;
 
 import dagger.android.AndroidInjector;
 import dagger.android.support.DaggerApplication;
+import rx_activity_result2.RxActivityResult;
 import timber.log.Timber;
 
 public class DictioApplication extends DaggerApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        RxActivityResult.register(this);
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
