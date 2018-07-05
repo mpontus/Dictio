@@ -37,7 +37,7 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
         textToSpeech.setOnUtteranceProgressListener(this);
 
         for (Listener listener : listeners) {
-            listener.onInitialized();
+            listener.onReady();
         }
     }
 
@@ -45,7 +45,7 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
         listeners.add(listener);
 
         if (initialized) {
-            listener.onInitialized();
+            listener.onReady();
         }
     }
 
@@ -53,7 +53,7 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
         listeners.remove(listener);
     }
 
-    public boolean isInitialized() {
+    public boolean isReady() {
         return initialized;
     }
 
@@ -65,6 +65,10 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
         Locale locale = LocaleUtils.getLocaleFromCode(prompt.getLanguage());
 
         return textToSpeech.isLanguageAvailable(locale) >= TextToSpeech.LANG_AVAILABLE;
+    }
+
+    public boolean isActive() {
+        return textToSpeech.isSpeaking();
     }
 
     public void speak(Prompt prompt) {
@@ -81,7 +85,13 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
             return;
         }
 
-        new Thread(new Speak(prompt.getText())).run();
+        String text = prompt.getText();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, UTTERANCE_ID);
+        } else {
+            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+        }
     }
 
     public void cancel() {
@@ -104,31 +114,18 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
 
     @Override
     public void onError(String utteranceId) {
-
+        for (Listener listener : listeners) {
+            listener.onError(new RuntimeException("An error occured during TTS"));
+        }
     }
 
     interface Listener {
-        void onInitialized();
+        void onReady();
 
         void onUtteranceStarted();
 
         void onUtteranceCompleted();
-    }
 
-    class Speak implements Runnable {
-        private String text;
-
-        Speak(String text) {
-            this.text = text;
-        }
-
-        @Override
-        public void run() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, UTTERANCE_ID);
-            } else {
-                textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-            }
-        }
+        void onError(Throwable t);
     }
 }

@@ -1,18 +1,16 @@
 package com.mpontus.dictio.ui.lesson;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+import android.content.res.Resources;
 
 import com.mpontus.dictio.R;
 import com.mpontus.dictio.data.PhraseMatcher;
 import com.mpontus.dictio.data.PromptsRepository;
+import com.mpontus.speech.AudioRecordVoiceRecorder;
+import com.mpontus.speech.GoogleSpeechRecognition;
 import com.mpontus.speech.SpeechRecognition;
-import com.mpontus.speech.google.AccessTokenCache;
-import com.mpontus.speech.google.AccessTokenRetriever;
-import com.mpontus.speech.google.ServiceCredentialsAccessTokenRetriever;
-import com.mpontus.speech.google.SharedPreferencesAccessTokenCache;
-import com.mpontus.speech.google.SpeechRecognitionClient;
+import com.mpontus.speech.VoiceRecorder;
+import com.mpontus.speech.ServiceCredentialsAccessTokenRetriever;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.InputStream;
@@ -48,27 +46,16 @@ public class LessonActivityModule {
     }
 
     @Provides
-    AccessTokenCache provideAccessTokenCache(Context context) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    SpeechRecognition speechRecognition(Resources resources) {
+        InputStream inputStream = resources.openRawResource(R.raw.credentials);
+        ServiceCredentialsAccessTokenRetriever tokenRetriever =
+                new ServiceCredentialsAccessTokenRetriever(inputStream);
 
-        return new SharedPreferencesAccessTokenCache(sharedPreferences);
+        return new GoogleSpeechRecognition(tokenRetriever);
     }
 
     @Provides
-    AccessTokenRetriever provideAccessTokenRetriever(Context context) {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.credentials);
-
-        return new ServiceCredentialsAccessTokenRetriever(inputStream);
-    }
-
-    @Provides
-    SpeechRecognitionClient provideSpeechRecognitionClient(AccessTokenRetriever tokenRetriever,
-                                                           AccessTokenCache tokenCache) {
-        return new SpeechRecognitionClient(tokenRetriever, tokenCache);
-    }
-
-    @Provides
-    SpeechRecognition provideSpeechRecognition(SpeechRecognitionClient client) {
-        return new SpeechRecognition(client);
+    VoiceRecorder voiceRecorder() {
+        return new AudioRecordVoiceRecorder();
     }
 }

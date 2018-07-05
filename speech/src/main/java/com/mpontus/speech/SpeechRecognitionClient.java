@@ -10,10 +10,6 @@ public interface SpeechRecognitionClient {
         void onFinish();
     }
 
-    void start();
-
-    void stop();
-
     void startRecognizing(Locale locale, int sampleRate);
 
     void recognize(byte[] data, int size);

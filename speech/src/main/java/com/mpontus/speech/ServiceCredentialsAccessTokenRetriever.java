@@ -1,7 +1,8 @@
-package com.mpontus.speech.google;
+package com.mpontus.speech;
 
 import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.mpontus.speech.AccessTokenRetriever;
 
 import java.io.IOException;
 import java.io.InputStream;

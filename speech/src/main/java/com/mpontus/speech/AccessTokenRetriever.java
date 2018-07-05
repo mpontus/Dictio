@@ -1,4 +1,4 @@
-package com.mpontus.speech.google;
+package com.mpontus.speech;
 
 import com.google.auth.oauth2.AccessToken;
 

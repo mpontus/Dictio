@@ -1,135 +1,32 @@
 package com.mpontus.speech;
 
-import android.util.Log;
+public interface SpeechRecognition {
 
-import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Set;
+    boolean isReady();
 
-import io.reactivex.annotations.NonNull;
+    void init();
 
-public class SpeechRecognition {
-    public static final String TAG = "SpeechRecognition";
+    void release();
 
-    @NonNull
-    private SpeechRecognitionClient recognitionClient;
+    boolean isActive();
 
-    private Locale locale;
+    void startRecognizing(String languageCode, int sampleRate);
 
-    private ArrayList<Listener> listeners = new ArrayList<>();
+    void recognize(byte[] data, int size);
 
-    private VoiceRecorder voiceRecorder = new VoiceRecorder(new VoiceRecorder.Callback() {
-        @Override
-        public void onVoiceStart() {
-            Log.d(TAG, "onVoiceStart");
+    void stopRecognizing();
 
-            int sampleRate = voiceRecorder.getSampleRate();
+    void addListener(Listener listener);
 
-            recognitionClient.startRecognizing(locale, sampleRate);
+    void removeListener(Listener listener);
 
-            for (Listener listener : listeners) {
-                listener.onVoiceStart(sampleRate);
-            }
-        }
+    interface Listener {
+        void onReady();
 
-        @Override
-        public void onVoice(byte[] data, int size) {
-            Log.d(TAG, "onVoice");
+        void onRecognition(Iterable<String> alternatives);
 
-            recognitionClient.recognize(data, size);
+        void onRecognitionEnd();
 
-            for (Listener listener : listeners) {
-                listener.onVoice(data, size);
-            }
-        }
-
-        @Override
-        public void onVoiceEnd() {
-            Log.d(TAG, "onVoiceEnd");
-
-            recognitionClient.finishRecognizing();
-
-            for (Listener listener : listeners) {
-                listener.onVoiceEnd();
-            }
-        }
-    });
-
-
-    public SpeechRecognition(SpeechRecognitionClient recognitionClient) {
-        this.recognitionClient = recognitionClient;
-
-        recognitionClient.addListener(new SpeechRecognitionClient.Listener() {
-            @Override
-            public void onSpeechRecognized(Set<String> results) {
-                Log.d(TAG, "onRecognized");
-
-                for (Listener listener : listeners) {
-                    listener.onRecognized(results);
-                }
-            }
-
-            @Override
-            public void onFinish() {
-                Log.d(TAG, "onRecognitionEnd");
-
-                for (Listener listener : listeners) {
-                    listener.onRecognitionFinish();
-                }
-
-                voiceRecorder.dismiss();
-            }
-        });
-    }
-
-
-    public void init() {
-        Log.d(TAG, "init");
-
-        voiceRecorder.init();
-        recognitionClient.start();
-    }
-
-    public void release() {
-        Log.d(TAG, "release");
-
-        voiceRecorder.release();
-        recognitionClient.stop();
-    }
-
-    public void startRecognizing(Locale locale) {
-        Log.d(TAG, "startRecognizing");
-
-        this.locale = locale;
-
-        voiceRecorder.start();
-    }
-
-    public void stopRecognizing() {
-        Log.d(TAG, "stopRecognizing");
-
-        voiceRecorder.stop();
-    }
-
-    public void addListener(Listener listener) {
-        listeners.add(listener);
-    }
-
-    public void removeListener(Listener listener) {
-        listeners.remove(listener);
-    }
-
-    public interface Listener {
-        void onVoiceStart(int sampleRate);
-
-        void onVoice(byte[] data, int length);
-
-        void onVoiceEnd();
-
-        void onRecognitionStart();
-
-        void onRecognized(Set<String> alternatives);
-
-        void onRecognitionFinish();
+        void onRecognitionError(Throwable t);
     }
 }

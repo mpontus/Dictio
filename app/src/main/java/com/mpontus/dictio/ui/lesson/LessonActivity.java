@@ -13,13 +13,11 @@ import com.mpontus.dictio.R;
 import com.mpontus.dictio.data.PhraseMatcher;
 import com.mpontus.dictio.data.PromptsRepository;
 import com.mpontus.dictio.data.model.Prompt;
-import com.mpontus.dictio.utils.LocaleUtils;
 import com.mpontus.speech.SpeechRecognition;
+import com.mpontus.speech.VoiceRecorder;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
-import java.util.Locale;
 import java.util.Objects;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -28,8 +26,7 @@ import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
-public class LessonActivity extends DaggerAppCompatActivity
-        implements LessonCard.Callback, Speaker.Listener, SpeechRecognition.Listener {
+public class LessonActivity extends DaggerAppCompatActivity {
     private static final String EXTRA_LANGUAGE = "LANGUAGE";
     private static final String EXTRA_TYPE = "TYPE";
 
@@ -61,13 +58,13 @@ public class LessonActivity extends DaggerAppCompatActivity
     SpeechRecognition speechRecognition;
 
     @Inject
+    VoiceRecorder voiceRecorder;
+
+    @Inject
     PromptPainter promptPainter;
 
     @Nullable
     private LessonCard currentCard;
-
-    @Nullable
-    private PhraseMatcher.Match completeMatch;
 
     private SwipePlaceHolderView swipeView;
 
@@ -76,6 +73,118 @@ public class LessonActivity extends DaggerAppCompatActivity
     private String type;
 
     private boolean permissionGranted = false;
+
+    private final LessonCard.Callback lessonCardCallback = new LessonCard.Callback() {
+        @Override
+        public void onShown(LessonCard card) {
+            // Keep track of currently shown card
+            currentCard = card;
+
+            // Start TTS if the speaker is ready and the user is not distracted by permission dialog
+            startSpeakingMaybe();
+        }
+
+        @Override
+        public void onDismissed() {
+            speaker.cancel();
+            voiceRecorder.stop();
+
+            currentCard = null;
+
+            // Add another card to the end of the stack
+            addCard();
+        }
+
+        @Override
+        public void onSpeakClick() {
+            Prompt prompt = currentCard.getPrompt();
+
+            // Show dialog when user explicity presses TTS button
+            if (!speaker.isLanguageAvailable(prompt)) {
+                Toast.makeText(LessonActivity.this, "Language not supported", Toast.LENGTH_SHORT).show();
+
+                return;
+            }
+
+            speak();
+        }
+    };
+
+    private final Speaker.Listener speakerListener = new Speaker.Listener() {
+        @Override
+        public void onReady() {
+            startSpeakingMaybe();
+        }
+
+        @Override
+        public void onUtteranceStarted() {
+            setSpeakerStatus(true);
+        }
+
+        @Override
+        public void onUtteranceCompleted() {
+            setSpeakerStatus(false);
+
+            voiceRecorder.start();
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            Timber.e(t);
+        }
+    };
+
+    private final VoiceRecorder.Listener voiceRecorderListener = new VoiceRecorder.Listener() {
+        @Override
+        public void onReady() {
+            startSpeakingMaybe();
+        }
+
+        @Override
+        public void onVoiceStart() {
+            speechRecognition.startRecognizing(
+                    currentCard.getPrompt().getLanguage(),
+                    voiceRecorder.getSampleRate()
+            );
+        }
+
+        @Override
+        public void onVoice(byte[] data, int size) {
+            speechRecognition.recognize(data, size);
+        }
+
+        @Override
+        public void onVoiceEnd() {
+            speechRecognition.stopRecognizing();
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            Timber.e(t);
+        }
+    };
+
+    private final SpeechRecognition.Listener speechRecognitionListener = new SpeechRecognition.Listener() {
+        @Override
+        public void onReady() {
+            startSpeakingMaybe();
+        }
+
+        @Override
+        public void onRecognition(Iterable<String> alternatives) {
+            match(alternatives);
+        }
+
+        @Override
+        public void onRecognitionEnd() {
+        }
+
+        @Override
+        public void onRecognitionError(Throwable t) {
+            Timber.e(t);
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,12 +207,15 @@ public class LessonActivity extends DaggerAppCompatActivity
         for (int i = 0; i < 2; ++i) {
             addCard();
         }
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        voiceRecorder.addListener(voiceRecorderListener);
+        speechRecognition.addListener(speechRecognitionListener);
+        speaker.addListener(speakerListener);
 
         compositeDisposable.add(
                 permissions.request(Manifest.permission.RECORD_AUDIO)
@@ -111,174 +223,98 @@ public class LessonActivity extends DaggerAppCompatActivity
                         .subscribe(granted -> {
                             permissionGranted = true;
 
+                            voiceRecorder.init();
                             speechRecognition.init();
 
-                            speak();
+                            startSpeakingMaybe();
                         })
         );
 
-        speechRecognition.addListener(this);
-        speaker.addListener(this);
     }
 
     @Override
     protected void onStop() {
-        speaker.removeListener(this);
-        speechRecognition.removeListener(this);
+        speaker.removeListener(speakerListener);
+
+        speechRecognition.removeListener(speechRecognitionListener);
+        voiceRecorder.removeListener(voiceRecorderListener);
+
         speechRecognition.release();
+        voiceRecorder.release();
+
         compositeDisposable.dispose();
 
         super.onStop();
     }
 
-    @Override
-    public void onInitialized() {
-        speak();
-    }
-
-    @Override
-    public void onUtteranceStarted() {
-        runOnUiThread(() -> {
-            if (currentCard == null) {
-                return;
-            }
-
-            currentCard.speakButton.getBackground().setState(new int[]{android.R.attr.state_activated});
-        });
-    }
-
-    @Override
-    public void onUtteranceCompleted() {
-        startRecognizing();
-
-        runOnUiThread(() -> {
-            if (currentCard == null) {
-                return;
-            }
-
-            currentCard.speakButton.getBackground().setState(new int[]{-android.R.attr.state_activated});
-        });
-    }
-
-    @Override
-    public void onShown(LessonCard card) {
-        currentCard = card;
-        completeMatch = null;
-
-        speak();
-    }
-
-    @Override
-    public void onDismissed() {
-        addCard();
-
-        speechRecognition.stopRecognizing();
-    }
-
-    @Override
-    public void onSpeakClick() {
-        speak();
-    }
-
-    private void addCard() {
-        Prompt prompt = promptsRepository.getRandomPrompt(language, type);
-        LessonCard card = new LessonCard(this, prompt);
-
-        swipeView.addView(card);
-    }
-
-    private void speak() {
-        if (currentCard == null || !speaker.isInitialized() || !permissionGranted) {
-            return;
+    public void startSpeakingMaybe() {
+        // Wait for everything to be ready so we don't have to worry about initalization of
+        // individual components after this point
+        if (currentCard != null &&
+                permissionGranted &&
+                speaker.isReady() &&
+                voiceRecorder.isReady() &&
+                speechRecognition.isReady()) {
+            speak();
         }
-
-        speechRecognition.stopRecognizing();
-
-        Prompt prompt = currentCard.getPrompt();
-
-        if (!speaker.isLanguageAvailable(prompt)) {
-            Toast.makeText(this, "Language not supported", Toast.LENGTH_SHORT).show();
-
-            return;
-        }
-
-        speaker.speak(prompt);
     }
 
-    private void startRecognizing() {
-        if (!permissionGranted || currentCard == null) {
-            return;
-        }
-
-        Locale locale = LocaleUtils.getLocaleFromCode(currentCard.getPrompt().getLanguage());
-        this.speechRecognition.startRecognizing(locale);
-    }
-
-    @Override
-    public void onVoiceStart(int sampleRate) {
-
-    }
-
-    @Override
-    public void onVoice(byte[] data, int length) {
-
-    }
-
-    @Override
-    public void onVoiceEnd() {
-
-    }
-
-    @Override
-    public void onRecognitionStart() {
+    public void setSpeakerStatus(boolean isActive) {
         if (currentCard == null) {
             return;
         }
 
         runOnUiThread(() -> {
-            currentCard.promptView.setText(currentCard.getPrompt().getText());
+            int newState = (isActive ? 1 : -1) * android.R.attr.state_activated;
+
+            currentCard.speakButton.getBackground().setState(new int[]{newState});
         });
     }
 
-    @Override
-    public void onRecognized(Set<String> alternatives) {
-        if (currentCard == null || completeMatch != null) {
+    private void addCard() {
+        Prompt prompt = promptsRepository.getRandomPrompt(language, type);
+        LessonCard card = new LessonCard(lessonCardCallback, prompt);
+
+        swipeView.addView(card);
+    }
+
+    private void speak() {
+        if (currentCard == null || !speaker.isReady() || !permissionGranted) {
+            return;
+        }
+
+        voiceRecorder.stop();
+
+        Prompt prompt = currentCard.getPrompt();
+
+        speaker.speak(prompt);
+    }
+
+    // This method may crash when it receives a complete match, followed by another match
+    // The first match will schedule dismissal of the card. By the the second match gets to updating
+    // the prompt, the dismissal may trigger callback and set currentCard to null.
+    // TODO: find a way to update the UI without referring to "curreentCard"
+    public void match(Iterable<String> alternatives) {
+        if (currentCard == null) {
             return;
         }
 
         String promptText = currentCard.getPrompt().getText();
 
         for (String alternative : alternatives) {
-            Timber.d("Comaring \"%s\" with \"%s\"", promptText, alternative);
+            Timber.d("Comparing \"%s\" with \"%s\"", promptText, alternative);
         }
 
         PhraseMatcher.Match match = phraseMatcher.bestMatch(promptText, alternatives);
-
-        if (match.isCompleteMatch()) {
-            completeMatch = match;
-        }
 
         runOnUiThread(() -> {
             currentCard.promptView.setText(promptPainter.colorToMatch(promptText, match), TextView.BufferType.SPANNABLE);
 
             currentCard.speechView.getBackground()
                     .setState(new int[]{android.R.attr.state_activated});
-        });
-    }
 
-    @Override
-    public void onRecognitionFinish() {
-        if (currentCard == null) {
-            return;
-        }
-
-        runOnUiThread(() -> {
-            currentCard.speechView.getBackground()
-                    .setState(new int[]{-android.R.attr.state_activated});
-
-            if (completeMatch != null) {
-                // Do we need this?
-                speechRecognition.stopRecognizing();
+            if (match.isCompleteMatch()) {
+                voiceRecorder.stop();
 
                 swipeView.doSwipe(false);
             }
