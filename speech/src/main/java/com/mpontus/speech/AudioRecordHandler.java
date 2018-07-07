@@ -19,6 +19,16 @@ public class AudioRecordHandler {
 
     private Thread processingThread;
 
+    /**
+     * The timestamp of the last time that voice is heard.
+     */
+    private long lastVoiceHeardMillis = Long.MAX_VALUE;
+
+    /**
+     * The timestamp when the current voice is started.
+     */
+    private long voiceStartedMillis;
+
     public AudioRecordHandler(AudioRecord audioRecord, Callback callback) {
         this.audioRecord = audioRecord;
         this.callback = callback;
@@ -62,6 +72,13 @@ public class AudioRecordHandler {
         }
     }
 
+    public void dismiss() {
+        if (lastVoiceHeardMillis != Long.MAX_VALUE) {
+            lastVoiceHeardMillis = Long.MAX_VALUE;
+            callback.onVoiceEnd();
+        }
+    }
+
     interface Callback {
         void onVoiceStart();
 
@@ -75,16 +92,6 @@ public class AudioRecordHandler {
      * events.
      */
     private class ProcessVoice implements Runnable {
-
-        /**
-         * The timestamp of the last time that voice is heard.
-         */
-        private long lastVoiceHeardMillis = Long.MAX_VALUE;
-
-        /**
-         * The timestamp when the current voice is started.
-         */
-        private long voiceStartedMillis;
 
         @Override
         public void run() {

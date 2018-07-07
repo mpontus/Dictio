@@ -20,6 +20,13 @@ public interface VoiceRecorder {
      */
     void stop();
 
+    /**
+     * End current utterance without stopping recording.
+     * <p>
+     * Dispatches onVoiceEnd().
+     */
+    void dismiss();
+
     int getSampleRate();
 
     void addListener(Listener listener);

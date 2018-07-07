@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,8 +14,6 @@ import com.mpontus.dictio.R;
 import com.mpontus.dictio.data.PhraseMatcher;
 import com.mpontus.dictio.data.PromptsRepository;
 import com.mpontus.dictio.data.model.Prompt;
-import com.mpontus.speech.SpeechRecognition;
-import com.mpontus.speech.VoiceRecorder;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.Objects;
@@ -46,22 +45,16 @@ public class LessonActivity extends DaggerAppCompatActivity {
     PromptsRepository promptsRepository;
 
     @Inject
-    Speaker speaker;
-
-    @Inject
     CompositeDisposable compositeDisposable;
 
     @Inject
     PhraseMatcher phraseMatcher;
 
     @Inject
-    SpeechRecognition speechRecognition;
-
-    @Inject
-    VoiceRecorder voiceRecorder;
-
-    @Inject
     PromptPainter promptPainter;
+
+    @Inject
+    LessonService lessonService;
 
     @Nullable
     private LessonCard currentCard;
@@ -72,22 +65,22 @@ public class LessonActivity extends DaggerAppCompatActivity {
 
     private String type;
 
-    private boolean permissionGranted = false;
-
     private final LessonCard.Callback lessonCardCallback = new LessonCard.Callback() {
         @Override
-        public void onShown(LessonCard card) {
+        public void onShown(@NonNull LessonCard card) {
             // Keep track of currently shown card
             currentCard = card;
 
-            // Start TTS if the speaker is ready and the user is not distracted by permission dialog
-            startSpeakingMaybe();
+            if (lessonService.isReady()) {
+                Prompt prompt = currentCard.getPrompt();
+
+                lessonService.startSpeaking(prompt.getLanguage(), prompt.getText());
+            }
         }
 
         @Override
         public void onDismissed() {
-            speaker.cancel();
-            voiceRecorder.stop();
+            lessonService.stop();
 
             currentCard = null;
 
@@ -99,88 +92,60 @@ public class LessonActivity extends DaggerAppCompatActivity {
         public void onSpeakClick() {
             Prompt prompt = currentCard.getPrompt();
 
+            if (!lessonService.isReady()) {
+                return;
+            }
+
             // Show dialog when user explicity presses TTS button
-            if (!speaker.isLanguageAvailable(prompt)) {
+            if (!lessonService.isLanguageAvailable(prompt.getLanguage())) {
                 Toast.makeText(LessonActivity.this, "Language not supported", Toast.LENGTH_SHORT).show();
 
                 return;
             }
 
-            speak();
+            lessonService.startSpeaking(prompt.getLanguage(), prompt.getText());
         }
     };
 
-    private final Speaker.Listener speakerListener = new Speaker.Listener() {
+    private final LessonService.Listener lessonServiceListener = new LessonService.Listener() {
         @Override
         public void onReady() {
-            startSpeakingMaybe();
+            if (currentCard != null) {
+                Prompt prompt = currentCard.getPrompt();
+
+                lessonService.startSpeaking(prompt.getLanguage(), prompt.getText());
+            }
         }
 
         @Override
-        public void onUtteranceStarted() {
+        public void onSpeakingStart() {
             setSpeakerStatus(true);
         }
 
         @Override
-        public void onUtteranceCompleted() {
+        public void onSpeakingEnd() {
             setSpeakerStatus(false);
 
-            voiceRecorder.start();
+            lessonService.startRecording(currentCard.getPrompt().getLanguage());
         }
 
         @Override
-        public void onError(Throwable t) {
-            Timber.e(t);
-        }
-    };
+        public void onRecordingStart() {
 
-    private final VoiceRecorder.Listener voiceRecorderListener = new VoiceRecorder.Listener() {
-        @Override
-        public void onReady() {
-            startSpeakingMaybe();
         }
 
         @Override
-        public void onVoiceStart() {
-            speechRecognition.startRecognizing(
-                    currentCard.getPrompt().getLanguage(),
-                    voiceRecorder.getSampleRate()
-            );
+        public void onRecordingEnd() {
+
         }
 
         @Override
-        public void onVoice(byte[] data, int size) {
-            speechRecognition.recognize(data, size);
-        }
-
-        @Override
-        public void onVoiceEnd() {
-            speechRecognition.stopRecognizing();
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            Timber.e(t);
-        }
-    };
-
-    private final SpeechRecognition.Listener speechRecognitionListener = new SpeechRecognition.Listener() {
-        @Override
-        public void onReady() {
-            startSpeakingMaybe();
-        }
-
-        @Override
-        public void onRecognition(Iterable<String> alternatives) {
+        public void onRecognized(Iterable<String> alternatives) {
             match(alternatives);
         }
 
         @Override
-        public void onRecognitionEnd() {
-        }
-
-        @Override
-        public void onRecognitionError(Throwable t) {
+        public void onError(Throwable t) {
             Timber.e(t);
         }
     };
@@ -213,50 +178,27 @@ public class LessonActivity extends DaggerAppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        voiceRecorder.addListener(voiceRecorderListener);
-        speechRecognition.addListener(speechRecognitionListener);
-        speaker.addListener(speakerListener);
+        lessonService.addListener(lessonServiceListener);
 
         compositeDisposable.add(
                 permissions.request(Manifest.permission.RECORD_AUDIO)
                         .filter(granted -> granted)
                         .subscribe(granted -> {
-                            permissionGranted = true;
-
-                            voiceRecorder.init();
-                            speechRecognition.init();
-
-                            startSpeakingMaybe();
+                            if (granted) {
+                                lessonService.init();
+                            }
                         })
         );
-
     }
 
     @Override
     protected void onStop() {
-        speaker.removeListener(speakerListener);
-
-        speechRecognition.removeListener(speechRecognitionListener);
-        voiceRecorder.removeListener(voiceRecorderListener);
-
-        speechRecognition.release();
-        voiceRecorder.release();
-
         compositeDisposable.dispose();
 
-        super.onStop();
-    }
+        lessonService.removeListener(lessonServiceListener);
+        lessonService.release();
 
-    public void startSpeakingMaybe() {
-        // Wait for everything to be ready so we don't have to worry about initalization of
-        // individual components after this point
-        if (currentCard != null &&
-                permissionGranted &&
-                speaker.isReady() &&
-                voiceRecorder.isReady() &&
-                speechRecognition.isReady()) {
-            speak();
-        }
+        super.onStop();
     }
 
     public void setSpeakerStatus(boolean isActive) {
@@ -276,18 +218,6 @@ public class LessonActivity extends DaggerAppCompatActivity {
         LessonCard card = new LessonCard(lessonCardCallback, prompt);
 
         swipeView.addView(card);
-    }
-
-    private void speak() {
-        if (currentCard == null || !speaker.isReady() || !permissionGranted) {
-            return;
-        }
-
-        voiceRecorder.stop();
-
-        Prompt prompt = currentCard.getPrompt();
-
-        speaker.speak(prompt);
     }
 
     // This method may crash when it receives a complete match, followed by another match
@@ -314,7 +244,8 @@ public class LessonActivity extends DaggerAppCompatActivity {
                     .setState(new int[]{android.R.attr.state_activated});
 
             if (match.isCompleteMatch()) {
-                voiceRecorder.stop();
+
+                lessonService.stop();
 
                 swipeView.doSwipe(false);
             }

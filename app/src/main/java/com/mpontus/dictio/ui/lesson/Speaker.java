@@ -4,9 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
-import android.support.annotation.Nullable;
 
-import com.mpontus.dictio.data.model.Prompt;
 import com.mpontus.dictio.utils.LocaleUtils;
 
 import java.util.ArrayList;
@@ -22,9 +20,6 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
     private boolean initialized = false;
 
     private List<Listener> listeners = new ArrayList<>();
-
-    @Nullable
-    private Prompt nextPrompt;
 
     public Speaker(Context context) {
         textToSpeech = new TextToSpeech(context, this);
@@ -57,12 +52,12 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
         return initialized;
     }
 
-    public boolean isLanguageAvailable(Prompt prompt) {
+    public boolean isLanguageAvailable(String languageCode) {
         if (!initialized) {
             return false;
         }
 
-        Locale locale = LocaleUtils.getLocaleFromCode(prompt.getLanguage());
+        Locale locale = LocaleUtils.getLocaleFromCode(languageCode);
 
         return textToSpeech.isLanguageAvailable(locale) >= TextToSpeech.LANG_AVAILABLE;
     }
@@ -71,21 +66,19 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
         return textToSpeech.isSpeaking();
     }
 
-    public void speak(Prompt prompt) {
+    public void speak(String languageCode, String text) {
         if (!initialized) {
             return;
         }
 
         this.cancel();
 
-        Locale locale = LocaleUtils.getLocaleFromCode(prompt.getLanguage());
+        Locale locale = LocaleUtils.getLocaleFromCode(languageCode);
         int languageAvailable = textToSpeech.setLanguage(locale);
 
         if (languageAvailable < TextToSpeech.LANG_AVAILABLE) {
             return;
         }
-
-        String text = prompt.getText();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, UTTERANCE_ID);

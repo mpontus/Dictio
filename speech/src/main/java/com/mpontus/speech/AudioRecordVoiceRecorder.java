@@ -94,6 +94,15 @@ public class AudioRecordVoiceRecorder implements VoiceRecorder {
     }
 
     @Override
+    public void dismiss() {
+        if (audioRecordHandler == null) {
+            return;
+        }
+
+        audioRecordHandler.dismiss();
+    }
+
+    @Override
     public void stop() {
         if (audioRecordHandler == null) {
             return;
