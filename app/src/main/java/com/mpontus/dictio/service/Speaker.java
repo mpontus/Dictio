@@ -1,4 +1,4 @@
-package com.mpontus.dictio.ui.lesson;
+package com.mpontus.dictio.service;
 
 import android.content.Context;
 import android.os.Build;

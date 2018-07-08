@@ -27,14 +27,13 @@ public class HomeActivity extends DaggerAppCompatActivity {
     private static final String PREF_KEY_LANGUAGE = "language";
     private static final String DEFAULT_LANGUAGE = "en-US";
 
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+
     @Inject
     LangaugeResources langaugeResources;
 
     @Inject
     RxSharedPreferences rxSharedPreferences;
-
-    @Inject
-    CompositeDisposable compositeDisposable;
 
     @BindView(R.id.language)
     Button languageButton;

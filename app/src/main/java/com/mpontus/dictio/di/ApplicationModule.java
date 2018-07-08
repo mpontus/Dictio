@@ -14,7 +14,6 @@ import javax.inject.Singleton;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
-import io.reactivex.disposables.CompositeDisposable;
 
 @Module
 public abstract class ApplicationModule {
@@ -35,11 +34,6 @@ public abstract class ApplicationModule {
     @Provides
     static LangaugeResources provideLanguageResources(Resources resources) {
         return new LangaugeResources(resources);
-    }
-
-    @Provides
-    static CompositeDisposable compositeDisposable() {
-        return new CompositeDisposable();
     }
 
     @Singleton

@@ -5,6 +5,7 @@ import android.content.res.Resources;
 
 import com.google.gson.Gson;
 import com.mpontus.dictio.R;
+import com.mpontus.dictio.data.model.LessonConstraints;
 import com.mpontus.dictio.data.model.Prompt;
 import com.mpontus.dictio.data.model.ResourceFile;
 
@@ -30,16 +31,16 @@ public class PromptsRepository {
                 .blockingGet();
     }
 
-    public List<Prompt> getPrompts(String language, String type) {
+    public List<Prompt> getPrompts(LessonConstraints constraints) {
         return Observable.fromIterable(getResourceFile().getPrompts())
-                .filter(prompt -> prompt.getLanguage().equals(language))
-                .filter(prompt -> prompt.getType().equals(type))
+                .filter(prompt -> prompt.getLanguage().equals(constraints.getLanguage()))
+                .filter(prompt -> prompt.getType().equals(constraints.getType()))
                 .toList()
                 .blockingGet();
     }
 
-    public Prompt getRandomPrompt(String language, String type) {
-        List<Prompt> prompts = getPrompts(language, type);
+    public Prompt getRandomPrompt(LessonConstraints constraints) {
+        List<Prompt> prompts = getPrompts(constraints);
         int index = (int) (Math.random() * prompts.size());
 
         return prompts.get(index);
