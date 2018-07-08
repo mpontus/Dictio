@@ -183,6 +183,21 @@ public class LessonService {
         }
     }
 
+    enum State {
+        CREATED,
+        READY,
+        SPEAKING,
+        LISTENING,
+    };
+
+    interface StateChangedListener {
+        void onStateChanged(State state);
+    }
+
+    interface SpeechRecognitionListener {
+        void onSpeechRecognized(Iterable<String> alternatives);
+    }
+
     interface Listener {
         void onReady();
 

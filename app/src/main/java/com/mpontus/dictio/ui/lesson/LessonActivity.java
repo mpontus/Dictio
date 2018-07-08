@@ -1,33 +1,46 @@
 package com.mpontus.dictio.ui.lesson;
 
-import android.Manifest;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.text.SpannableString;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.mindorks.placeholderview.SwipePlaceHolderView;
+import com.mindorks.placeholderview.annotations.Click;
+import com.mindorks.placeholderview.annotations.Layout;
+import com.mindorks.placeholderview.annotations.NonReusable;
+import com.mindorks.placeholderview.annotations.Resolve;
+import com.mindorks.placeholderview.annotations.View;
+import com.mindorks.placeholderview.annotations.swipe.SwipeHead;
+import com.mindorks.placeholderview.annotations.swipe.SwipeIn;
+import com.mindorks.placeholderview.annotations.swipe.SwipeOut;
 import com.mpontus.dictio.R;
 import com.mpontus.dictio.data.PhraseMatcher;
 import com.mpontus.dictio.data.PromptsRepository;
 import com.mpontus.dictio.data.model.Prompt;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.disposables.CompositeDisposable;
-import timber.log.Timber;
 
 public class LessonActivity extends DaggerAppCompatActivity {
-    private static final String EXTRA_LANGUAGE = "LANGUAGE";
-    private static final String EXTRA_TYPE = "TYPE";
+    public static final String EXTRA_LANGUAGE = "LANGUAGE";
+    public static final String EXTRA_TYPE = "TYPE";
 
     public static Intent createIntent(Context context, String language, String category) {
         Intent intent = new Intent(context, LessonActivity.class);
@@ -56,100 +69,13 @@ public class LessonActivity extends DaggerAppCompatActivity {
     @Inject
     LessonService lessonService;
 
-    @Nullable
-    private LessonCard currentCard;
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
-    private SwipePlaceHolderView swipeView;
+    @BindView(R.id.swipeView)
+    SwipePlaceHolderView swipeView;
 
-    private String language;
-
-    private String type;
-
-    private final LessonCard.Callback lessonCardCallback = new LessonCard.Callback() {
-        @Override
-        public void onShown(@NonNull LessonCard card) {
-            // Keep track of currently shown card
-            currentCard = card;
-
-            if (lessonService.isReady()) {
-                Prompt prompt = currentCard.getPrompt();
-
-                lessonService.startSpeaking(prompt.getLanguage(), prompt.getText());
-            }
-        }
-
-        @Override
-        public void onDismissed() {
-            lessonService.stop();
-
-            currentCard = null;
-
-            // Add another card to the end of the stack
-            addCard();
-        }
-
-        @Override
-        public void onSpeakClick() {
-            Prompt prompt = currentCard.getPrompt();
-
-            if (!lessonService.isReady()) {
-                return;
-            }
-
-            // Show dialog when user explicity presses TTS button
-            if (!lessonService.isLanguageAvailable(prompt.getLanguage())) {
-                Toast.makeText(LessonActivity.this, "Language not supported", Toast.LENGTH_SHORT).show();
-
-                return;
-            }
-
-            lessonService.startSpeaking(prompt.getLanguage(), prompt.getText());
-        }
-    };
-
-    private final LessonService.Listener lessonServiceListener = new LessonService.Listener() {
-        @Override
-        public void onReady() {
-            if (currentCard != null) {
-                Prompt prompt = currentCard.getPrompt();
-
-                lessonService.startSpeaking(prompt.getLanguage(), prompt.getText());
-            }
-        }
-
-        @Override
-        public void onSpeakingStart() {
-            setSpeakerStatus(true);
-        }
-
-        @Override
-        public void onSpeakingEnd() {
-            setSpeakerStatus(false);
-
-            lessonService.startRecording(currentCard.getPrompt().getLanguage());
-        }
-
-        @Override
-        public void onRecordingStart() {
-
-        }
-
-        @Override
-        public void onRecordingEnd() {
-
-        }
-
-        @Override
-        public void onRecognized(Iterable<String> alternatives) {
-            match(alternatives);
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            Timber.e(t);
-        }
-    };
-
+    LessonViewModel lessonViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,95 +86,104 @@ public class LessonActivity extends DaggerAppCompatActivity {
         Objects.requireNonNull(getSupportActionBar())
                 .setDisplayHomeAsUpEnabled(true);
 
-        Intent intent = getIntent();
-
-        language = intent.getStringExtra(EXTRA_LANGUAGE);
-        type = intent.getStringExtra(EXTRA_TYPE);
-
-        swipeView = findViewById(R.id.swipeView);
-
         swipeView.getBuilder().setDisplayViewCount(2);
 
-        for (int i = 0; i < 2; ++i) {
-            addCard();
-        }
+        lessonViewModel = ViewModelProviders.of(this, viewModelFactory).get(LessonViewModel.class);
+
+        lessonViewModel.getPrompt().observe(this, prompt -> {
+            assert prompt != null;
+
+            swipeView.addView(new LessonCard(prompt));
+        });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    @NonReusable
+    @Layout(R.layout.lesson_card_view)
+    final class LessonCard {
 
-        lessonService.addListener(lessonServiceListener);
+        @View(R.id.speak)
+        public ImageView speakButton;
 
-        compositeDisposable.add(
-                permissions.request(Manifest.permission.RECORD_AUDIO)
-                        .filter(granted -> granted)
-                        .subscribe(granted -> {
-                            if (granted) {
-                                lessonService.init();
-                            }
-                        })
-        );
-    }
+        @View(R.id.speech)
+        public FrameLayout speechView;
 
-    @Override
-    protected void onStop() {
-        compositeDisposable.dispose();
+        @View(R.id.prompt)
+        public TextView promptView;
 
-        lessonService.removeListener(lessonServiceListener);
-        lessonService.release();
+        @View(R.id.translation)
+        public TextView translationView;
 
-        super.onStop();
-    }
+        private final Prompt prompt;
 
-    public void setSpeakerStatus(boolean isActive) {
-        if (currentCard == null) {
-            return;
-        }
+        private final LiveData<PhraseMatcher.Match> match;
+        private final LiveData<Boolean> isPlaybackActive;
+        private final LiveData<Boolean> isRecordingActive;
 
-        runOnUiThread(() -> {
+        private final Observer<PhraseMatcher.Match> matchObserver;
+
+        private final Observer<Boolean> playbackObserver = isActive -> {
+            assert isActive != null;
+
             int newState = (isActive ? 1 : -1) * android.R.attr.state_activated;
 
-            currentCard.speakButton.getBackground().setState(new int[]{newState});
-        });
-    }
+            speakButton.getBackground().setState(new int[]{newState});
+        };
 
-    private void addCard() {
-        Prompt prompt = promptsRepository.getRandomPrompt(language, type);
-        LessonCard card = new LessonCard(lessonCardCallback, prompt);
+        private final Observer<Boolean> recordingObserver = isActive -> {
+            assert isActive != null;
 
-        swipeView.addView(card);
-    }
+            int newState = (isActive ? 1 : -1) * android.R.attr.state_activated;
 
-    // This method may crash when it receives a complete match, followed by another match
-    // The first match will schedule dismissal of the card. By the the second match gets to updating
-    // the prompt, the dismissal may trigger callback and set currentCard to null.
-    // TODO: find a way to update the UI without referring to "curreentCard"
-    public void match(Iterable<String> alternatives) {
-        if (currentCard == null) {
-            return;
+            speakButton.getBackground().setState(new int[]{newState});
+        };
+
+        // TODO: Refactor using LiveDataReactiveStreams
+        LessonCard(@NonNull Prompt prompt) {
+            this.prompt = prompt;
+
+            match = lessonViewModel.getMatch(prompt);
+            isPlaybackActive = lessonViewModel.isPlaybackActive(prompt);
+            isRecordingActive = lessonViewModel.isRecordingActive(prompt);
+
+            matchObserver = match -> {
+                String text = prompt.getText();
+                SpannableString spannableString = promptPainter.colorToMatch(text, match);
+
+                promptView.setText(spannableString, TextView.BufferType.SPANNABLE);
+            };
         }
 
-        String promptText = currentCard.getPrompt().getText();
+        @Resolve
+        public void onResolved() {
+            match.observe(LessonActivity.this, matchObserver);
+            isPlaybackActive.observe(LessonActivity.this, playbackObserver);
+            isRecordingActive.observe(LessonActivity.this, recordingObserver);
 
-        for (String alternative : alternatives) {
-            Timber.d("Comparing \"%s\" with \"%s\"", promptText, alternative);
-        }
+            promptView.setText(prompt.getText());
 
-        PhraseMatcher.Match match = phraseMatcher.bestMatch(promptText, alternatives);
+            String translation = prompt.getTranslation(Locale.getDefault());
 
-        runOnUiThread(() -> {
-            currentCard.promptView.setText(promptPainter.colorToMatch(promptText, match), TextView.BufferType.SPANNABLE);
-
-            currentCard.speechView.getBackground()
-                    .setState(new int[]{android.R.attr.state_activated});
-
-            if (match.isCompleteMatch()) {
-
-                lessonService.stop();
-
-                swipeView.doSwipe(false);
+            if (translation != null) {
+                translationView.setText(translation);
             }
-        });
+        }
+
+        @SwipeHead
+        public void onShown() {
+            lessonViewModel.onPromptShown(prompt);
+        }
+
+        @SwipeIn
+        @SwipeOut
+        public void onDismissed() {
+            match.removeObserver(matchObserver);
+            isPlaybackActive.removeObserver(playbackObserver);
+            isRecordingActive.removeObserver(recordingObserver);
+        }
+
+        @Click(R.id.speak)
+        public void onSpeakClick() {
+            lessonViewModel.onPlaybackToggle();
+        }
     }
 }
