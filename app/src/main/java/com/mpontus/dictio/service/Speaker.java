@@ -106,6 +106,13 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
     }
 
     @Override
+    public void onStop(String utteranceId, boolean interrupted) {
+        for (Listener listener : listeners) {
+            listener.onUtteranceCompleted();
+        }
+    }
+
+    @Override
     public void onError(String utteranceId) {
         for (Listener listener : listeners) {
             listener.onError(new RuntimeException("An error occured during TTS"));

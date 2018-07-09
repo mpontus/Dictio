@@ -60,7 +60,7 @@ class LessonCard {
 
         int newState = (isActive ? 1 : -1) * android.R.attr.state_activated;
 
-        speakButton.getBackground().setState(new int[]{newState});
+        speechView.getBackground().setState(new int[]{newState});
     };
 
     // TODO: Refactor using LiveDataReactiveStreams
@@ -108,8 +108,8 @@ class LessonCard {
         isRecordingActive.removeObserver(recordingObserver);
     }
 
-    @Click(R.id.speak)
+    @Click(R.id.speech)
     public void onSpeakClick() {
-        activity.lessonViewModel.onPlaybackToggle();
+        activity.lessonViewModel.onPlaybackToggle(!isPlaybackActive.getValue());
     }
 }

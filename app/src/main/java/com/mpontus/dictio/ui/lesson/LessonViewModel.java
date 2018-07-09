@@ -20,6 +20,7 @@ import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class LessonViewModel extends ViewModel {
@@ -69,7 +70,7 @@ public class LessonViewModel extends ViewModel {
 
     private final BehaviorSubject<LessonService.State> serviceState$ = BehaviorSubject.create();
 
-    private final BehaviorSubject<Iterable<String>> recognition$ = BehaviorSubject.create();
+    private final PublishSubject<Iterable<String>> recognition$ = PublishSubject.create();
 
     private final BehaviorSubject<Boolean> playbackToggle$ = BehaviorSubject.create();
 
@@ -97,10 +98,32 @@ public class LessonViewModel extends ViewModel {
                 .ignoreElement();
 
         compositeDisposable.addAll(
+                serviceState$.subscribe(state -> Timber.d("LessonService: %s", state.name())),
+
+                // Start TTS when card is shown
                 ready$.andThen(currentPrompt$)
-                        .subscribe(prompt -> {
+                        .forEach(prompt -> {
                             lessonService.startSpeaking(prompt.getLanguage(), prompt.getText());
-                        })
+                        }),
+
+                // Toggle TTS on button press
+                currentPrompt$.switchMap(prompt ->
+                        playbackToggle$.doOnNext(isPlaying -> {
+                            if (isPlaying) {
+                                lessonService.startSpeaking(prompt.getLanguage(), prompt.getText());
+                            } else {
+                                lessonService.stop();
+                            }
+                        }))
+                        .subscribe(),
+
+
+                currentPrompt$.switchMap(prompt ->
+                        serviceState$.filter(LessonService.State.SPEAKING::equals)
+                                .switchMap(__ ->
+                                        serviceState$.filter(LessonService.State.READY::equals))
+                                .doOnNext(__ -> lessonService.startRecording(prompt.getLanguage())))
+                        .subscribe()
         );
     }
 
@@ -144,17 +167,22 @@ public class LessonViewModel extends ViewModel {
                 .fromPublisher(prompt$.toFlowable(BackpressureStrategy.LATEST));
     }
 
-    LiveData<PhraseMatcher.Match> getMatch(Prompt prompt) {
-        Observable<PhraseMatcher.Match> match$ = currentPrompt$
-                .filter(prompt::equals)
-                .map(Prompt::getText)
-                .switchMap(text -> recognition$
-                        .flatMap(Observable::fromIterable)
-                        .map(candidate -> phraseMatcher.match(text, candidate))
-                        .scan((bestMatch, match) -> match.getMatchCount() > bestMatch.getMatchCount()
-                                ? match
-                                : bestMatch));
+    LiveData<PhraseMatcher.Match> getMatch(Prompt forPrompt) {
+        // Produces matches which were emitted while the specified prompt was shown
+        Observable<PhraseMatcher.Match> match$ = Observable.combineLatest(
+                currentPrompt$.filter(forPrompt::equals),
+                serviceState$.filter(LessonService.State.LISTENING::equals),
+                (prompt, state) -> true
+        ).switchMap(__ -> recognition$
+                .flatMap(Observable::fromIterable)
+                .map(candidate -> phraseMatcher.match(forPrompt.getText(), candidate))
+                .scan((bestMatch, match) -> match.getMatchCount() > bestMatch.getMatchCount()
+                        ? match
+                        : bestMatch));
 
+//        currentPrompt$.filter(forPrompt::equals)
+//                .switchMap(recognition$)
+//                .asOb
 
         return LiveDataReactiveStreams.fromPublisher(match$.toFlowable(BackpressureStrategy.LATEST));
     }
@@ -181,7 +209,7 @@ public class LessonViewModel extends ViewModel {
                 isActive$.toFlowable(BackpressureStrategy.LATEST));
     }
 
-    void onPlaybackToggle() {
-        playbackToggle$.onNext(true);
+    void onPlaybackToggle(boolean value) {
+        playbackToggle$.onNext(value);
     }
 }

@@ -156,7 +156,7 @@ public class LessonService {
         this.voiceRecorder.start();
     }
 
-    void stop() {
+    public void stop() {
         this.speaker.cancel();
         this.voiceRecorder.stop();
         this.speechRecognition.stopRecognizing();
