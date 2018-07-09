@@ -147,7 +147,8 @@ public class LessonService {
         this.speaker.speak(languageCode, text);
     }
 
-    void startRecording(String languageCode) {
+    // TODO: This function is very slow for some reason.
+    public void startRecording(String languageCode) {
         this.stop();
 
         this.languageCode = languageCode;
