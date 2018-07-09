@@ -17,7 +17,7 @@ import com.mindorks.placeholderview.annotations.swipe.SwipeHead;
 import com.mindorks.placeholderview.annotations.swipe.SwipeIn;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOut;
 import com.mpontus.dictio.R;
-import com.mpontus.dictio.data.PhraseMatcher;
+import com.mpontus.dictio.data.model.Match;
 import com.mpontus.dictio.data.model.Prompt;
 
 import java.util.Locale;
@@ -41,11 +41,11 @@ class LessonCard {
 
     private final Prompt prompt;
 
-    private final LiveData<PhraseMatcher.Match> match;
+    private final LiveData<Match> match;
     private final LiveData<Boolean> isPlaybackActive;
     private final LiveData<Boolean> isRecordingActive;
 
-    private final Observer<PhraseMatcher.Match> matchObserver;
+    private final Observer<Match> matchObserver;
 
     private final Observer<Boolean> playbackObserver = isActive -> {
         assert isActive != null;
@@ -73,8 +73,7 @@ class LessonCard {
         isRecordingActive = activity.lessonViewModel.isRecordingActive(prompt);
 
         matchObserver = match -> {
-            String text = prompt.getText();
-            SpannableString spannableString = activity.promptPainter.colorToMatch(text, match);
+            SpannableString spannableString = activity.promptPainter.colorToMatch(prompt.getPhrase(), match);
 
             promptView.setText(spannableString, TextView.BufferType.SPANNABLE);
         };

@@ -8,8 +8,8 @@ import android.support.annotation.Nullable;
 
 import com.mpontus.dictio.data.LessonPlan;
 import com.mpontus.dictio.data.LessonPlanFactory;
-import com.mpontus.dictio.data.PhraseMatcher;
 import com.mpontus.dictio.data.model.LessonConstraints;
+import com.mpontus.dictio.data.model.Match;
 import com.mpontus.dictio.data.model.Prompt;
 import com.mpontus.dictio.service.LessonService;
 
@@ -81,15 +81,10 @@ public class LessonViewModel extends ViewModel {
     @Nullable
     private LessonPlan lessonPlan;
 
-    // TODO: Refactor this in a way that you'd be able to instantiate phrase matcher for prompt
-    // and later use it to compare against alternatives
-    private final PhraseMatcher phraseMatcher;
-
     @Inject
-    public LessonViewModel(LessonService lessonService, LessonPlanFactory lessonPlanFactory, PhraseMatcher phraseMatcher) {
+    public LessonViewModel(LessonService lessonService, LessonPlanFactory lessonPlanFactory) {
         this.lessonService = lessonService;
         this.lessonPlanFactory = lessonPlanFactory;
-        this.phraseMatcher = phraseMatcher;
 
         lessonService.addListener(lessonServiceListener);
 
@@ -99,6 +94,7 @@ public class LessonViewModel extends ViewModel {
 
         compositeDisposable.addAll(
                 serviceState$.subscribe(state -> Timber.d("LessonService: %s", state.name())),
+                recognition$.flatMap(Observable::fromIterable).subscribe(s -> Timber.d("Recognition: \"%s\"", s)),
 
                 // Start TTS when card is shown
                 ready$.andThen(currentPrompt$)
@@ -167,22 +163,17 @@ public class LessonViewModel extends ViewModel {
                 .fromPublisher(prompt$.toFlowable(BackpressureStrategy.LATEST));
     }
 
-    LiveData<PhraseMatcher.Match> getMatch(Prompt forPrompt) {
+    LiveData<Match> getMatch(Prompt prompt) {
         // Produces matches which were emitted while the specified prompt was shown
-        Observable<PhraseMatcher.Match> match$ = Observable.combineLatest(
-                currentPrompt$.filter(forPrompt::equals),
+        Observable<Match> match$ = Observable.combineLatest(
+                currentPrompt$.filter(prompt::equals),
                 serviceState$.filter(LessonService.State.LISTENING::equals),
-                (prompt, state) -> true
+                (currentPrompt, state) -> true
         ).switchMap(__ -> recognition$
                 .flatMap(Observable::fromIterable)
-                .map(candidate -> phraseMatcher.match(forPrompt.getText(), candidate))
-                .scan((bestMatch, match) -> match.getMatchCount() > bestMatch.getMatchCount()
-                        ? match
-                        : bestMatch));
-
-//        currentPrompt$.filter(forPrompt::equals)
-//                .switchMap(recognition$)
-//                .asOb
+                .distinct()
+                .map(candidate -> prompt.getPhrase().match(candidate))
+                .startWith(prompt.getPhrase().emptyMatch()));
 
         return LiveDataReactiveStreams.fromPublisher(match$.toFlowable(BackpressureStrategy.LATEST));
     }

@@ -10,7 +10,7 @@ public class Prompt {
 
     private String id;
 
-    private String text;
+    private Phrase text;
 
     private String language;
 
@@ -22,8 +22,12 @@ public class Prompt {
         return id;
     }
 
-    public String getText() {
+    public Phrase getPhrase() {
         return text;
+    }
+
+    public String getText() {
+        return text.getText();
     }
 
     public String getLanguage() {

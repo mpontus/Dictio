@@ -2,8 +2,8 @@ package com.mpontus.dictio.di;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.mpontus.dictio.data.LessonPlanFactory;
-import com.mpontus.dictio.data.PhraseMatcher;
 import com.mpontus.dictio.data.PromptsRepository;
 
 import dagger.Module;
@@ -13,17 +13,12 @@ import dagger.Provides;
 @Module
 public class LessonViewModelModule {
     @Provides
-    PromptsRepository promptsRepository(Context context) {
-        return new PromptsRepository(context);
+    PromptsRepository promptsRepository(Gson gson, Context context) {
+        return new PromptsRepository(gson, context);
     }
 
     @Provides
     LessonPlanFactory lessonPlanFactory(PromptsRepository promptsRepository) {
         return new LessonPlanFactory(promptsRepository);
-    }
-
-    @Provides
-    PhraseMatcher phraseMatcher() {
-        return new PhraseMatcher();
     }
 }

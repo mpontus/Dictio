@@ -3,6 +3,7 @@ package com.mpontus.dictio.di;
 import android.app.Application;
 
 import com.mpontus.dictio.DictioApplication;
+import com.mpontus.dictio.gson.GsonModule;
 
 import javax.inject.Singleton;
 
@@ -15,6 +16,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
 @Component(modules = {
         ActivityBindingModule.class,
         ApplicationModule.class,
+        GsonModule.class,
         ViewModelModule.class,
         LessonServiceModule.class,
         LessonViewModelModule.class,

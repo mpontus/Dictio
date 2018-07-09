@@ -16,10 +16,12 @@ import java.util.List;
 import io.reactivex.Observable;
 
 public class PromptsRepository {
-    private Context context;
+    private final Gson gson;
+    private final Context context;
     private ResourceFile resourceFile = null;
 
-    public PromptsRepository(Context context) {
+    public PromptsRepository(Gson gson, Context context) {
+        this.gson = gson;
         this.context = context;
     }
 
@@ -48,7 +50,6 @@ public class PromptsRepository {
 
     private ResourceFile getResourceFile() {
         if (resourceFile == null) {
-            Gson gson = new Gson();
             Resources resources = context.getResources();
             InputStream inputStream = resources.openRawResource(R.raw.prompts);
 
