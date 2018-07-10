@@ -4,8 +4,8 @@ import android.content.Context;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
 
-import com.mpontus.dictio.data.model.Match;
-import com.mpontus.dictio.data.model.Phrase;
+import com.mpontus.dictio.data.model.PhraseComparison;
+import com.mpontus.dictio.data.model.PhraseComparisonRegion;
 
 import io.reactivex.annotations.NonNull;
 
@@ -20,24 +20,24 @@ public class PromptPainter {
         this.styleDifferent = styleDifferent;
     }
 
-    public SpannableString colorToMatch(Phrase phrase, @NonNull Match match) {
-        SpannableString result = new SpannableString(phrase.getText());
+    public SpannableString colorToMatch(String text, @NonNull PhraseComparison comparison) {
+        SpannableString result = new SpannableString(text);
 
-        if (match.isEmpty()) {
+        if (comparison.isEmpty()) {
             return result;
         }
 
-        for (int index = 0; index < phrase.getWordCount(); ++index) {
-            int start = phrase.getWordStart(index);
-            int end = phrase.getWordEnd(index);
+        for (PhraseComparisonRegion region : comparison) {
+            int start = region.getStart();
+            int end = region.getEnd();
 
-            switch (match.getResult(index)) {
+            switch (region.getComparisonResult()) {
                 case SAME:
                     result.setSpan(new TextAppearanceSpan(context, styleSame), start, end, 0);
 
                     break;
 
-                case DIFFERENT:
+                case DIFFERNT:
                     result.setSpan(new TextAppearanceSpan(context, styleDifferent), start, end, 0);
 
                     break;

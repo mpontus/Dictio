@@ -8,8 +8,9 @@ import android.support.annotation.Nullable;
 
 import com.mpontus.dictio.data.LessonPlan;
 import com.mpontus.dictio.data.LessonPlanFactory;
+import com.mpontus.dictio.data.PhraseMatcher;
 import com.mpontus.dictio.data.model.LessonConstraints;
-import com.mpontus.dictio.data.model.Match;
+import com.mpontus.dictio.data.model.PhraseComparison;
 import com.mpontus.dictio.data.model.Prompt;
 import com.mpontus.dictio.service.LessonService;
 
@@ -74,6 +75,8 @@ public class LessonViewModel extends ViewModel {
 
     private final BehaviorSubject<Boolean> playbackToggle$ = BehaviorSubject.create();
 
+    private final Observable<PhraseComparison> match$;
+
     private final LessonService lessonService;
 
     private final LessonPlanFactory lessonPlanFactory;
@@ -91,6 +94,13 @@ public class LessonViewModel extends ViewModel {
         Completable ready$ = serviceState$.filter(LessonService.State.READY::equals)
                 .firstElement()
                 .ignoreElement();
+
+        match$ = currentPrompt$.map(prompt -> new PhraseMatcher(prompt.getText()))
+                .switchMap(matcher -> recognition$
+                        .flatMap(Observable::fromIterable)
+                        .map(matcher::match)
+                        .startWith(matcher.emptyMatch()))
+                .share();
 
         compositeDisposable.addAll(
                 serviceState$.subscribe(state -> Timber.d("LessonService: %s", state.name())),
@@ -163,19 +173,11 @@ public class LessonViewModel extends ViewModel {
                 .fromPublisher(prompt$.toFlowable(BackpressureStrategy.LATEST));
     }
 
-    LiveData<Match> getMatch(Prompt prompt) {
-        // Produces matches which were emitted while the specified prompt was shown
-        Observable<Match> match$ = Observable.combineLatest(
-                currentPrompt$.filter(prompt::equals),
-                serviceState$.filter(LessonService.State.LISTENING::equals),
-                (currentPrompt, state) -> true
-        ).switchMap(__ -> recognition$
-                .flatMap(Observable::fromIterable)
-                .distinct()
-                .map(candidate -> prompt.getPhrase().match(candidate))
-                .startWith(prompt.getPhrase().emptyMatch()));
-
-        return LiveDataReactiveStreams.fromPublisher(match$.toFlowable(BackpressureStrategy.LATEST));
+    LiveData<PhraseComparison> getMatch(Prompt prompt) {
+        return LiveDataReactiveStreams.fromPublisher(
+                currentPrompt$.filter(prompt::equals)
+                        .switchMap(__ -> match$)
+                        .toFlowable(BackpressureStrategy.LATEST));
     }
 
     LiveData<Boolean> isPlaybackActive(Prompt prompt) {

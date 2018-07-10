@@ -44,12 +44,4 @@ public class Phrase {
     public int getWordEnd(int wordIndex) {
         return wordEnds.get(wordIndex);
     }
-
-    public Match emptyMatch() {
-        return Match.empty();
-    }
-
-    public Match match(String against) {
-        return Match.create(this, new Phrase(against));
-    }
 }
