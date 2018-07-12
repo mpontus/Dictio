@@ -14,6 +14,7 @@ import com.mpontus.dictio.data.model.Prompt;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.Objects;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -36,6 +37,8 @@ public class LessonActivity extends DaggerAppCompatActivity {
     }
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    private final Random random = new Random();
 
     @Inject
     RxPermissions permissions;
@@ -78,7 +81,7 @@ public class LessonActivity extends DaggerAppCompatActivity {
         });
 
         lessonViewModel.getPromptRemovals().observe(this, prompt -> {
-            swipeView.doSwipe(true);
+            swipeView.doSwipe(random.nextBoolean());
         });
     }
 

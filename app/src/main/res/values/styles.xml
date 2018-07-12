@@ -22,7 +22,7 @@
     </style>
 
     <style name="Translation">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">?android:textColorSecondary</item>
     </style>
 
