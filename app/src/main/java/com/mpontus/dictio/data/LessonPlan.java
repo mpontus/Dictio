@@ -4,11 +4,12 @@ import com.mpontus.dictio.data.model.LessonConstraints;
 import com.mpontus.dictio.data.model.Prompt;
 
 import io.reactivex.Observable;
-import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.PublishSubject;
 
+// TODO: It might be better to have this extend Observable
 public class LessonPlan {
 
-    private final BehaviorSubject<Prompt> prompts = BehaviorSubject.create();
+    private final PublishSubject<Boolean> shifts = PublishSubject.create();
     private final PromptsRepository promptsRepository;
     private final LessonConstraints lessonConstraints;
 
@@ -25,10 +26,13 @@ public class LessonPlan {
      * Size is fixed to 1 for now
      */
     public Observable<Prompt> window(int size) {
-        return prompts;
+        return Observable.range(0, size)
+                .cast(Object.class)
+                .mergeWith(shifts)
+                .flatMapSingle(__ -> promptsRepository.getRandomPrompt(lessonConstraints));
     }
 
     public void shift() {
-        prompts.onNext(promptsRepository.getRandomPrompt(lessonConstraints));
+        shifts.onNext(true);
     }
 }

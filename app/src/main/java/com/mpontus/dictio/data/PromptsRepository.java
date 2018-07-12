@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public class PromptsRepository {
     private final Gson gson;
@@ -41,11 +42,13 @@ public class PromptsRepository {
                 .blockingGet();
     }
 
-    public Prompt getRandomPrompt(LessonConstraints constraints) {
-        List<Prompt> prompts = getPrompts(constraints);
-        int index = (int) (Math.random() * prompts.size());
+    public Single<Prompt> getRandomPrompt(LessonConstraints constraints) {
+        return Single.defer(() -> {
+            List<Prompt> prompts = getPrompts(constraints);
+            int index = (int) (Math.random() * prompts.size());
 
-        return prompts.get(index);
+            return Single.just(prompts.get(index));
+        });
     }
 
     private ResourceFile getResourceFile() {
