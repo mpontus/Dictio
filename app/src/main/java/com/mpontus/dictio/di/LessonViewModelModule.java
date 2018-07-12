@@ -3,7 +3,7 @@ package com.mpontus.dictio.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.mpontus.dictio.data.LessonPlanFactory;
+import com.mpontus.dictio.data.LessonPlan;
 import com.mpontus.dictio.data.PromptsRepository;
 
 import dagger.Module;
@@ -18,7 +18,7 @@ public class LessonViewModelModule {
     }
 
     @Provides
-    LessonPlanFactory lessonPlanFactory(PromptsRepository promptsRepository) {
-        return new LessonPlanFactory(promptsRepository);
+    LessonPlan lessonPlan(PromptsRepository promptsRepository) {
+        return new LessonPlan(promptsRepository);
     }
 }

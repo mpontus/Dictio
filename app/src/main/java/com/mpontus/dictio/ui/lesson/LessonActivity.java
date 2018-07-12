@@ -10,6 +10,7 @@ import android.os.Bundle;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mpontus.dictio.R;
 import com.mpontus.dictio.data.model.LessonConstraints;
+import com.mpontus.dictio.data.model.Prompt;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.Objects;
@@ -68,10 +69,12 @@ public class LessonActivity extends DaggerAppCompatActivity {
 
         lessonViewModel.setLessonConstraints(lessonConstraints);
 
-        lessonViewModel.getPromptAdditions().observe(this, prompt -> {
-            assert prompt != null;
+        lessonViewModel.getPromptAdditions(4).observe(this, prompts -> {
+            assert prompts != null;
 
-            swipeView.addView(new LessonCard(this, prompt));
+            for (Prompt prompt : prompts) {
+                swipeView.addView(new LessonCard(this, prompt));
+            }
         });
 
         lessonViewModel.getPromptRemovals().observe(this, prompt -> {

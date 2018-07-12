@@ -2,6 +2,7 @@ package com.mpontus.dictio.data;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.mpontus.dictio.R;
@@ -34,15 +35,21 @@ public class PromptsRepository {
                 .blockingGet();
     }
 
-    public List<Prompt> getPrompts(LessonConstraints constraints) {
-        return Observable.fromIterable(getResourceFile().getPrompts())
-                .filter(prompt -> prompt.getLanguage().equals(constraints.getLanguage()))
-                .filter(prompt -> prompt.getType().equals(constraints.getType()))
+    public List<Prompt> getPrompts(@Nullable LessonConstraints constraints) {
+        Observable<Prompt> prompt$ = Observable.fromIterable(getResourceFile().getPrompts());
+
+        if (constraints != null) {
+            prompt$ = prompt$
+                    .filter(prompt -> prompt.getLanguage().equals(constraints.getLanguage()))
+                    .filter(prompt -> prompt.getType().equals(constraints.getType()));
+        }
+
+        return prompt$
                 .toList()
                 .blockingGet();
     }
 
-    public Single<Prompt> getRandomPrompt(LessonConstraints constraints) {
+    public Single<Prompt> getRandomPrompt(@Nullable LessonConstraints constraints) {
         return Single.defer(() -> {
             List<Prompt> prompts = getPrompts(constraints);
             int index = (int) (Math.random() * prompts.size());
