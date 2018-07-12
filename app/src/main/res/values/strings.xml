@@ -6,7 +6,9 @@
 
     <string name="language_en">English</string>
     <string name="language_ru">Russian</string>
-    <string name="language_sv">Swedish</string>
+    <string name="language_fr">French</string>
+    <string name="language_de">German</string>
+    <string name="language_jp">Japanese</string>
     <string name="current_language">Current language</string>
     <string name="speak">Speak</string>
 </resources>

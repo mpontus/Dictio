@@ -3,18 +3,24 @@
     <array name="language_codes">
         <item>en-US</item>
         <item>ru-RU</item>
-        <item>sv-SE</item>
+        <item>fr-FR</item>
+        <item>de-DE</item>
+        <item>ja-JP</item>
     </array>
 
     <array name="language_names">
         <item>@string/language_en</item>
         <item>@string/language_ru</item>
-        <item>@string/language_sv</item>
+        <item>@string/language_fr</item>
+        <item>@string/language_de</item>
+        <item>@string/language_jp</item>
     </array>
 
     <array name="language_icons">
         <item>@drawable/us</item>
         <item>@drawable/ru</item>
-        <item>@drawable/se</item>
+        <item>@drawable/fr</item>
+        <item>@drawable/de</item>
+        <item>@drawable/jp</item>
     </array>
 </resources>
