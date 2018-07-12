@@ -1,4 +1,4 @@
-package com.mpontus.dictio.ui.lesson;
+package com.mpontus.dictio.service;
 
 import android.content.Context;
 import android.os.Build;
@@ -100,6 +100,13 @@ public class Speaker extends UtteranceProgressListener implements TextToSpeech.O
 
     @Override
     public void onDone(String utteranceId) {
+        for (Listener listener : listeners) {
+            listener.onUtteranceCompleted();
+        }
+    }
+
+    @Override
+    public void onStop(String utteranceId, boolean interrupted) {
         for (Listener listener : listeners) {
             listener.onUtteranceCompleted();
         }

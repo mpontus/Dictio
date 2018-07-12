@@ -1,4 +1,4 @@
-package com.mpontus.dictio.ui.lesson;
+package com.mpontus.dictio.service;
 
 import com.mpontus.speech.SpeechRecognition;
 import com.mpontus.speech.VoiceRecorder;
@@ -112,7 +112,7 @@ public class LessonService {
         this.speechRecognition = speechRecognition;
     }
 
-    void init() {
+    public void init() {
         this.voiceRecorder.init();
         this.speechRecognition.init();
 
@@ -121,7 +121,7 @@ public class LessonService {
         speechRecognition.addListener(speechRecognitionListener);
     }
 
-    void release() {
+    public void release() {
         speaker.removeListener(speakerListener);
         voiceRecorder.removeListener(voiceRecorderListener);
         speechRecognition.removeListener(speechRecognitionListener);
@@ -141,13 +141,14 @@ public class LessonService {
         return speaker.isLanguageAvailable(langaugeCode);
     }
 
-    void startSpeaking(String languageCode, String text) {
+    public void startSpeaking(String languageCode, String text) {
         this.stop();
 
         this.speaker.speak(languageCode, text);
     }
 
-    void startRecording(String languageCode) {
+    // TODO: This function is very slow for some reason.
+    public void startRecording(String languageCode) {
         this.stop();
 
         this.languageCode = languageCode;
@@ -155,17 +156,17 @@ public class LessonService {
         this.voiceRecorder.start();
     }
 
-    void stop() {
+    public void stop() {
         this.speaker.cancel();
         this.voiceRecorder.stop();
         this.speechRecognition.stopRecognizing();
     }
 
-    void addListener(Listener listener) {
+    public void addListener(Listener listener) {
         listeners.add(listener);
     }
 
-    void removeListener(Listener listener) {
+    public void removeListener(Listener listener) {
         listeners.remove(listener);
     }
 
@@ -183,7 +184,25 @@ public class LessonService {
         }
     }
 
-    interface Listener {
+    // TODO: Actually use the state
+    public enum State {
+        CREATED,
+        READY,
+        SPEAKING,
+        LISTENING,
+    }
+
+    ;
+
+    interface StateChangedListener {
+        void onStateChanged(State state);
+    }
+
+    interface SpeechRecognitionListener {
+        void onSpeechRecognized(Iterable<String> alternatives);
+    }
+
+    public interface Listener {
         void onReady();
 
         void onSpeakingStart();

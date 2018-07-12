@@ -61,14 +61,12 @@ public class AudioRecordHandler {
     }
 
     public void stop() {
-        if (processingThread == null) {
-            return;
-        }
-
         synchronized (lock) {
-            processingThread.interrupt();
+            if (processingThread != null) {
+                processingThread.interrupt();
 
-            processingThread = null;
+                processingThread = null;
+            }
         }
     }
 

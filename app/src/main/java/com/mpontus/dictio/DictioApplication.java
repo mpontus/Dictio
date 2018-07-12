@@ -2,6 +2,7 @@ package com.mpontus.dictio;
 
 import android.os.StrictMode;
 
+import com.bugsnag.android.Bugsnag;
 import com.mpontus.dictio.di.DaggerApplicationComponent;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -14,6 +15,8 @@ public class DictioApplication extends DaggerApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Bugsnag.init(this);
 
         RxActivityResult.register(this);
 
