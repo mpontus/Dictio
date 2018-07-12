@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
@@ -112,7 +113,8 @@ public class LessonViewModel extends ViewModel {
                                 .flatMap(Observable::fromIterable)
                                 .map(matcher::match)
                                 .startWith(matcher.emptyMatch())
-                                .takeUntil(event$.ofType(Event.RecognitionEnd.class))));
+                                .takeUntil(event$.ofType(Event.RecognitionEnd.class))
+                                .concatWith(Single.just(matcher.emptyMatch()))));
 
         isSpeechSynthesisActive$ = Observable.merge(
                 event$.ofType(Event.SynthesisStart.class)
