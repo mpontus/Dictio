@@ -109,8 +109,8 @@ class LessonCard {
         activity.lessonViewModel.onPromptHidden(prompt);
     }
 
-    @Click(R.id.speech)
-    public void onSpeakClick() {
+    @Click(R.id.container)
+    public void onClick() {
         activity.lessonViewModel.onPlaybackToggle(!isPlaybackActive.getValue());
     }
 }
