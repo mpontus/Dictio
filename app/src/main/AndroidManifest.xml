@@ -15,8 +15,8 @@
         android:theme="@style/AppTheme">
 
         <meta-data
-            android:name="com.bugsnag.android.API_KEY"
-            android:value="${DICTIO_BUGSNAG_API_KEY}" />
+            android:name="io.fabric.ApiKey"
+            android:value="b4637f811529f226bae2dff71c04f6096d5cff9f" />
 
         <activity
             android:name=".ui.home.HomeActivity"

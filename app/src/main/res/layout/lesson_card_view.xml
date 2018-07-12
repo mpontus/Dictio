@@ -14,13 +14,14 @@
         android:background="@android:color/white"
         android:orientation="vertical"
         app:cardCornerRadius="7dp"
+        android:id="@+id/container"
         app:cardElevation="4dp">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.AppCompatImageView
+            <ImageView
                 android:id="@+id/speak"
                 android:layout_width="24dp"
                 android:layout_height="24dp"

@@ -1,4 +1,9 @@
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
 
 android {
     compileSdkVersion 27
@@ -10,9 +15,6 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-
-        buildConfigField 'String', "DICTIO_BUGSNAG_API_KEY", DICTIO_BUGSNAG_API_KEY
-        manifestPlaceholders = [DICTIO_BUGSNAG_API_KEY: DICTIO_BUGSNAG_API_KEY]
     }
     buildTypes {
         debug {
@@ -81,8 +83,10 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
-    // Install Bugsnag to catch that annoying bug
-    implementation 'com.bugsnag:bugsnag-android:4.5.0'
+    // Install crashalytics for crash reporting
+    compile('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
+        transitive = true;
+    }
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

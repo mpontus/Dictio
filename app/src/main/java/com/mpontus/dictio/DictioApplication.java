@@ -2,12 +2,13 @@ package com.mpontus.dictio;
 
 import android.os.StrictMode;
 
-import com.bugsnag.android.Bugsnag;
+import com.crashlytics.android.Crashlytics;
 import com.mpontus.dictio.di.DaggerApplicationComponent;
 import com.squareup.leakcanary.LeakCanary;
 
 import dagger.android.AndroidInjector;
 import dagger.android.support.DaggerApplication;
+import io.fabric.sdk.android.Fabric;
 import rx_activity_result2.RxActivityResult;
 import timber.log.Timber;
 
@@ -16,7 +17,7 @@ public class DictioApplication extends DaggerApplication {
     public void onCreate() {
         super.onCreate();
 
-        Bugsnag.init(this);
+        Fabric.with(this, new Crashlytics());
 
         RxActivityResult.register(this);
 
