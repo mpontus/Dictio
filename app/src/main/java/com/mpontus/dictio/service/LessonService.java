@@ -1,5 +1,6 @@
 package com.mpontus.dictio.service;
 
+import com.bugsnag.android.Bugsnag;
 import com.mpontus.speech.SpeechRecognition;
 import com.mpontus.speech.VoiceRecorder;
 
@@ -57,7 +58,11 @@ public class LessonService {
 
         @Override
         public void onVoice(byte[] data, int size) {
-            speechRecognition.recognize(data, size);
+            try {
+                speechRecognition.recognize(data, size);
+            } catch (IllegalStateException e) {
+                Bugsnag.notify(e);
+            }
         }
 
         @Override
