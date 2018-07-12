@@ -71,14 +71,6 @@ public class LessonViewModel extends ViewModel {
 
     private final PublishSubject<Event> event$ = PublishSubject.create();
 
-//    private final BehaviorSubject<Prompt> currentPrompt$ = BehaviorSubject.create();
-//
-//    private final BehaviorSubject<LessonService.State> serviceState$ = BehaviorSubject.create();
-//
-//    private final PublishSubject<Iterable<String>> recognition$ = PublishSubject.create();
-//
-//    private final PublishSubject<Boolean> playbackToggle$ = PublishSubject.create();
-
     private final Observable<PhraseComparison> match$;
 
     private final LessonService lessonService;
@@ -162,6 +154,11 @@ public class LessonViewModel extends ViewModel {
                                 event$.ofType(Event.SynthesisEnd.class)
                                         .map(__ -> prompt)
                                         .takeUntil(event$.ofType(Event.PromptHidden.class)))
+                        // Sometimes the audio output lags behind a bit, and may be picked up
+                        // by voice recognition. This is not an optimal solution without providing
+                        // separate indication when the recorder is ready
+                        // TODO: Show somehow that the recorder is ready
+                        .delay(200, TimeUnit.MILLISECONDS)
                         .subscribe(prompt -> lessonService.startRecording(prompt.getLanguage()))
         );
 
@@ -212,22 +209,6 @@ public class LessonViewModel extends ViewModel {
                         .toFlowable(BackpressureStrategy.LATEST));
     }
 
-    void setLessonConstraints(LessonConstraints constraints) {
-        lessonPlan.setLessonConstraints(constraints);
-    }
-
-    void onPermissionGranted() {
-        event$.onNext(new Event.PermissionGranted());
-    }
-
-    void onPromptShown(Prompt prompt) {
-        event$.onNext(new Event.PromptShown(prompt));
-    }
-
-    void onPromptHidden(Prompt prompt) {
-        event$.onNext(new Event.PromptHidden(prompt));
-    }
-
     LiveData<PhraseComparison> getMatch(Prompt prompt) {
         return LiveDataReactiveStreams.fromPublisher(
                 currentPrompt$.filter(prompt::equals)
@@ -249,7 +230,24 @@ public class LessonViewModel extends ViewModel {
                         .toFlowable(BackpressureStrategy.LATEST));
     }
 
+    void setLessonConstraints(LessonConstraints constraints) {
+        lessonPlan.setLessonConstraints(constraints);
+    }
+
+    void onPermissionGranted() {
+        event$.onNext(new Event.PermissionGranted());
+    }
+
+    void onPromptShown(Prompt prompt) {
+        event$.onNext(new Event.PromptShown(prompt));
+    }
+
+    void onPromptHidden(Prompt prompt) {
+        event$.onNext(new Event.PromptHidden(prompt));
+    }
+
     void onPlaybackToggle(boolean value) {
         event$.onNext(new Event.ToggleSynthesis(value));
     }
+
 }
