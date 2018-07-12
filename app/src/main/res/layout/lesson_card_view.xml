@@ -20,14 +20,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/speak"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/ic_volume_up_black_24dp"
                 android:backgroundTint="@drawable/speak_button_bg"
+                android:baselineAlignBottom="true"
                 android:contentDescription="@string/speak"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -36,11 +37,13 @@
                 android:id="@+id/prompt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:textAllCaps="false"
+                android:textAppearance="@style/Prompt"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.6"
                 app:layout_constraintStart_toEndOf="@+id/speak"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Prompt  Prompt  Prompt  Prompt  Prompt  Prompt  Prompt  Prompt  Prompt " />
@@ -49,12 +52,10 @@
                 android:id="@+id/translation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:textAppearance="@style/Translation"
+                app:layout_constraintEnd_toEndOf="@+id/prompt"
+                app:layout_constraintStart_toStartOf="@+id/speak"
                 app:layout_constraintTop_toBottomOf="@+id/prompt"
                 tools:text="Translation Translation Translation Translation Translation Translation Translation " />
 
