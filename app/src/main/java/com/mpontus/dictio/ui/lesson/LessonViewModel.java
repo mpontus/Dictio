@@ -2,7 +2,6 @@ package com.mpontus.dictio.ui.lesson;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.LiveDataReactiveStreams;
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.Nullable;
 
@@ -133,6 +132,19 @@ public class LessonViewModel extends ViewModel {
         );
     }
 
+    public LiveData<Prompt> getPromptAdditions() {
+        assert lessonPlan != null;
+
+        return LiveDataReactiveStreams.fromPublisher(
+                lessonPlan.window(1).toFlowable(BackpressureStrategy.LATEST));
+    }
+
+    public LiveData<Prompt> getPromptRemovals() {
+        return LiveDataReactiveStreams.fromPublisher(
+                currentPrompt$.sample(match$.filter(PhraseComparison::isComplete))
+                        .toFlowable(BackpressureStrategy.LATEST));
+    }
+
     @Override
     protected void onCleared() {
         compositeDisposable.dispose();
@@ -153,24 +165,13 @@ public class LessonViewModel extends ViewModel {
 
     // TODO: Maybe replace with onPromptDismissed?
     void onPromptShown(Prompt prompt) {
-        if (lessonPlan == null) {
-            return;
-        }
-
         currentPrompt$.onNext(prompt);
-
-        lessonPlan.shift();
     }
 
-    LiveData<Prompt> createPromptsIntake(int bufferSize) {
-        if (lessonPlan == null) {
-            return new MutableLiveData<>();
-        }
+    void onPromptHidden(Prompt prompt) {
+        assert lessonPlan != null;
 
-        Observable<Prompt> prompt$ = lessonPlan.window(bufferSize);
-
-        return LiveDataReactiveStreams
-                .fromPublisher(prompt$.toFlowable(BackpressureStrategy.LATEST));
+        lessonPlan.shift();
     }
 
     LiveData<PhraseComparison> getMatch(Prompt prompt) {

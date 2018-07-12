@@ -68,10 +68,14 @@ public class LessonActivity extends DaggerAppCompatActivity {
 
         lessonViewModel.setLessonConstraints(lessonConstraints);
 
-        lessonViewModel.createPromptsIntake(1).observe(this, prompt -> {
+        lessonViewModel.getPromptAdditions().observe(this, prompt -> {
             assert prompt != null;
 
             swipeView.addView(new LessonCard(this, prompt));
+        });
+
+        lessonViewModel.getPromptRemovals().observe(this, prompt -> {
+            swipeView.doSwipe(true);
         });
     }
 

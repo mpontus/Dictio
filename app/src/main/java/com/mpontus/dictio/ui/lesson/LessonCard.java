@@ -105,6 +105,8 @@ class LessonCard {
         match.removeObserver(matchObserver);
         isPlaybackActive.removeObserver(playbackObserver);
         isRecordingActive.removeObserver(recordingObserver);
+
+        activity.lessonViewModel.onPromptHidden(prompt);
     }
 
     @Click(R.id.speech)
