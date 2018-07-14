@@ -18,6 +18,9 @@ public class Prompt {
 
     private Map<String, String> translations;
 
+    public Prompt() {
+    }
+
     public String getId() {
         return id;
     }

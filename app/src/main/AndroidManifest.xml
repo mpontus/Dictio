@@ -13,7 +13,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="b4637f811529f226bae2dff71c04f6096d5cff9f" />
@@ -35,7 +34,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.home.HomeActivity" />
         </activity>
-        <activity android:name=".ui.language.LanguageActivity"></activity>
+        <activity android:name=".ui.language.LanguageActivity" />
+        <activity android:name=".Example"></activity>
     </application>
 
 </manifest>

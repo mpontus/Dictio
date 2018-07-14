@@ -3,6 +3,7 @@ package com.mpontus.dictio;
 import android.os.StrictMode;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.stetho.Stetho;
 import com.mpontus.dictio.di.DaggerApplicationComponent;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -22,6 +23,7 @@ public class DictioApplication extends DaggerApplication {
         RxActivityResult.register(this);
 
         if (BuildConfig.DEBUG) {
+            Stetho.initializeWithDefaults(this);
             Timber.plant(new Timber.DebugTree());
 
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()

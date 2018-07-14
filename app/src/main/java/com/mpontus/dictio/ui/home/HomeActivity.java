@@ -8,6 +8,8 @@ import com.f2prateek.rx.preferences2.Preference;
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.mpontus.dictio.R;
+import com.mpontus.dictio.data.local.DictioDatabase;
+import com.mpontus.dictio.data.local.PromptWithTranslations;
 import com.mpontus.dictio.ui.language.LanguageActivity;
 import com.mpontus.dictio.ui.lesson.LessonActivity;
 import com.mpontus.dictio.ui.shared.LangaugeResources;
@@ -18,9 +20,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import rx_activity_result2.RxActivityResult;
+import timber.log.Timber;
 
 public class HomeActivity extends DaggerAppCompatActivity {
 
@@ -34,6 +39,9 @@ public class HomeActivity extends DaggerAppCompatActivity {
 
     @Inject
     RxSharedPreferences rxSharedPreferences;
+
+    @Inject
+    DictioDatabase db;
 
     @BindView(R.id.language)
     Button languageButton;
@@ -50,6 +58,27 @@ public class HomeActivity extends DaggerAppCompatActivity {
         setContentView(R.layout.activity_home);
         setSupportActionBar(findViewById(R.id.toolbar));
         ButterKnife.bind(this);
+
+        Completable.create((observer) -> {
+//            PromptEntity prompt = new PromptEntity(55, text, type, language);
+
+//            prompt.id = 55;
+//            prompt.language = "en_US";
+//            prompt.text = "Baz";
+//
+//            TranslationEntity translation1 = new TranslationEntity(55, "ru_RU", "Foo");
+//            TranslationEntity translation2 = new TranslationEntity(55, "ja_JP", "Bar");
+//
+//            db.promptsDao().insertPrompt(prompt);
+//            db.promptsDao().insertTranslation(translation1);
+//            db.promptsDao().insertTranslation(translation2);
+            Flowable<PromptWithTranslations> prompts = db.promptsDao().getPrompts();
+
+            observer.onComplete();
+        })
+                .subscribeOn(Schedulers.io())
+                .subscribe(() -> Timber.d("DONE"));
+
 
         Preference<String> languagePref = rxSharedPreferences.getString(PREF_KEY_LANGUAGE, DEFAULT_LANGUAGE);
 
