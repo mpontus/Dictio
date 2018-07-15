@@ -1,8 +1,19 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.cloud.tools.endpoints-framework-client'
 apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        // V2: Add the new Endpoints Framework plugin dependencies
+        classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.2'
+    }
 }
 
 android {
@@ -36,8 +47,8 @@ android {
     }
     buildTypes {
         debug {
-            minifyEnabled false
-            multiDexEnabled true
+            minifyEnabled true
+            multiDexEnabled false
         }
         release {
             signingConfig signingConfigs.release
@@ -127,6 +138,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation 'com.google.api-client:google-api-client:1.23.0'
+    endpointsServer project(path: ':backend', configuration: 'endpoints')
 }
 
 apply plugin: 'com.bugsnag.android.gradle'
