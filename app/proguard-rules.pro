@@ -28,3 +28,9 @@
 -dontwarn com.google.errorprone.annotations.**
 -keep class io.grpc.internal.DnsNameResolveProvider
 -keep class io.grpc.okhttp.OkHttpChannelProvider
+
+# Needed for PlaceHolderView
+-keepattributes *Annotation*
+-keepclassmembers class ** {
+  @com.mindorks.placeholderview.annotations.** <methods>;
+}

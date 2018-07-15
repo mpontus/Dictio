@@ -9,7 +9,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.mpontus.dictio"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -22,12 +22,23 @@ android {
             }
         }
     }
+    signingConfigs {
+        release {
+            if (project.hasProperty('DICTIO_RELEASE_STORE_FILE')) {
+                storeFile file(DICTIO_RELEASE_STORE_FILE)
+                storePassword DICTIO_RELEASE_STORE_PASSWORD
+                keyAlias DICTIO_RELEASE_KEY_ALIAS
+                keyPassword DICTIO_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
     buildTypes {
         debug {
             minifyEnabled false
             multiDexEnabled true
         }
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -98,7 +109,7 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
     // Install crashalytics for crash reporting
-    compile('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.4@aar') {
         transitive = true;
     }
 

@@ -56,7 +56,8 @@ public class PromptsRepository {
                         .doOnSuccess(localDataSource::repopulate)
                         .ignoreElement()
                         .doOnComplete(() -> preferences.getLastSync()
-                                .set(System.currentTimeMillis())));
+                                .set(System.currentTimeMillis()))
+                        .subscribeOn(Schedulers.io()));
 
     }
 }

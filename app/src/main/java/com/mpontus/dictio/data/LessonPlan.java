@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.subjects.PublishSubject;
-import timber.log.Timber;
 
 // TODO: It might be better to have this extend Observable
 public class LessonPlan {
@@ -39,9 +38,6 @@ public class LessonPlan {
 
         if (prompt$ == null) {
             prompt$ = promptsRepository.getPrompts(lessonConstraints)
-                    .doOnNext(prompt -> {
-                        Timber.d("Prompt: %s", prompt.getText());
-                    })
                     .toList()
                     .cache();
         }
