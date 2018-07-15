@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.mpontus.dictio.DictioApplication;
 import com.mpontus.dictio.data.local.DatabaseModule;
-import com.mpontus.dictio.gson.GsonModule;
 
 import javax.inject.Singleton;
 
@@ -18,7 +17,6 @@ import dagger.android.support.AndroidSupportInjectionModule;
         ActivityBindingModule.class,
         ApplicationModule.class,
         DatabaseModule.class,
-        GsonModule.class,
         ViewModelModule.class,
         LessonServiceModule.class,
         LessonViewModelModule.class,

@@ -14,4 +14,9 @@ public class DatabaseModule {
                 .fallbackToDestructiveMigration()
                 .build();
     }
+
+    @Provides
+    PromptsDao promptsDao(DictioDatabase database) {
+        return database.promptsDao();
+    }
 }

@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Prompt {
 
-    private String id;
+    private int id;
 
     private String text;
 
@@ -18,10 +18,15 @@ public class Prompt {
 
     private Map<String, String> translations;
 
-    public Prompt() {
+    public Prompt(int id, String text, String language, String type, Map<String, String> translations) {
+        this.id = id;
+        this.text = text;
+        this.language = language;
+        this.type = type;
+        this.translations = translations;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 

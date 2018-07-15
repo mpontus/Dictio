@@ -185,14 +185,19 @@ public class LessonViewModel extends ViewModel {
      * @return Live data
      */
     public LiveData<List<Prompt>> getPromptAdditions(int initialSize) {
+//        lessonPlan.getPrompts()
+//                .sample(Observable.merge(
+//                        Observable.range()
+//                ))
+
         Observable<List<Prompt>> prompt$ = Observable.concat(
                 Observable.range(0, initialSize)
-                        .flatMapSingle(__ -> lessonPlan.getNextPrompt())
+                        .flatMapMaybe(__ -> lessonPlan.getNextPrompt())
                         .toList()
                         .toObservable(),
 
                 event$.ofType(Event.PromptHidden.class)
-                        .flatMapSingle(__ -> lessonPlan.getNextPrompt())
+                        .flatMapMaybe(__ -> lessonPlan.getNextPrompt())
                         .map(Collections::singletonList)
         );
 

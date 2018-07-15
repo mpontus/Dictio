@@ -1,71 +1,62 @@
 package com.mpontus.dictio.data;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.Nullable;
 
-import com.google.gson.Gson;
-import com.mpontus.dictio.R;
+import com.mpontus.dictio.data.local.LocalDataSource;
 import com.mpontus.dictio.data.model.LessonConstraints;
 import com.mpontus.dictio.data.model.Prompt;
-import com.mpontus.dictio.data.model.ResourceFile;
+import com.mpontus.dictio.data.remote.RemoteDataSource;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.List;
+import javax.inject.Inject;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class PromptsRepository {
-    private final Gson gson;
-    private final Context context;
-    private ResourceFile resourceFile = null;
 
-    public PromptsRepository(Gson gson, Context context) {
-        this.gson = gson;
-        this.context = context;
+    private final LocalDataSource localDataSource;
+    private final RemoteDataSource remoteDataSource;
+    private final DictioPreferences preferences;
+
+    @Inject
+    public PromptsRepository(LocalDataSource localDataSource, RemoteDataSource remoteDataSource, DictioPreferences preferences) {
+        this.localDataSource = localDataSource;
+        this.remoteDataSource = remoteDataSource;
+        this.preferences = preferences;
     }
 
-    public List<String> getLanguages() {
-        return Observable.fromIterable(getResourceFile().getPrompts())
-                .map(Prompt::getLanguage)
-                .distinct()
-                .toList()
-                .blockingGet();
-    }
-
-    public List<Prompt> getPrompts(@Nullable LessonConstraints constraints) {
-        Observable<Prompt> prompt$ = Observable.fromIterable(getResourceFile().getPrompts());
-
-        if (constraints != null) {
-            prompt$ = prompt$
-                    .filter(prompt -> prompt.getLanguage().equals(constraints.getLanguage()))
-                    .filter(prompt -> prompt.getType().equals(constraints.getType()));
-        }
-
-        return prompt$
-                .toList()
-                .blockingGet();
+    public Observable<Prompt> getPrompts(LessonConstraints constraints) {
+        return ensureDatabasePopulated()
+                .andThen(localDataSource.getPrompts(constraints));
     }
 
     public Single<Prompt> getRandomPrompt(@Nullable LessonConstraints constraints) {
-        return Single.defer(() -> {
-            List<Prompt> prompts = getPrompts(constraints);
-            int index = (int) (Math.random() * prompts.size());
+        return ensureDatabasePopulated()
+                .andThen(localDataSource.getPrompts(constraints))
+                .doOnNext(prompt -> Timber.d("Prompt: %s", prompt.getText()))
+                .toList()
+                .map(prompts -> {
+                    int index = (int) (Math.random() * prompts.size());
 
-            return Single.just(prompts.get(index));
-        });
+                    return prompts.get(index);
+                })
+                .subscribeOn(Schedulers.io());
     }
 
-    private ResourceFile getResourceFile() {
-        if (resourceFile == null) {
-            Resources resources = context.getResources();
-            InputStream inputStream = resources.openRawResource(R.raw.prompts);
+    private Completable ensureDatabasePopulated() {
+        return preferences.getLastSync()
+                .asObservable()
+                .firstElement()
+                .filter(lastSync -> lastSync == 0)
+                .flatMapCompletable(__ -> remoteDataSource.loadPrompts()
+                        .toList()
+                        .doOnSuccess(localDataSource::repopulate)
+                        .ignoreElement()
+                        .doOnComplete(() -> preferences.getLastSync()
+                                .set(System.currentTimeMillis())));
 
-            resourceFile = gson.fromJson(new InputStreamReader(inputStream), ResourceFile.class);
-        }
-
-        return resourceFile;
     }
 }

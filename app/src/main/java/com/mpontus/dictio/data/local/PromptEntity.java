@@ -11,11 +11,11 @@ public class PromptEntity {
 
     private final String text;
 
-    private final String type;
-
     private final String language;
 
-    public PromptEntity(int id, String text, String type, String language) {
+    private final String type;
+
+    public PromptEntity(int id, String text, String language, String type) {
         this.id = id;
         this.text = text;
         this.type = type;
