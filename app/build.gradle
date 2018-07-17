@@ -113,6 +113,9 @@ dependencies {
         transitive = true;
     }
 
+    // Install Bugsnag as well because Crashalytics misses some crashes?
+    implementation 'com.bugsnag:bugsnag-android:4.5.0'
+
     // Install Stetho for debugging
     implementation 'com.facebook.stetho:stetho:1.5.0';
 
@@ -120,3 +123,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
+
+apply plugin: 'com.bugsnag.android.gradle'

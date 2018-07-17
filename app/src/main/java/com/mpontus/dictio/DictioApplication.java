@@ -2,6 +2,7 @@ package com.mpontus.dictio;
 
 import android.os.StrictMode;
 
+import com.bugsnag.android.Bugsnag;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.mpontus.dictio.di.DaggerApplicationComponent;
@@ -19,6 +20,7 @@ public class DictioApplication extends DaggerApplication {
         super.onCreate();
 
         Fabric.with(this, new Crashlytics());
+        Bugsnag.init(this);
 
         RxActivityResult.register(this);
 
