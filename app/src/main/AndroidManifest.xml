@@ -17,6 +17,10 @@
             android:name="io.fabric.ApiKey"
             android:value="b4637f811529f226bae2dff71c04f6096d5cff9f" />
 
+        <meta-data
+            android:name="com.bugsnag.android.API_KEY"
+            android:value="155f26a8705151adeefb4f60f277c92d" />
+
         <activity
             android:name=".ui.home.HomeActivity"
             android:launchMode="singleTop"
@@ -35,7 +39,7 @@
                 android:value=".ui.home.HomeActivity" />
         </activity>
         <activity android:name=".ui.language.LanguageActivity" />
-        <activity android:name=".Example"></activity>
+        <activity android:name=".Example" />
     </application>
 
 </manifest>

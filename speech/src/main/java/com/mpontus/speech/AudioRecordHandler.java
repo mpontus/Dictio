@@ -17,6 +17,7 @@ public class AudioRecordHandler {
     private final Callback callback;
     private final byte[] buffer;
 
+    private boolean isRecording = false;
     private Thread processingThread;
 
     /**
@@ -39,10 +40,19 @@ public class AudioRecordHandler {
                 audioRecord.getAudioFormat());
 
         buffer = new byte[bufferSize];
+
+        processingThread = new Thread(new ProcessVoice());
+        processingThread.start();
     }
 
     public void release() {
-        stop();
+        synchronized (lock) {
+            if (processingThread != null) {
+                processingThread.interrupt();
+
+                processingThread = null;
+            }
+        }
 
         audioRecord.release();
     }
@@ -52,22 +62,11 @@ public class AudioRecordHandler {
     }
 
     public void start() {
-        if (processingThread != null) {
-            return;
-        }
-
-        processingThread = new Thread(new ProcessVoice());
-        processingThread.start();
+        isRecording = true;
     }
 
     public void stop() {
-        synchronized (lock) {
-            if (processingThread != null) {
-                processingThread.interrupt();
-
-                processingThread = null;
-            }
-        }
+        isRecording = false;
     }
 
     public void dismiss() {
@@ -99,6 +98,9 @@ public class AudioRecordHandler {
                 synchronized (lock) {
                     if (Thread.currentThread().isInterrupted()) {
                         break;
+                    }
+                    if (!isRecording) {
+                        continue;
                     }
                     final int size = audioRecord.read(buffer, 0, buffer.length);
                     final long now = System.currentTimeMillis();

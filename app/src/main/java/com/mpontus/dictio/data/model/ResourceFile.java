@@ -7,6 +7,11 @@ public class ResourceFile {
 
     private List<Prompt> prompts;
 
+    public ResourceFile(int version, List<Prompt> prompts) {
+        this.version = version;
+        this.prompts = prompts;
+    }
+
     public int getVersion() {
         return version;
     }
