@@ -21,6 +21,8 @@ public class PromptsRepository {
     private final RemoteDataSource remoteDataSource;
     private final DictioPreferences preferences;
 
+    private Completable ensureDatabasePopulated;
+
     @Inject
     public PromptsRepository(LocalDataSource localDataSource, RemoteDataSource remoteDataSource, DictioPreferences preferences) {
         this.localDataSource = localDataSource;
@@ -47,17 +49,21 @@ public class PromptsRepository {
     }
 
     private Completable ensureDatabasePopulated() {
-        return preferences.getLastSync()
-                .asObservable()
-                .firstElement()
-                .filter(lastSync -> lastSync == 0)
-                .flatMapCompletable(__ -> remoteDataSource.loadPrompts()
-                        .toList()
-                        .doOnSuccess(localDataSource::repopulate)
-                        .ignoreElement()
-                        .doOnComplete(() -> preferences.getLastSync()
-                                .set(System.currentTimeMillis()))
-                        .subscribeOn(Schedulers.io()));
+        if (ensureDatabasePopulated == null) {
+            ensureDatabasePopulated = preferences.getLastSync()
+                    .asObservable()
+                    .firstElement()
+                    .filter(lastSync -> lastSync == 0)
+                    .flatMapCompletable(__ -> remoteDataSource.loadPrompts()
+                            .toList()
+                            .doOnSuccess(localDataSource::repopulate)
+                            .ignoreElement()
+//                        .doOnComplete(() -> preferences.getLastSync()
+//                                .set(System.currentTimeMillis()))
+                            .subscribeOn(Schedulers.io()))
+                    .cache();
+        }
 
+        return ensureDatabasePopulated;
     }
 }

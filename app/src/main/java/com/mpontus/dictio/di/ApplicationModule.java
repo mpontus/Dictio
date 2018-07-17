@@ -7,7 +7,6 @@ import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
-import com.google.gson.Gson;
 import com.mpontus.dictio.ui.shared.LangaugeResources;
 
 import javax.inject.Singleton;
@@ -41,11 +40,5 @@ public abstract class ApplicationModule {
     @Provides
     static RxSharedPreferences rxSharedPreferences(SharedPreferences sharedPreferences) {
         return RxSharedPreferences.create(sharedPreferences);
-    }
-
-    @Singleton
-    @Provides
-    static Gson gson() {
-        return new Gson();
     }
 }
