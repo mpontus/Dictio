@@ -47,8 +47,8 @@ android {
     }
     buildTypes {
         debug {
-            minifyEnabled true
-            multiDexEnabled false
+            minifyEnabled false
+            multiDexEnabled true
         }
         release {
             signingConfig signingConfigs.release
@@ -139,7 +139,29 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    implementation 'com.google.api-client:google-api-client:1.23.0'
+    implementation('com.google.api-client:google-api-client:1.23.0') {
+        exclude module: 'guava-jdk5'
+        // Exclude artifacts that the Android SDK/Runtime provides.
+        exclude(group: 'xpp3', module: 'xpp3')
+        exclude(group: 'org.apache.httpcomponents', module: 'httpclient')
+        exclude(group: 'junit', module: 'junit')
+        exclude(group: 'com.google.android', module: 'android')
+    }
+    implementation('com.google.api-client:google-api-client-android:1.23.0') {
+        exclude module: 'guava-jdk5'
+        exclude module: 'httpclient'
+        // Exclude play services, since we're not using this yet.
+        exclude(group: 'com.google.android.gms:play-services', module: 'google-play-services')
+    }
+    implementation('com.google.http-client:google-http-client-gson:1.19.0') {
+//        exclude module: 'guava-jdk5'
+        exclude module: 'httpclient'
+    }
+    implementation('com.google.http-client:google-http-client-android:1.23.0') {
+        exclude module: 'guava-jdk5'
+        exclude module: 'httpclient'
+        exclude(group: 'com.google.android', module: 'android')
+    }
     endpointsServer project(path: ':backend', configuration: 'endpoints')
 }
 
