@@ -15,6 +15,8 @@ import io.grpc.stub.StreamObserver;
 
 public class GoogleSpeechRecognitionHandler {
 
+    private final Object lock = new Object();
+
     private final StreamObserver<StreamingRecognizeResponse> responseObserver
             = new StreamObserver<StreamingRecognizeResponse>() {
         @Override
@@ -60,8 +62,12 @@ public class GoogleSpeechRecognitionHandler {
 
         @Override
         public void onCompleted() {
-            for (Listener listener : listeners) {
-                listener.onRecognitionEnd();
+            synchronized (lock) {
+                requestObserver = null;
+
+                for (Listener listener : listeners) {
+                    listener.onRecognitionEnd();
+                }
             }
         }
 
@@ -100,23 +106,27 @@ public class GoogleSpeechRecognitionHandler {
     }
 
     public void recognize(byte[] data, int size) {
-        if (requestObserver == null) {
-            return;
-        }
+        synchronized (lock) {
+            if (requestObserver == null) {
+                return;
+            }
 
-        // Call the streaming recognition API
-        requestObserver.onNext(StreamingRecognizeRequest.newBuilder()
-                .setAudioContent(ByteString.copyFrom(data, 0, size))
-                .build());
+            // Call the streaming recognition API
+            requestObserver.onNext(StreamingRecognizeRequest.newBuilder()
+                    .setAudioContent(ByteString.copyFrom(data, 0, size))
+                    .build());
+        }
     }
 
     public void stopRecognizing() {
-        if (requestObserver == null) {
-            return;
-        }
+        synchronized (lock) {
+            if (requestObserver == null) {
+                return;
+            }
 
-        requestObserver.onCompleted();
-        requestObserver = null;
+            requestObserver.onCompleted();
+            requestObserver = null;
+        }
     }
 
     public void addListener(Listener listener) {
