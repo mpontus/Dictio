@@ -6,6 +6,7 @@ import com.google.auth.oauth2.AccessToken;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.speech.v1.SpeechGrpc;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import io.grpc.ManagedChannel;
@@ -150,13 +151,20 @@ public class GoogleSpeechRecognition implements SpeechRecognition {
 
         @Override
         public void run() {
-            AccessToken accessToken = tokenRetriever.getAccessToken();
+            AccessToken accessToken = null;
+
+            try {
+                accessToken = tokenRetriever.getAccessToken();
+            } catch (IOException e) {
+                e.printStackTrace();
+
+                return;
+            }
 
             final ManagedChannel channel = new OkHttpChannelProvider()
                     .builderForAddress(HOSTNAME, PORT)
                     .nameResolverFactory(new DnsNameResolverProvider())
-                    .intercept(new GoogleCredentialsInterceptor(new GoogleCredentials(accessToken)
-                            .createScoped(tokenRetriever.getScope())))
+                    .intercept(new GoogleCredentialsInterceptor(new GoogleCredentials(accessToken)))
                     .build();
 
             callback.onInitialized(SpeechGrpc.newStub(channel));

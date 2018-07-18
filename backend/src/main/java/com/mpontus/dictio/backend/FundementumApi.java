@@ -19,13 +19,18 @@ package com.mpontus.dictio.backend;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.google.auth.oauth2.AccessToken;
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.gson.Gson;
 import com.mpontus.dictio.backend.model.Prompt;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Api(name = "fundamentum",
@@ -37,6 +42,10 @@ import java.util.List;
                 packagePath = ""
         ))
 public class FundementumApi {
+
+    private static final List<String> SCOPE =
+            Collections.singletonList("https://www.googleapis.com/auth/cloud-platform");
+
     @ApiMethod(name = "getPrompts")
     public List<Prompt> getPrompts() {
         try {
@@ -46,6 +55,19 @@ public class FundementumApi {
 
             return Arrays.asList(prompts);
         } catch (FileNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    @ApiMethod(name = "getAccessToken")
+    public AccessToken getAccessToken() {
+        try {
+            FileInputStream inputStream = new FileInputStream(new File("WEB-INF/service-credentials.json"));
+            GoogleCredentials credentials = GoogleCredentials.fromStream(inputStream)
+                    .createScoped(SCOPE);
+
+            return credentials.refreshAccessToken();
+        } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
