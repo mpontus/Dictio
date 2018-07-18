@@ -26,7 +26,7 @@
         <servlet-class>com.google.api.server.spi.EndpointsServlet</servlet-class>
         <init-param>
             <param-name>services</param-name>
-            <param-value>com.mpontus.dictio.backend.MyApi</param-value>
+            <param-value>com.mpontus.dictio.backend.FundementumApi</param-value>
         </init-param>
     </servlet>
     <!-- Route API method requests to the backend. -->
