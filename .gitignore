@@ -10,7 +10,7 @@
 /captures
 .externalNativeBuild
 
-/app/src/main/res/raw/credentials.json
+/backend/src/main/webapp/WEB-INF/service-credentials.json
 app/release
 
 *.keystore

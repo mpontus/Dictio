@@ -4,15 +4,14 @@ import android.app.Application;
 import android.arch.persistence.room.Room;
 
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
-import com.google.gson.Gson;
 import com.mpontus.dictio.data.local.DictioDatabase;
 import com.mpontus.dictio.data.local.LocalDataSource;
 import com.mpontus.dictio.data.local.PromptsDao;
 import com.mpontus.dictio.data.remote.RemoteDataSource;
+import com.mpontus.dictio.fundamentum.Fundamentum;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.OkHttpClient;
 
 @Module
 public abstract class DataModule {
@@ -34,18 +33,8 @@ public abstract class DataModule {
     }
 
     @Provides
-    static Gson gson() {
-        return new Gson();
-    }
-
-    @Provides
-    static OkHttpClient okHttpClient() {
-        return new OkHttpClient();
-    }
-
-    @Provides
-    static RemoteDataSource remoteDataSource(Gson gson, OkHttpClient client) {
-        return new RemoteDataSource(gson, client);
+    static RemoteDataSource remoteDataSource(Fundamentum api) {
+        return new RemoteDataSource(api);
     }
 
     @Provides

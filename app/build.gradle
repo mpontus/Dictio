@@ -1,8 +1,19 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.cloud.tools.endpoints-framework-client'
 apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+}
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        // V2: Add the new Endpoints Framework plugin dependencies
+        classpath 'com.google.cloud.tools:endpoints-framework-gradle-plugin:1.0.2'
+    }
 }
 
 android {
@@ -93,11 +104,8 @@ dependencies {
     }
     annotationProcessor 'com.mindorks.android:placeholderview-compiler:1.0.3'
 
-    // Install GSON for parsing JSON data
-    implementation 'com.google.code.gson:gson:2.8.5'
-
-    // Install OkH for remote data source
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    // Install OAuth2 to retrieve GCS credentials
+    compile 'com.google.auth:google-auth-library-oauth2-http:0.7.0';
 
     // Butterknife to bind views to activities
     implementation 'com.jakewharton:butterknife:8.8.1'
@@ -127,6 +135,31 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation('com.google.api-client:google-api-client:1.23.0') {
+        exclude module: 'guava-jdk5'
+        // Exclude artifacts that the Android SDK/Runtime provides.
+        exclude(group: 'xpp3', module: 'xpp3')
+        exclude(group: 'org.apache.httpcomponents', module: 'httpclient')
+        exclude(group: 'junit', module: 'junit')
+        exclude(group: 'com.google.android', module: 'android')
+    }
+    implementation('com.google.api-client:google-api-client-android:1.23.0') {
+        exclude module: 'guava-jdk5'
+        exclude module: 'httpclient'
+        // Exclude play services, since we're not using this yet.
+        exclude(group: 'com.google.android.gms:play-services', module: 'google-play-services')
+    }
+    implementation('com.google.http-client:google-http-client-gson:1.19.0') {
+//        exclude module: 'guava-jdk5'
+        exclude module: 'httpclient'
+    }
+    implementation('com.google.http-client:google-http-client-android:1.23.0') {
+        exclude module: 'guava-jdk5'
+        exclude module: 'httpclient'
+        exclude(group: 'com.google.android', module: 'android')
+    }
+    endpointsServer project(path: ':backend', configuration: 'endpoints')
 }
 
 apply plugin: 'com.bugsnag.android.gradle'

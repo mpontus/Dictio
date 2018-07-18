@@ -1,18 +1,17 @@
 package com.mpontus.dictio.di;
 
 import android.content.Context;
-import android.content.res.Resources;
 
-import com.mpontus.dictio.R;
+import com.google.auth.oauth2.AccessToken;
+import com.mpontus.dictio.fundamentum.Fundamentum;
 import com.mpontus.dictio.service.LessonService;
 import com.mpontus.dictio.service.Speaker;
 import com.mpontus.speech.AudioRecordVoiceRecorder;
 import com.mpontus.speech.GoogleSpeechRecognition;
-import com.mpontus.speech.ServiceCredentialsAccessTokenRetriever;
 import com.mpontus.speech.SpeechRecognition;
 import com.mpontus.speech.VoiceRecorder;
 
-import java.io.InputStream;
+import java.util.Date;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,12 +25,15 @@ public class LessonServiceModule {
     }
 
     @Provides
-    SpeechRecognition speechRecognition(Resources resources) {
-        InputStream inputStream = resources.openRawResource(R.raw.credentials);
-        ServiceCredentialsAccessTokenRetriever tokenRetriever =
-                new ServiceCredentialsAccessTokenRetriever(inputStream);
+    SpeechRecognition speechRecognition(Fundamentum api) {
+        return new GoogleSpeechRecognition(() -> {
+            // TODO: Find a way to deserialize response into AccessToken directly.
+            com.mpontus.dictio.fundamentum.model.AccessToken accessToken =
+                    api.getAccessToken().execute();
 
-        return new GoogleSpeechRecognition(tokenRetriever);
+            return new AccessToken(accessToken.getTokenValue(),
+                    new Date(accessToken.getExpirationTime().getValue()));
+        });
     }
 
     @Provides
