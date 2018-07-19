@@ -7030,902 +7030,902 @@
   },
   {
     "id": 800,
-    "text": "Week",
+    "text": "週",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "週"
+      "en": "Week"
     }
   },
   {
     "id": 801,
-    "text": "Year",
+    "text": "年",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "年"
+      "en": "Year"
     }
   },
   {
     "id": 802,
-    "text": "Today",
+    "text": "今日",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "今日"
+      "en": "Today"
     }
   },
   {
     "id": 803,
-    "text": "Tomorrow",
+    "text": "明日",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "明日"
+      "en": "Tomorrow"
     }
   },
   {
     "id": 804,
-    "text": "Yesterday",
+    "text": "昨日",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "昨日"
+      "en": "Yesterday"
     }
   },
   {
     "id": 805,
-    "text": "Calendar",
+    "text": "カレンダー",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "カレンダー"
+      "en": "Calendar"
     }
   },
   {
     "id": 806,
-    "text": "Second",
+    "text": "秒",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "秒"
+      "en": "Second"
     }
   },
   {
     "id": 807,
-    "text": "Hour",
+    "text": "時間",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "時間"
+      "en": "Hour"
     }
   },
   {
     "id": 808,
-    "text": "Minute",
+    "text": "分",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "分"
+      "en": "Minute"
     }
   },
   {
     "id": 809,
-    "text": "O'clock",
+    "text": "時",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "時"
+      "en": "O'clock"
     }
   },
   {
     "id": 810,
-    "text": "Clock",
+    "text": "時計",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "時計"
+      "en": "Clock"
     }
   },
   {
     "id": 811,
-    "text": "Can",
+    "text": "できる",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "できる"
+      "en": "Can"
     }
   },
   {
     "id": 812,
-    "text": "Use",
+    "text": "使う",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "使う"
+      "en": "Use"
     }
   },
   {
     "id": 813,
-    "text": "Do",
+    "text": "する",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "する"
+      "en": "Do"
     }
   },
   {
     "id": 814,
-    "text": "Go",
+    "text": "行く",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "行く"
+      "en": "Go"
     }
   },
   {
     "id": 815,
-    "text": "Come",
+    "text": "来る",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "来る"
+      "en": "Come"
     }
   },
   {
     "id": 816,
-    "text": "Laugh",
+    "text": "笑う",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "笑う"
+      "en": "Laugh"
     }
   },
   {
     "id": 817,
-    "text": "Make",
+    "text": "作る",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "作る"
+      "en": "Make"
     }
   },
   {
     "id": 818,
-    "text": "See",
+    "text": "見る",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "見る"
+      "en": "See"
     }
   },
   {
     "id": 819,
-    "text": "Far",
+    "text": "遠い",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "遠い"
+      "en": "Far"
     }
   },
   {
     "id": 820,
-    "text": "Small",
+    "text": "小さい",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "小さい"
+      "en": "Small"
     }
   },
   {
     "id": 821,
-    "text": "Good",
+    "text": "良い",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "良い"
+      "en": "Good"
     }
   },
   {
     "id": 822,
-    "text": "Beautiful",
+    "text": "きれい",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "きれい"
+      "en": "Beautiful"
     }
   },
   {
     "id": 823,
-    "text": "Ugly",
+    "text": "醜い",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "醜い"
+      "en": "Ugly"
     }
   },
   {
     "id": 824,
-    "text": "Difficult",
+    "text": "難しい",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "難しい"
+      "en": "Difficult"
     }
   },
   {
     "id": 825,
-    "text": "Easy",
+    "text": "簡単",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "簡単"
+      "en": "Easy"
     }
   },
   {
     "id": 826,
-    "text": "Bad",
+    "text": "悪い",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "悪い"
+      "en": "Bad"
     }
   },
   {
     "id": 827,
-    "text": "Near",
+    "text": "近い",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "近い"
+      "en": "Near"
     }
   },
   {
     "id": 828,
-    "text": "Nice to meet you.",
+    "text": "初めまして。",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "初めまして。"
+      "en": "Nice to meet you."
     }
   },
   {
     "id": 829,
-    "text": "Hello.",
+    "text": "こんにちは。",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "こんにちは。"
+      "en": "Hello."
     }
   },
   {
     "id": 830,
-    "text": "Good morning.",
+    "text": "おはよう。",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "おはよう。"
+      "en": "Good morning."
     }
   },
   {
     "id": 831,
-    "text": "Good afternoon.",
+    "text": "こんにちは。",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "こんにちは。"
+      "en": "Good afternoon."
     }
   },
   {
     "id": 832,
-    "text": "Good evening.",
+    "text": "こんばんは。",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "こんばんは。"
+      "en": "Good evening."
     }
   },
   {
     "id": 833,
-    "text": "Good night.",
+    "text": "お休みなさい。",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "お休みなさい。"
+      "en": "Good night."
     }
   },
   {
     "id": 834,
-    "text": "How are you?",
+    "text": "お元気ですか。",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "お元気ですか。"
+      "en": "How are you?"
     }
   },
   {
     "id": 835,
-    "text": "Thank you!",
+    "text": "ありがとう。",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "ありがとう。"
+      "en": "Thank you!"
     }
   },
   {
     "id": 836,
-    "text": "No.",
+    "text": "いいえ。",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "いいえ。"
+      "en": "No."
     }
   },
   {
     "id": 837,
-    "text": "Delicious!",
+    "text": "美味しい！",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "美味しい！"
+      "en": "Delicious!"
     }
   },
   {
     "id": 838,
-    "text": "I'm....",
+    "text": "私は～です。",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "私は～です。"
+      "en": "I'm...."
     }
   },
   {
     "id": 839,
-    "text": "Goodbye.",
+    "text": "さようなら。",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "さようなら。"
+      "en": "Goodbye."
     }
   },
   {
     "id": 840,
-    "text": "Yes.",
+    "text": "はい。",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "はい。"
+      "en": "Yes."
     }
   },
   {
     "id": 841,
-    "text": "Monday",
+    "text": "月曜日",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "月曜日"
+      "en": "Monday"
     }
   },
   {
     "id": 842,
-    "text": "Tuesday",
+    "text": "火曜日",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "火曜日"
+      "en": "Tuesday"
     }
   },
   {
     "id": 843,
-    "text": "Wednesday",
+    "text": "水曜日",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "水曜日"
+      "en": "Wednesday"
     }
   },
   {
     "id": 844,
-    "text": "Thursday",
+    "text": "木曜日",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "木曜日"
+      "en": "Thursday"
     }
   },
   {
     "id": 845,
-    "text": "Friday",
+    "text": "金曜日",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "金曜日"
+      "en": "Friday"
     }
   },
   {
     "id": 846,
-    "text": "Saturday",
+    "text": "土曜日",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "土曜日"
+      "en": "Saturday"
     }
   },
   {
     "id": 847,
-    "text": "Sunday",
+    "text": "日曜日",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "日曜日"
+      "en": "Sunday"
     }
   },
   {
     "id": 848,
-    "text": "May",
+    "text": "五月",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "五月"
+      "en": "May"
     }
   },
   {
     "id": 849,
-    "text": "January",
+    "text": "一月",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "一月"
+      "en": "January"
     }
   },
   {
     "id": 850,
-    "text": "February",
+    "text": "二月",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "二月"
+      "en": "February"
     }
   },
   {
     "id": 851,
-    "text": "March",
+    "text": "三月",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "三月"
+      "en": "March"
     }
   },
   {
     "id": 852,
-    "text": "April",
+    "text": "四月",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "四月"
+      "en": "April"
     }
   },
   {
     "id": 853,
-    "text": "June",
+    "text": "六月",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "六月"
+      "en": "June"
     }
   },
   {
     "id": 854,
-    "text": "July",
+    "text": "七月",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "七月"
+      "en": "July"
     }
   },
   {
     "id": 855,
-    "text": "August",
+    "text": "八月",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "八月"
+      "en": "August"
     }
   },
   {
     "id": 856,
-    "text": "September",
+    "text": "九月",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "九月"
+      "en": "September"
     }
   },
   {
     "id": 857,
-    "text": "October",
+    "text": "十月",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "十月"
+      "en": "October"
     }
   },
   {
     "id": 858,
-    "text": "November",
+    "text": "十一月",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "十一月"
+      "en": "November"
     }
   },
   {
     "id": 859,
-    "text": "December",
+    "text": "十二月",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "十二月"
+      "en": "December"
     }
   },
   {
     "id": 860,
-    "text": "Zero",
+    "text": "零",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "零"
+      "en": "Zero"
     }
   },
   {
     "id": 861,
-    "text": "One",
+    "text": "一",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "一"
+      "en": "One"
     }
   },
   {
     "id": 862,
-    "text": "Two",
+    "text": "二",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "二"
+      "en": "Two"
     }
   },
   {
     "id": 863,
-    "text": "Three",
+    "text": "三",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "三"
+      "en": "Three"
     }
   },
   {
     "id": 864,
-    "text": "Four",
+    "text": "四",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "四"
+      "en": "Four"
     }
   },
   {
     "id": 865,
-    "text": "Five",
+    "text": "五",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "五"
+      "en": "Five"
     }
   },
   {
     "id": 866,
-    "text": "Six",
+    "text": "六",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "六"
+      "en": "Six"
     }
   },
   {
     "id": 867,
-    "text": "Seven",
+    "text": "七",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "七"
+      "en": "Seven"
     }
   },
   {
     "id": 868,
-    "text": "Eight",
+    "text": "八",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "八"
+      "en": "Eight"
     }
   },
   {
     "id": 869,
-    "text": "Nine",
+    "text": "九",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "九"
+      "en": "Nine"
     }
   },
   {
     "id": 870,
-    "text": "Ten",
+    "text": "十",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "十"
+      "en": "Ten"
     }
   },
   {
     "id": 871,
-    "text": "Coffee",
+    "text": "コーヒー",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "コーヒー"
+      "en": "Coffee"
     }
   },
   {
     "id": 872,
-    "text": "Beer",
+    "text": "ビール",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "ビール"
+      "en": "Beer"
     }
   },
   {
     "id": 873,
-    "text": "Tea",
+    "text": "茶",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "茶"
+      "en": "Tea"
     }
   },
   {
     "id": 874,
-    "text": "Wine",
+    "text": "ワイン",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "ワイン"
+      "en": "Wine"
     }
   },
   {
     "id": 875,
-    "text": "Water",
+    "text": "水",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "水"
+      "en": "Water"
     }
   },
   {
     "id": 876,
-    "text": "Beef",
+    "text": "牛肉",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "牛肉"
+      "en": "Beef"
     }
   },
   {
     "id": 877,
-    "text": "Pork",
+    "text": "豚肉",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "豚肉"
+      "en": "Pork"
     }
   },
   {
     "id": 878,
-    "text": "Chicken",
+    "text": "鶏肉",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "鶏肉"
+      "en": "Chicken"
     }
   },
   {
     "id": 879,
-    "text": "Lamb",
+    "text": "ラム肉",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "ラム肉"
+      "en": "Lamb"
     }
   },
   {
     "id": 880,
-    "text": "Fish",
+    "text": "魚",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "魚"
+      "en": "Fish"
     }
   },
   {
     "id": 881,
-    "text": "Foot",
+    "text": "足",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "足"
+      "en": "Foot"
     }
   },
   {
     "id": 882,
-    "text": "Leg",
+    "text": "足",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "足"
+      "en": "Leg"
     }
   },
   {
     "id": 883,
-    "text": "Head",
+    "text": "頭",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "頭"
+      "en": "Head"
     }
   },
   {
     "id": 884,
-    "text": "Arm",
+    "text": "腕",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "腕"
+      "en": "Arm"
     }
   },
   {
     "id": 885,
-    "text": "Hand",
+    "text": "手",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "手"
+      "en": "Hand"
     }
   },
   {
     "id": 886,
-    "text": "Finger",
+    "text": "指",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "指"
+      "en": "Finger"
     }
   },
   {
     "id": 887,
-    "text": "Body",
+    "text": "体",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "体"
+      "en": "Body"
     }
   },
   {
     "id": 888,
-    "text": "Stomach",
+    "text": "胃",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "胃"
+      "en": "Stomach"
     }
   },
   {
     "id": 889,
-    "text": "Back",
+    "text": "背中",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "背中"
+      "en": "Back"
     }
   },
   {
     "id": 890,
-    "text": "Chest",
+    "text": "胸",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "胸"
+      "en": "Chest"
     }
   },
   {
     "id": 891,
-    "text": "Nurse",
+    "text": "看護師",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "看護師"
+      "en": "Nurse"
     }
   },
   {
     "id": 892,
-    "text": "Employee",
+    "text": "従業員",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "従業員"
+      "en": "Employee"
     }
   },
   {
     "id": 893,
-    "text": "Police officer",
+    "text": "警察官",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "警察官"
+      "en": "Police officer"
     }
   },
   {
     "id": 894,
-    "text": "Cook",
+    "text": "料理人",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "料理人"
+      "en": "Cook"
     }
   },
   {
     "id": 895,
-    "text": "Engineer",
+    "text": "エンジニア",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "エンジニア"
+      "en": "Engineer"
     }
   },
   {
     "id": 896,
-    "text": "Doctor",
+    "text": "医者",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "医者"
+      "en": "Doctor"
     }
   },
   {
     "id": 897,
-    "text": "Manager",
+    "text": "マネージャー",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "マネージャー"
+      "en": "Manager"
     }
   },
   {
     "id": 898,
-    "text": "Teacher",
+    "text": "先生",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "先生"
+      "en": "Teacher"
     }
   },
   {
     "id": 899,
-    "text": "Programmer",
+    "text": "プログラマー",
     "language": "ja-JP",
     "category": "word",
     "translations": {
-      "en": "プログラマー"
+      "en": "Programmer"
     }
   },
   {

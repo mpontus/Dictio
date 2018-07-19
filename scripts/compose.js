@@ -54,7 +54,7 @@ function* collectPrompts() {
 
         trans[transLng] = readFile(filename);
       }
-      g;
+
       for (let i = 0; i < trans[lng].length; ++i) {
         const result = {
           id: genId(),
