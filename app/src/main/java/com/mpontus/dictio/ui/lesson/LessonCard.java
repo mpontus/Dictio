@@ -18,20 +18,23 @@ import com.mindorks.placeholderview.annotations.swipe.SwipeHead;
 import com.mindorks.placeholderview.annotations.swipe.SwipeIn;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOut;
 import com.mpontus.dictio.R;
+import com.mpontus.dictio.data.TranslationManager;
 import com.mpontus.dictio.data.model.PhraseComparison;
 import com.mpontus.dictio.data.model.Prompt;
-
-import java.util.Locale;
 
 @NonReusable
 @Layout(R.layout.lesson_card_view)
 class LessonCard {
 
-    private LifecycleOwner lifecycleOwner;
+    private final LifecycleOwner lifecycleOwner;
 
-    private LessonViewModel viewModel;
+    private final LessonViewModel viewModel;
 
-    private PromptPainter promptPainter;
+    private final PromptPainter promptPainter;
+
+    private final TranslationManager translationManager;
+
+    private final Prompt prompt;
 
     @View(R.id.speak)
     public ImageView speakButton;
@@ -44,8 +47,6 @@ class LessonCard {
 
     @View(R.id.translation)
     public TextView translationView;
-
-    private final Prompt prompt;
 
     private final LiveData<PhraseComparison> match;
     private final LiveData<Boolean> isPlaybackActive;
@@ -70,10 +71,15 @@ class LessonCard {
     };
 
     // TODO: Refactor using LiveDataReactiveStreams
-    LessonCard(LifecycleOwner lifecycleOwner, LessonViewModel viewModel, PromptPainter promptPainter, @NonNull Prompt prompt) {
+    LessonCard(LifecycleOwner lifecycleOwner,
+               LessonViewModel viewModel,
+               PromptPainter promptPainter,
+               TranslationManager translationManager,
+               @NonNull Prompt prompt) {
         this.lifecycleOwner = lifecycleOwner;
         this.viewModel = viewModel;
         this.promptPainter = promptPainter;
+        this.translationManager = translationManager;
         this.prompt = prompt;
 
         match = viewModel.getMatch(prompt);
@@ -89,17 +95,17 @@ class LessonCard {
 
     @Resolve
     public void onResolved() {
-        match.observe(lifecycleOwner, matchObserver);
-        isPlaybackActive.observe(lifecycleOwner, playbackObserver);
-        isRecordingActive.observe(lifecycleOwner, recordingObserver);
+        String translation = translationManager.getTranslation(prompt);
 
         promptView.setText(prompt.getText());
-
-        String translation = prompt.getTranslation(Locale.getDefault());
 
         if (translation != null) {
             translationView.setText(translation);
         }
+
+        match.observe(lifecycleOwner, matchObserver);
+        isPlaybackActive.observe(lifecycleOwner, playbackObserver);
+        isRecordingActive.observe(lifecycleOwner, recordingObserver);
     }
 
     @SwipeHead

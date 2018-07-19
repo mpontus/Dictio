@@ -1,6 +1,6 @@
 package com.mpontus.dictio.di;
 
-import android.content.Context;
+import android.app.Application;
 
 import com.google.auth.oauth2.AccessToken;
 import com.mpontus.dictio.fundamentum.Fundamentum;
@@ -20,8 +20,8 @@ import dagger.Provides;
 public class LessonServiceModule {
 
     @Provides
-    Speaker provideSpeaker(Context context) {
-        return new Speaker(context);
+    Speaker provideSpeaker(Application application) {
+        return new Speaker(application);
     }
 
     @Provides

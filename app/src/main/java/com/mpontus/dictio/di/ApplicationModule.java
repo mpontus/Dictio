@@ -9,6 +9,8 @@ import android.preference.PreferenceManager;
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
 import com.mpontus.dictio.ui.shared.LangaugeResources;
 
+import java.util.Locale;
+
 import javax.inject.Singleton;
 
 import dagger.Binds;
@@ -21,13 +23,13 @@ public abstract class ApplicationModule {
     abstract Context context(Application application);
 
     @Provides
-    static Resources resources(Context context) {
-        return context.getResources();
+    static Resources resources(Application application) {
+        return application.getResources();
     }
 
     @Provides
-    static SharedPreferences sharedPreferences(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context);
+    static SharedPreferences sharedPreferences(Application application) {
+        return PreferenceManager.getDefaultSharedPreferences(application);
     }
 
     @Singleton
@@ -41,4 +43,10 @@ public abstract class ApplicationModule {
     static RxSharedPreferences rxSharedPreferences(SharedPreferences sharedPreferences) {
         return RxSharedPreferences.create(sharedPreferences);
     }
+
+    @Provides
+    static Locale locale(Resources resources) {
+        return resources.getConfiguration().locale;
+    }
+
 }
