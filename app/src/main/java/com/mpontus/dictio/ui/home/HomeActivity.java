@@ -1,5 +1,8 @@
 package com.mpontus.dictio.ui.home;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.Button;
@@ -10,6 +13,7 @@ import com.mpontus.dictio.data.DictioPreferences;
 import com.mpontus.dictio.ui.language.LanguageActivity;
 import com.mpontus.dictio.ui.lesson.LessonActivity;
 import com.mpontus.dictio.ui.shared.LangaugeResources;
+import com.mpontus.dictio.ui.widget.DictioWidget;
 
 import javax.inject.Inject;
 
@@ -58,6 +62,7 @@ public class HomeActivity extends DaggerAppCompatActivity {
                                     .filter(result -> result.resultCode() == RESULT_OK)
                                     .map(result -> result.data().getStringExtra(LanguageActivity.EXTRA_LANGUAGE))
                                     .doOnNext(preferences.getLessonLanguage().asConsumer())
+                                    .doOnNext(__ -> updateWidgets())
                                     .ignoreElements();
 
                             Completable lessonClicks = Observable.merge(
@@ -65,6 +70,7 @@ public class HomeActivity extends DaggerAppCompatActivity {
                                     RxView.clicks(phrasesButton).map(view -> "phrase")
                             )
                                     .doOnNext(preferences.getLessonCategory().asConsumer())
+                                    .doOnNext(__ -> updateWidgets())
                                     .withLatestFrom(language, (category, lang) -> LessonActivity.createIntent(this, lang, category))
                                     .doOnNext(this::startActivity)
                                     .ignoreElements();
@@ -91,5 +97,19 @@ public class HomeActivity extends DaggerAppCompatActivity {
         compositeDisposable.dispose();
 
         super.onDestroy();
+    }
+
+    // TODO: Remove or refactor this
+    private void updateWidgets() {
+        Intent intent = new Intent(this, DictioWidget.class);
+
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+
+        int[] appWidgetIds = AppWidgetManager.getInstance(getApplication())
+                .getAppWidgetIds(new ComponentName(getApplication(), DictioWidget.class));
+
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+
+        sendBroadcast(intent);
     }
 }

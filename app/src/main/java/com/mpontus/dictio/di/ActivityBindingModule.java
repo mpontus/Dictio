@@ -8,6 +8,7 @@ import com.mpontus.dictio.ui.language.LanguageActivity;
 import com.mpontus.dictio.ui.language.LanguageActivityModule;
 import com.mpontus.dictio.ui.lesson.LessonActivity;
 import com.mpontus.dictio.ui.lesson.LessonActivityModule;
+import com.mpontus.dictio.ui.widget.DictioWidget;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -31,4 +32,7 @@ public abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector
     abstract AuthenticatorService authenticatorService();
+
+    @ContributesAndroidInjector
+    abstract DictioWidget dictioWidget();
 }
