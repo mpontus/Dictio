@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import com.mpontus.dictio.data.local.LocalDataSource;
 import com.mpontus.dictio.data.model.LessonConstraints;
 import com.mpontus.dictio.data.model.Prompt;
-import com.mpontus.dictio.data.remote.RemoteDataSource;
 
 import javax.inject.Inject;
 
@@ -18,25 +17,23 @@ import timber.log.Timber;
 public class PromptsRepository {
 
     private final LocalDataSource localDataSource;
-    private final RemoteDataSource remoteDataSource;
-    private final DictioPreferences preferences;
-
-    private Completable ensureDatabasePopulated;
+    private final Completable ensureDatabasePopulated;
 
     @Inject
-    public PromptsRepository(LocalDataSource localDataSource, RemoteDataSource remoteDataSource, DictioPreferences preferences) {
+    public PromptsRepository(LocalDataSource localDataSource, SynchronizationManager synchronizationManager) {
         this.localDataSource = localDataSource;
-        this.remoteDataSource = remoteDataSource;
-        this.preferences = preferences;
+        this.ensureDatabasePopulated =
+                Completable.defer(synchronizationManager::ensureSynchronized)
+                        .cache();
     }
 
     public Observable<Prompt> getPrompts(LessonConstraints constraints) {
-        return ensureDatabasePopulated()
+        return ensureDatabasePopulated
                 .andThen(localDataSource.getPrompts(constraints));
     }
 
     public Single<Prompt> getRandomPrompt(@Nullable LessonConstraints constraints) {
-        return ensureDatabasePopulated()
+        return ensureDatabasePopulated
                 .andThen(localDataSource.getPrompts(constraints))
                 .doOnNext(prompt -> Timber.d("Prompt: %s", prompt.getText()))
                 .toList()
@@ -46,24 +43,5 @@ public class PromptsRepository {
                     return prompts.get(index);
                 })
                 .subscribeOn(Schedulers.io());
-    }
-
-    private Completable ensureDatabasePopulated() {
-        if (ensureDatabasePopulated == null) {
-            ensureDatabasePopulated = preferences.getLastSync()
-                    .asObservable()
-                    .firstElement()
-                    .filter(lastSync -> lastSync == 0)
-                    .flatMapCompletable(__ -> remoteDataSource.loadPrompts()
-                            .toList()
-                            .doOnSuccess(localDataSource::repopulate)
-                            .ignoreElement()
-//                        .doOnComplete(() -> preferences.getLastSync()
-//                                .set(System.currentTimeMillis()))
-                            .subscribeOn(Schedulers.io()))
-                    .cache();
-        }
-
-        return ensureDatabasePopulated;
     }
 }

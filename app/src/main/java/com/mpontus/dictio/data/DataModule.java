@@ -44,7 +44,7 @@ public abstract class DataModule {
 
     @Provides
     static PromptsRepository promptsRepository(LocalDataSource localDataSource, RemoteDataSource remoteDataSource, DictioPreferences preferences) {
-        return new PromptsRepository(localDataSource, remoteDataSource, preferences);
+        return new PromptsRepository(localDataSource, remoteDataSource, preferences, synchronizationManager);
     }
 
 }
