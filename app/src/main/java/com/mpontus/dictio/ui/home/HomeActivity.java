@@ -4,11 +4,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.Button;
 
-import com.f2prateek.rx.preferences2.Preference;
-import com.f2prateek.rx.preferences2.RxSharedPreferences;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.mpontus.dictio.R;
-import com.mpontus.dictio.data.local.DictioDatabase;
+import com.mpontus.dictio.data.DictioPreferences;
 import com.mpontus.dictio.ui.language.LanguageActivity;
 import com.mpontus.dictio.ui.lesson.LessonActivity;
 import com.mpontus.dictio.ui.shared.LangaugeResources;
@@ -33,10 +31,7 @@ public class HomeActivity extends DaggerAppCompatActivity {
     LangaugeResources langaugeResources;
 
     @Inject
-    RxSharedPreferences rxSharedPreferences;
-
-    @Inject
-    DictioDatabase db;
+    DictioPreferences preferences;
 
     @BindView(R.id.language)
     Button languageButton;
@@ -54,23 +49,23 @@ public class HomeActivity extends DaggerAppCompatActivity {
         setSupportActionBar(findViewById(R.id.toolbar));
         ButterKnife.bind(this);
 
-        Preference<String> languagePref = rxSharedPreferences.getString(PREF_KEY_LANGUAGE, DEFAULT_LANGUAGE);
-
         compositeDisposable.add(
-                languagePref.asObservable()
+                preferences.getLessonLanguage().asObservable()
                         .publish(language -> {
                             Completable languageClicks = RxView.clicks(languageButton)
                                     .withLatestFrom(language, (v, l) -> LanguageActivity.createIntent(this, l))
                                     .switchMap(intent -> RxActivityResult.on(this).startIntent(intent))
                                     .filter(result -> result.resultCode() == RESULT_OK)
                                     .map(result -> result.data().getStringExtra(LanguageActivity.EXTRA_LANGUAGE))
-                                    .doOnNext(languagePref.asConsumer())
+                                    .doOnNext(preferences.getLessonLanguage().asConsumer())
                                     .ignoreElements();
 
                             Completable lessonClicks = Observable.merge(
                                     RxView.clicks(wordsButton).map(view -> "word"),
                                     RxView.clicks(phrasesButton).map(view -> "phrase")
-                            ).withLatestFrom(language, (category, lang) -> LessonActivity.createIntent(this, lang, category))
+                            )
+                                    .doOnNext(preferences.getLessonCategory().asConsumer())
+                                    .withLatestFrom(language, (category, lang) -> LessonActivity.createIntent(this, lang, category))
                                     .doOnNext(this::startActivity)
                                     .ignoreElements();
 
@@ -88,7 +83,6 @@ public class HomeActivity extends DaggerAppCompatActivity {
                             languageButton.setCompoundDrawables(icon, null, null, null);
                             languageButton.setText(langaugeResources.getName(lang));
                         })
-
         );
     }
 
