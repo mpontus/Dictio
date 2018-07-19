@@ -70,7 +70,7 @@ public class HomeActivity extends DaggerAppCompatActivity {
                             Completable lessonClicks = Observable.merge(
                                     RxView.clicks(wordsButton).map(view -> "word"),
                                     RxView.clicks(phrasesButton).map(view -> "phrase")
-                            ).withLatestFrom(language, (type, lang) -> LessonActivity.createIntent(this, lang, type))
+                            ).withLatestFrom(language, (category, lang) -> LessonActivity.createIntent(this, lang, category))
                                     .doOnNext(this::startActivity)
                                     .ignoreElements();
 

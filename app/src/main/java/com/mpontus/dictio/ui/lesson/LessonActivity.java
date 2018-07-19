@@ -25,13 +25,13 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public class LessonActivity extends DaggerAppCompatActivity {
     public static final String EXTRA_LANGUAGE = "LANGUAGE";
-    public static final String EXTRA_TYPE = "TYPE";
+    public static final String EXTRA_CATEGORY = "CATEGORY";
 
     public static Intent createIntent(Context context, String language, String category) {
         Intent intent = new Intent(context, LessonActivity.class);
 
         intent.putExtra(EXTRA_LANGUAGE, language);
-        intent.putExtra(EXTRA_TYPE, category);
+        intent.putExtra(EXTRA_CATEGORY, category);
 
         return intent;
     }

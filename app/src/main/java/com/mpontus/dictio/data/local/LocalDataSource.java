@@ -22,7 +22,7 @@ public class LocalDataSource {
     }
 
     public Observable<Prompt> getPrompts(LessonConstraints constraints) {
-        return promptsDao.getPrompts(constraints.getLanguage(), constraints.getType())
+        return promptsDao.getPrompts(constraints.getLanguage(), constraints.getCategory())
                 .flatMapObservable(Observable::fromIterable)
                 .map(promptWithTranslations -> {
                     PromptEntity prompt = promptWithTranslations.getPrompt();
@@ -36,7 +36,7 @@ public class LocalDataSource {
                             prompt.getId(),
                             prompt.getText(),
                             prompt.getLanguage(),
-                            prompt.getType(),
+                            prompt.getCategory(),
                             translations
                     );
                 })
@@ -48,7 +48,7 @@ public class LocalDataSource {
         ArrayList<TranslationEntity> translationEntities = new ArrayList<>();
 
         for (Prompt prompt : prompts) {
-            promptEntities.add(new PromptEntity(prompt.getId(), prompt.getText(), prompt.getLanguage(), prompt.getType()));
+            promptEntities.add(new PromptEntity(prompt.getId(), prompt.getText(), prompt.getLanguage(), prompt.getCategory()));
 
             for (String transLng : prompt.getTranslations().keySet()) {
                 translationEntities.add(new TranslationEntity(prompt.getId(), transLng, prompt.getText()));

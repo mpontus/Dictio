@@ -13,12 +13,12 @@ public class PromptEntity {
 
     private final String language;
 
-    private final String type;
+    private final String category;
 
-    public PromptEntity(int id, String text, String language, String type) {
+    public PromptEntity(int id, String text, String language, String category) {
         this.id = id;
         this.text = text;
-        this.type = type;
+        this.category = category;
         this.language = language;
     }
 
@@ -30,8 +30,8 @@ public class PromptEntity {
         return text;
     }
 
-    public String getType() {
-        return type;
+    public String getCategory() {
+        return category;
     }
 
     public String getLanguage() {

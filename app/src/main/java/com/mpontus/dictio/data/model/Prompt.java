@@ -14,15 +14,15 @@ public class Prompt {
 
     private String language;
 
-    private String type;
+    private String category;
 
     private Map<String, String> translations;
 
-    public Prompt(int id, String text, String language, String type, Map<String, String> translations) {
+    public Prompt(int id, String text, String language, String category, Map<String, String> translations) {
         this.id = id;
         this.text = text;
         this.language = language;
-        this.type = type;
+        this.category = category;
         this.translations = translations;
     }
 
@@ -38,8 +38,8 @@ public class Prompt {
         return language;
     }
 
-    public String getType() {
-        return type;
+    public String getCategory() {
+        return category;
     }
 
     public Map<String, String> getTranslations() {

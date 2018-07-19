@@ -17,9 +17,9 @@ public class LessonActivityModule {
     LessonConstraints lessonConstraints(LessonActivity activity) {
         Intent intent = activity.getIntent();
         String language = intent.getStringExtra(LessonActivity.EXTRA_LANGUAGE);
-        String type = intent.getStringExtra(LessonActivity.EXTRA_TYPE);
+        String category = intent.getStringExtra(LessonActivity.EXTRA_CATEGORY);
 
-        return new LessonConstraints(language, type);
+        return new LessonConstraints(language, category);
     }
 
     @Provides
