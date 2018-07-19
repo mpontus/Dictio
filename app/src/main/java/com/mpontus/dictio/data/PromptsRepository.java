@@ -42,9 +42,9 @@ public class PromptsRepository {
                 LessonConstraints::new
         );
 
-        return ensureDatabasePopulated.andThen(lessonConstraintsObservable)
-                .switchMap(localDataSource::getPrompts)
-                .firstElement();
+        return lessonConstraintsObservable
+                .firstElement()
+                .flatMapSingleElement(this::getRandomPrompt);
     }
 
     public Single<Prompt> getRandomPrompt(@Nullable LessonConstraints constraints) {
