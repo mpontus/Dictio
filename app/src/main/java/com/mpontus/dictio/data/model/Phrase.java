@@ -5,8 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Phrase {
-
-    private static Pattern WORD_PATTERN = Pattern.compile("(?i)[\\w'-]+");
+    private static Pattern WORD_PATTERN = Pattern.compile("(?i)([\\u3000-\\u30ff\\uff00-\\uffef\\u4e00-\\u9faf]|[\\w'-]+)");
 
     private final String text;
     private final ArrayList<String> words = new ArrayList<>();
