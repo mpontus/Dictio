@@ -24,7 +24,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import rx_activity_result2.RxActivityResult;
 
 public class HomeActivity extends DaggerAppCompatActivity {
-
     private static final String PREF_KEY_LANGUAGE = "language";
     private static final String DEFAULT_LANGUAGE = "en-US";
 

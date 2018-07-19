@@ -1,5 +1,7 @@
 package com.mpontus.dictio.di;
 
+import com.mpontus.dictio.service.AuthenticatorService;
+import com.mpontus.dictio.service.SyncService;
 import com.mpontus.dictio.ui.home.HomeActivity;
 import com.mpontus.dictio.ui.home.HomeActivityModule;
 import com.mpontus.dictio.ui.language.LanguageActivity;
@@ -23,4 +25,10 @@ public abstract class ActivityBindingModule {
     @ActivityScoped
     @ContributesAndroidInjector(modules = LessonActivityModule.class)
     abstract LessonActivity lessonActivity();
+
+    @ContributesAndroidInjector
+    abstract SyncService syncService();
+
+    @ContributesAndroidInjector
+    abstract AuthenticatorService authenticatorService();
 }

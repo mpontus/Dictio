@@ -16,6 +16,10 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="AppTheme.SplashActivity" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
+
     <style name="Prompt">
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">?android:textColorPrimary</item>
