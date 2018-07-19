@@ -25,6 +25,6 @@ public abstract class PromptsDao {
     public abstract void insertTranslations(List<TranslationEntity> prompt);
 
     @Transaction
-    @Query("SELECT * FROM prompts WHERE language = :language AND type = :type")
-    public abstract Single<List<PromptWithTranslations>> getPrompts(String language, String type);
+    @Query("SELECT * FROM prompts WHERE language = :language AND category = :category")
+    public abstract Single<List<PromptWithTranslations>> getPrompts(String language, String category);
 }

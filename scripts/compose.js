@@ -23,7 +23,22 @@ const readFile = filename =>
     .split("\n")
     .slice(0, LIMIT_PER_FILE);
 
+// Replace underscores in language with minus signs
 const fixLang = lng => lng.replace("_", "-");
+
+// Remove country part of the language
+const transLang = lng => lng.split("_")[0];
+
+// Capitzlize first letter of a string
+const capitalize = text => text && text[0].toUpperCase() + text.slice(1);
+
+// Remove tags and stuff in parentheses
+const cleanup = text =>
+  text
+    .trim()
+    .replace(/\(.*?\)/g, "")
+    .replace(/\<.*?\>/g, "")
+    .replace(/\[.*?\]/g, "");
 
 function* collectPrompts() {
   for (const lng of languages) {
@@ -39,13 +54,13 @@ function* collectPrompts() {
 
         trans[transLng] = readFile(filename);
       }
-
+      g;
       for (let i = 0; i < trans[lng].length; ++i) {
         const result = {
           id: genId(),
+          text: capitalize(cleanup(trans[lng][i])),
           language: fixLang(lng),
-          type: cat,
-          text: trans[lng][i],
+          category: cat,
           translations: {}
         };
 
@@ -54,7 +69,9 @@ function* collectPrompts() {
             continue;
           }
 
-          result.translations[fixLang(transLng)] = trans[transLng][i];
+          result.translations[transLang(transLng)] = capitalize(
+            cleanup(trans[transLng][i])
+          );
         }
 
         yield result;
@@ -65,10 +82,15 @@ function* collectPrompts() {
 
 process.stdout.write(
   JSON.stringify(
-    {
-      version: 1,
-      prompts: [...collectPrompts()]
-    },
+    [...collectPrompts()]
+      // Leave non-empty prompts
+      .filter(prompt => prompt.text)
+      // Leave prompts with non-empty translation
+      .filter(
+        prompt =>
+          Object.values(prompt.translations).filter(translation => translation)
+            .length
+      ),
     null,
     2
   )

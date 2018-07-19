@@ -33,7 +33,8 @@ public class DictioApplication extends DaggerApplication {
 
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
                     .detectAll()
-                    .penaltyDeath()   // If violations are in Android itself or 3rd-party libs, use penaltyLog.
+                    .penaltyLog()
+//                    .penaltyDeath()   // If violations are in Android itself or 3rd-party libs, use penaltyLog.
                     .build());
 
             if (!LeakCanary.isInAnalyzerProcess(this)) {

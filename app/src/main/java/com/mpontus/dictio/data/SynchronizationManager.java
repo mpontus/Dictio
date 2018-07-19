@@ -50,7 +50,7 @@ public class SynchronizationManager {
                     promptEntities.add(new PromptEntity(prompt.getId(),
                             prompt.getText(),
                             prompt.getLanguage(),
-                            prompt.getType()));
+                            prompt.getCategory()));
 
                     for (Map.Entry<String, Object> entry : prompt.getTranslations().entrySet()) {
                         translationEntities.add(new TranslationEntity(prompt.getId(),

@@ -1,5 +1,6 @@
 package com.mpontus.dictio.ui.lesson;
 
+import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
@@ -17,16 +18,24 @@ import com.mindorks.placeholderview.annotations.swipe.SwipeHead;
 import com.mindorks.placeholderview.annotations.swipe.SwipeIn;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOut;
 import com.mpontus.dictio.R;
+import com.mpontus.dictio.data.TranslationManager;
 import com.mpontus.dictio.data.model.PhraseComparison;
 import com.mpontus.dictio.data.model.Prompt;
-
-import java.util.Locale;
 
 @NonReusable
 @Layout(R.layout.lesson_card_view)
 class LessonCard {
 
-    private LessonActivity activity;
+    private final LifecycleOwner lifecycleOwner;
+
+    private final LessonViewModel viewModel;
+
+    private final PromptPainter promptPainter;
+
+    private final TranslationManager translationManager;
+
+    private final Prompt prompt;
+
     @View(R.id.speak)
     public ImageView speakButton;
 
@@ -38,8 +47,6 @@ class LessonCard {
 
     @View(R.id.translation)
     public TextView translationView;
-
-    private final Prompt prompt;
 
     private final LiveData<PhraseComparison> match;
     private final LiveData<Boolean> isPlaybackActive;
@@ -64,16 +71,23 @@ class LessonCard {
     };
 
     // TODO: Refactor using LiveDataReactiveStreams
-    LessonCard(LessonActivity activity, @NonNull Prompt prompt) {
-        this.activity = activity;
+    LessonCard(LifecycleOwner lifecycleOwner,
+               LessonViewModel viewModel,
+               PromptPainter promptPainter,
+               TranslationManager translationManager,
+               @NonNull Prompt prompt) {
+        this.lifecycleOwner = lifecycleOwner;
+        this.viewModel = viewModel;
+        this.promptPainter = promptPainter;
+        this.translationManager = translationManager;
         this.prompt = prompt;
 
-        match = activity.lessonViewModel.getMatch(prompt);
-        isPlaybackActive = activity.lessonViewModel.isPlaybackActive(prompt);
-        isRecordingActive = activity.lessonViewModel.isRecordingActive(prompt);
+        match = viewModel.getMatch(prompt);
+        isPlaybackActive = viewModel.isPlaybackActive(prompt);
+        isRecordingActive = viewModel.isRecordingActive(prompt);
 
         matchObserver = match -> {
-            SpannableString spannableString = activity.promptPainter.colorToMatch(prompt.getText(), match);
+            SpannableString spannableString = this.promptPainter.colorToMatch(prompt.getText(), match);
 
             promptView.setText(spannableString, TextView.BufferType.SPANNABLE);
         };
@@ -81,22 +95,22 @@ class LessonCard {
 
     @Resolve
     public void onResolved() {
-        match.observe(activity, matchObserver);
-        isPlaybackActive.observe(activity, playbackObserver);
-        isRecordingActive.observe(activity, recordingObserver);
+        String translation = translationManager.getTranslation(prompt);
 
         promptView.setText(prompt.getText());
-
-        String translation = prompt.getTranslation(Locale.getDefault());
 
         if (translation != null) {
             translationView.setText(translation);
         }
+
+        match.observe(lifecycleOwner, matchObserver);
+        isPlaybackActive.observe(lifecycleOwner, playbackObserver);
+        isRecordingActive.observe(lifecycleOwner, recordingObserver);
     }
 
     @SwipeHead
     public void onShown() {
-        activity.lessonViewModel.onPromptShown(prompt);
+        viewModel.onPromptShown(prompt);
     }
 
     @SwipeIn
@@ -106,11 +120,11 @@ class LessonCard {
         isPlaybackActive.removeObserver(playbackObserver);
         isRecordingActive.removeObserver(recordingObserver);
 
-        activity.lessonViewModel.onPromptHidden(prompt);
+        viewModel.onPromptHidden(prompt);
     }
 
     @Click(R.id.container)
     public void onClick() {
-        activity.lessonViewModel.onPlaybackToggle(!isPlaybackActive.getValue());
+        viewModel.onPlaybackToggle(!isPlaybackActive.getValue());
     }
 }

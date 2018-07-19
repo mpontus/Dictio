@@ -4,4 +4,7 @@
     <dimen name="language_button_padding_start">12dp</dimen>
     <dimen name="language_button_padding_end">44dp</dimen>
     <dimen name="language_button_drawable_padding">8dp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
+    <dimen name="widget_content_margin">8dp</dimen>
+    <dimen name="flag_margin">8dp</dimen>
 </resources>

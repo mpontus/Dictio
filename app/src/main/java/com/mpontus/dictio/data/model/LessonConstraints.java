@@ -3,18 +3,18 @@ package com.mpontus.dictio.data.model;
 public class LessonConstraints {
     private String language;
 
-    private String type;
+    private String category;
 
-    public LessonConstraints(String language, String type) {
+    public LessonConstraints(String language, String category) {
         this.language = language;
-        this.type = type;
+        this.category = category;
     }
 
     public String getLanguage() {
         return language;
     }
 
-    public String getType() {
-        return type;
+    public String getCategory() {
+        return category;
     }
 }
