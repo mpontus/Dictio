@@ -32,13 +32,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.home.HomeActivity"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.HomeActivity">
-        </activity>
-
+            android:theme="@style/AppTheme.HomeActivity"></activity>
         <activity
             android:name=".ui.lesson.LessonActivity"
             android:parentActivityName=".ui.home.HomeActivity">
