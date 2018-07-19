@@ -1,5 +1,6 @@
 package com.mpontus.dictio.ui.lesson;
 
+import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
@@ -26,7 +27,12 @@ import java.util.Locale;
 @Layout(R.layout.lesson_card_view)
 class LessonCard {
 
-    private LessonActivity activity;
+    private LifecycleOwner lifecycleOwner;
+
+    private LessonViewModel viewModel;
+
+    private PromptPainter promptPainter;
+
     @View(R.id.speak)
     public ImageView speakButton;
 
@@ -64,16 +70,18 @@ class LessonCard {
     };
 
     // TODO: Refactor using LiveDataReactiveStreams
-    LessonCard(LessonActivity activity, @NonNull Prompt prompt) {
-        this.activity = activity;
+    LessonCard(LifecycleOwner lifecycleOwner, LessonViewModel viewModel, PromptPainter promptPainter, @NonNull Prompt prompt) {
+        this.lifecycleOwner = lifecycleOwner;
+        this.viewModel = viewModel;
+        this.promptPainter = promptPainter;
         this.prompt = prompt;
 
-        match = activity.lessonViewModel.getMatch(prompt);
-        isPlaybackActive = activity.lessonViewModel.isPlaybackActive(prompt);
-        isRecordingActive = activity.lessonViewModel.isRecordingActive(prompt);
+        match = viewModel.getMatch(prompt);
+        isPlaybackActive = viewModel.isPlaybackActive(prompt);
+        isRecordingActive = viewModel.isRecordingActive(prompt);
 
         matchObserver = match -> {
-            SpannableString spannableString = activity.promptPainter.colorToMatch(prompt.getText(), match);
+            SpannableString spannableString = this.promptPainter.colorToMatch(prompt.getText(), match);
 
             promptView.setText(spannableString, TextView.BufferType.SPANNABLE);
         };
@@ -81,9 +89,9 @@ class LessonCard {
 
     @Resolve
     public void onResolved() {
-        match.observe(activity, matchObserver);
-        isPlaybackActive.observe(activity, playbackObserver);
-        isRecordingActive.observe(activity, recordingObserver);
+        match.observe(lifecycleOwner, matchObserver);
+        isPlaybackActive.observe(lifecycleOwner, playbackObserver);
+        isRecordingActive.observe(lifecycleOwner, recordingObserver);
 
         promptView.setText(prompt.getText());
 
@@ -96,7 +104,7 @@ class LessonCard {
 
     @SwipeHead
     public void onShown() {
-        activity.lessonViewModel.onPromptShown(prompt);
+        viewModel.onPromptShown(prompt);
     }
 
     @SwipeIn
@@ -106,11 +114,11 @@ class LessonCard {
         isPlaybackActive.removeObserver(playbackObserver);
         isRecordingActive.removeObserver(recordingObserver);
 
-        activity.lessonViewModel.onPromptHidden(prompt);
+        viewModel.onPromptHidden(prompt);
     }
 
     @Click(R.id.container)
     public void onClick() {
-        activity.lessonViewModel.onPlaybackToggle(!isPlaybackActive.getValue());
+        viewModel.onPlaybackToggle(!isPlaybackActive.getValue());
     }
 }

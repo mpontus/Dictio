@@ -1,8 +1,6 @@
 package com.mpontus.dictio.ui.lesson;
 
 import android.Manifest;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -44,18 +42,16 @@ public class LessonActivity extends DaggerAppCompatActivity {
     RxPermissions permissions;
 
     @Inject
-    PromptPainter promptPainter;
+    LessonViewModel lessonViewModel;
 
     @Inject
-    ViewModelProvider.Factory viewModelFactory;
+    LessonCardFactory lessonCardFactory;
 
     @Inject
     LessonConstraints lessonConstraints;
 
     @BindView(R.id.swipeView)
     SwipePlaceHolderView swipeView;
-
-    LessonViewModel lessonViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,15 +64,13 @@ public class LessonActivity extends DaggerAppCompatActivity {
 
         swipeView.getBuilder().setDisplayViewCount(2);
 
-        lessonViewModel = ViewModelProviders.of(this, viewModelFactory).get(LessonViewModel.class);
-
         lessonViewModel.setLessonConstraints(lessonConstraints);
 
         lessonViewModel.getPromptAdditions(4).observe(this, prompts -> {
             assert prompts != null;
 
             for (Prompt prompt : prompts) {
-                swipeView.addView(new LessonCard(this, prompt));
+                swipeView.addView(lessonCardFactory.createCard(prompt));
             }
         });
 
