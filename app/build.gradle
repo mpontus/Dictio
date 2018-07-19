@@ -104,9 +104,6 @@ dependencies {
     }
     annotationProcessor 'com.mindorks.android:placeholderview-compiler:1.0.3'
 
-    // Install OAuth2 to retrieve GCS credentials
-    compile 'com.google.auth:google-auth-library-oauth2-http:0.7.0';
-
     // Butterknife to bind views to activities
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
@@ -136,6 +133,11 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    // Install OAuth2 to retrieve GCS credentials
+    implementation('com.google.auth:google-auth-library-oauth2-http:0.7.0') {
+        exclude(group: 'org.apache.httpcomponents', module: 'httpclient')
+    }
+
     implementation('com.google.api-client:google-api-client:1.23.0') {
         exclude module: 'guava-jdk5'
         // Exclude artifacts that the Android SDK/Runtime provides.
@@ -146,7 +148,7 @@ dependencies {
     }
     implementation('com.google.api-client:google-api-client-android:1.23.0') {
         exclude module: 'guava-jdk5'
-        exclude module: 'httpclient'
+        exclude(group: 'org.apache.httpcomponents', module: 'httpclient')
         // Exclude play services, since we're not using this yet.
         exclude(group: 'com.google.android.gms:play-services', module: 'google-play-services')
     }

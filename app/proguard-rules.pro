@@ -29,7 +29,7 @@
 -dontwarn com.google.errorprone.annotations.**
 -keep class io.grpc.internal.DnsNameResolveProvider
 -keep class io.grpc.okhttp.OkHttpChannelProvider
-##---------------End: proguard configuration for Gson  -----
+##---------------End: proguard configuration for Speech module  -----
 
 ##---------------Begin: proguard configuration for PlaceHolderView  ----------
 -keepattributes *Annotation*
@@ -37,7 +37,7 @@
   @com.mindorks.placeholderview.annotations.** <methods>;
 }
 -keep class com.mpontus.dictio.ui.lesson.** { *; }
-##---------------End: proguard configuration for Gson  -----
+##---------------End: proguard configuration for PlaceHolderView  -----
 
 ##---------------Begin: proguard configuration for OkHttp  ----------
 # JSR 305 annotations are for embedding nullability information.
@@ -74,6 +74,9 @@
 -keep class * implements com.google.gson.TypeAdapterFactory
 -keep class * implements com.google.gson.JsonSerializer
 -keep class * implements com.google.gson.JsonDeserializer
+
+# ???
+-dontwarn com.google.gson.**
 ##---------------End: proguard configuration for Gson  -----
 
 
