@@ -2,7 +2,8 @@ package com.mpontus.dictio.data;
 
 import android.support.annotation.Nullable;
 
-import com.mpontus.dictio.data.local.LocalDataSource;
+import com.mpontus.dictio.data.local.EntityMapper;
+import com.mpontus.dictio.data.local.PromptsDao;
 import com.mpontus.dictio.data.model.LessonConstraints;
 import com.mpontus.dictio.data.model.Prompt;
 
@@ -13,17 +14,16 @@ import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class PromptsRepository {
 
-    private final LocalDataSource localDataSource;
+    private final PromptsDao promptsDao;
     private final Completable ensureDatabasePopulated;
     private final DictioPreferences preferences;
 
     @Inject
-    public PromptsRepository(LocalDataSource localDataSource, SynchronizationManager synchronizationManager, DictioPreferences preferences) {
-        this.localDataSource = localDataSource;
+    public PromptsRepository(PromptsDao promptsDao, SynchronizationManager synchronizationManager, DictioPreferences preferences) {
+        this.promptsDao = promptsDao;
         this.ensureDatabasePopulated =
                 Completable.defer(synchronizationManager::ensureSynchronized)
                         .cache();
@@ -32,7 +32,9 @@ public class PromptsRepository {
 
     public Observable<Prompt> getPrompts(LessonConstraints constraints) {
         return ensureDatabasePopulated
-                .andThen(localDataSource.getPrompts(constraints));
+                .andThen(promptsDao.getPrompts(constraints.getLanguage(), constraints.getCategory(), true, 0L))
+                .flatMapObservable(Observable::fromIterable)
+                .map(EntityMapper::transform);
     }
 
     public Maybe<Prompt> getNextPrompt() {
@@ -48,9 +50,7 @@ public class PromptsRepository {
     }
 
     public Single<Prompt> getRandomPrompt(@Nullable LessonConstraints constraints) {
-        return ensureDatabasePopulated
-                .andThen(localDataSource.getPrompts(constraints))
-                .doOnNext(prompt -> Timber.d("Prompt: %s", prompt.getText()))
+        return getPrompts(constraints)
                 .toList()
                 .map(prompts -> {
                     int index = (int) (Math.random() * prompts.size());

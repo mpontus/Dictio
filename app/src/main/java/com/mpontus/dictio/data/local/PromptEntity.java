@@ -15,6 +15,10 @@ public class PromptEntity {
 
     private final String category;
 
+    private Boolean isNew = true;
+
+    private Long nextTime = 0L;
+
     public PromptEntity(int id, String text, String language, String category) {
         this.id = id;
         this.text = text;
@@ -36,5 +40,21 @@ public class PromptEntity {
 
     public String getLanguage() {
         return language;
+    }
+
+    public Boolean getNew() {
+        return isNew;
+    }
+
+    public void setNew(Boolean aNew) {
+        isNew = aNew;
+    }
+
+    public Long getNextTime() {
+        return nextTime;
+    }
+
+    public void setNextTime(Long nextTime) {
+        this.nextTime = nextTime;
     }
 }

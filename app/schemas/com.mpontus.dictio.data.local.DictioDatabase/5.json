@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 5,
-    "identityHash": "db12ffb2bce12f6e9be4c7ee43b4757a",
+    "identityHash": "bb5aa55a1f2f1ea7976ed9dce88050fd",
     "entities": [
       {
         "tableName": "prompts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `text` TEXT, `language` TEXT, `category` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `text` TEXT, `language` TEXT, `category` TEXT, `isNew` INTEGER, `nextTime` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -30,6 +30,18 @@
             "fieldPath": "category",
             "columnName": "category",
             "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isNew",
+            "columnName": "isNew",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nextTime",
+            "columnName": "nextTime",
+            "affinity": "INTEGER",
             "notNull": false
           }
         ],
@@ -90,7 +102,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"db12ffb2bce12f6e9be4c7ee43b4757a\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"bb5aa55a1f2f1ea7976ed9dce88050fd\")"
     ]
   }
 }

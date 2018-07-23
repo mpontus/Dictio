@@ -6,6 +6,9 @@ ext {
     grpcVersion = '1.13.1'
 }
 
+repositories {
+    mavenCentral()
+}
 android {
     compileSdkVersion 27
 

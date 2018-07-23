@@ -6,6 +6,7 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -13,9 +14,17 @@ import io.reactivex.Single;
 @Dao
 public abstract class PromptsDao {
     @Transaction
-    public void insertAll(List<PromptEntity> prompts, List<TranslationEntity> translations) {
-        insertPrompts(prompts);
-        insertTranslations(translations);
+    public void insertAll(List<PromptWithTranslations> promptsWithTranslations) {
+        List<PromptEntity> promptEntities = new ArrayList<>();
+        List<TranslationEntity> translationEntities = new ArrayList<>();
+
+        for (PromptWithTranslations promptWithTranslations : promptsWithTranslations) {
+            promptEntities.add(promptWithTranslations.getPrompt());
+            translationEntities.addAll(promptWithTranslations.getTranslations());
+        }
+
+        insertPrompts(promptEntities);
+        insertTranslations(translationEntities);
     }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -25,6 +34,6 @@ public abstract class PromptsDao {
     public abstract void insertTranslations(List<TranslationEntity> prompt);
 
     @Transaction
-    @Query("SELECT * FROM prompts WHERE language = :language AND category = :category")
-    public abstract Single<List<PromptWithTranslations>> getPrompts(String language, String category);
+    @Query("SELECT * FROM prompts WHERE language = :language AND category = :category AND isNew = :isNew and nextTime <= :nextTime")
+    public abstract Single<List<PromptWithTranslations>> getPrompts(String language, String category, boolean isNew, Long nextTime);
 }
