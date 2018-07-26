@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 5,
-    "identityHash": "bb5aa55a1f2f1ea7976ed9dce88050fd",
+    "identityHash": "82f7842b1adb2a5d5e231e0970c3e784",
     "entities": [
       {
         "tableName": "prompts",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `text` TEXT, `language` TEXT, `category` TEXT, `isNew` INTEGER, `nextTime` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `text` TEXT, `language` TEXT, `category` TEXT, `difficulty` REAL NOT NULL, `familiarity` REAL NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -33,16 +33,16 @@
             "notNull": false
           },
           {
-            "fieldPath": "isNew",
-            "columnName": "isNew",
-            "affinity": "INTEGER",
-            "notNull": false
+            "fieldPath": "difficulty",
+            "columnName": "difficulty",
+            "affinity": "REAL",
+            "notNull": true
           },
           {
-            "fieldPath": "nextTime",
-            "columnName": "nextTime",
-            "affinity": "INTEGER",
-            "notNull": false
+            "fieldPath": "familiarity",
+            "columnName": "familiarity",
+            "affinity": "REAL",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -51,7 +51,20 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_prompts_language_category_familiarity_difficulty_id",
+            "unique": false,
+            "columnNames": [
+              "language",
+              "category",
+              "familiarity",
+              "difficulty",
+              "id"
+            ],
+            "createSql": "CREATE  INDEX `index_prompts_language_category_familiarity_difficulty_id` ON `${TABLE_NAME}` (`language`, `category`, `familiarity`, `difficulty`, `id`)"
+          }
+        ],
         "foreignKeys": []
       },
       {
@@ -102,7 +115,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"bb5aa55a1f2f1ea7976ed9dce88050fd\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"82f7842b1adb2a5d5e231e0970c3e784\")"
     ]
   }
 }

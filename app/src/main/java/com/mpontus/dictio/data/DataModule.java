@@ -6,6 +6,8 @@ import android.arch.persistence.room.Room;
 import com.mpontus.dictio.data.local.DictioDatabase;
 import com.mpontus.dictio.data.local.PromptsDao;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -18,6 +20,7 @@ public abstract class DataModule {
                 .build();
     }
 
+    @Singleton
     @Provides
     static PromptsDao promptsDao(DictioDatabase database) {
         return database.promptsDao();

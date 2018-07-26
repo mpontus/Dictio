@@ -1,9 +1,11 @@
 package com.mpontus.dictio.data.local;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
-@Entity(tableName = "prompts")
+@Entity(tableName = "prompts",
+        indices = {@Index(value = {"language", "category", "familiarity", "difficulty", "id"})})
 public class PromptEntity {
 
     @PrimaryKey
@@ -15,9 +17,9 @@ public class PromptEntity {
 
     private final String category;
 
-    private Boolean isNew = true;
+    private float difficulty = 0.0f;
 
-    private Long nextTime = 0L;
+    private float familiarity = 0.0f;
 
     public PromptEntity(int id, String text, String language, String category) {
         this.id = id;
@@ -42,19 +44,19 @@ public class PromptEntity {
         return language;
     }
 
-    public Boolean getNew() {
-        return isNew;
+    public float getDifficulty() {
+        return difficulty;
     }
 
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
+    public void setDifficulty(float difficulty) {
+        this.difficulty = difficulty;
     }
 
-    public Long getNextTime() {
-        return nextTime;
+    public float getFamiliarity() {
+        return familiarity;
     }
 
-    public void setNextTime(Long nextTime) {
-        this.nextTime = nextTime;
+    public void setFamiliarity(float familiarity) {
+        this.familiarity = familiarity;
     }
 }

@@ -17,9 +17,11 @@ import io.reactivex.Completable;
 import io.reactivex.schedulers.Schedulers;
 
 public class SynchronizationManager {
-    private DictioPreferences preferences;
-    private PromptsDao promptsDao;
-    private Fundamentum api;
+    private final DictioPreferences preferences;
+    private final PromptsDao promptsDao;
+    private final Fundamentum api;
+
+    private Completable ensureSynchronized;
 
     @Inject
     public SynchronizationManager(DictioPreferences preferences, PromptsDao promptsDao, Fundamentum api) {
@@ -29,15 +31,20 @@ public class SynchronizationManager {
     }
 
     public Completable ensureSynchronized() {
-        return preferences.getLastSync()
-                .asObservable()
-                .firstElement()
-                .filter(lastSync -> lastSync == 0)
-                .flatMapCompletable(__ -> forceSynchronize()
-                        .doOnComplete(() -> preferences.getLastSync()
-                                .set(System.currentTimeMillis()))
-                        .subscribeOn(Schedulers.io()))
-                .subscribeOn(Schedulers.io());
+        if (ensureSynchronized == null) {
+            ensureSynchronized = preferences.getLastSync()
+                    .asObservable()
+                    .firstElement()
+                    .filter(lastSync -> lastSync == 0)
+                    .flatMapCompletable(__ -> forceSynchronize()
+                            .doOnComplete(() -> preferences.getLastSync()
+                                    .set(System.currentTimeMillis()))
+                            .subscribeOn(Schedulers.io()))
+                    .subscribeOn(Schedulers.io())
+                    .cache();
+        }
+
+        return ensureSynchronized;
     }
 
     public Completable forceSynchronize() {

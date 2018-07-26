@@ -41,5 +41,4 @@ public class Prompt {
     public Map<String, String> getTranslations() {
         return translations;
     }
-
 }

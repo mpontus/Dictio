@@ -4,14 +4,16 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.LiveDataReactiveStreams;
 import android.arch.lifecycle.ViewModel;
 
-import com.mpontus.dictio.data.LessonPlan;
 import com.mpontus.dictio.data.PhraseMatcher;
 import com.mpontus.dictio.data.model.LessonConstraints;
 import com.mpontus.dictio.data.model.PhraseComparison;
 import com.mpontus.dictio.data.model.Prompt;
+import com.mpontus.dictio.domain.LessonPlan;
+import com.mpontus.dictio.domain.LessonPlanFactory;
 import com.mpontus.dictio.service.LessonService;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -75,15 +77,17 @@ public class LessonViewModel extends ViewModel {
 
     private final LessonService lessonService;
 
-    private final LessonPlan lessonPlan;
+    private final LessonPlanFactory lessonPlanFactory;
+
+    private LessonPlan lessonPlan;
     private final Observable<Prompt> currentPrompt$;
     private final Observable<Boolean> isSpeechSynthesisActive$;
     private final Observable<Boolean> isSpeechRecognitionActive$;
 
     @Inject
-    public LessonViewModel(LessonService lessonService, LessonPlan lessonPlan) {
+    public LessonViewModel(LessonService lessonService, LessonPlanFactory lessonPlanFactory) {
         this.lessonService = lessonService;
-        this.lessonPlan = lessonPlan;
+        this.lessonPlanFactory = lessonPlanFactory;
 
         lessonService.addListener(lessonServiceListener);
 
@@ -159,7 +163,15 @@ public class LessonViewModel extends ViewModel {
                         // separate indication when the recorder is ready
                         // TODO: Show somehow that the recorder is ready
                         .delay(200, TimeUnit.MILLISECONDS)
-                        .subscribe(prompt -> lessonService.startRecording(prompt.getLanguage()))
+                        .subscribe(prompt -> lessonService.startRecording(prompt.getLanguage())),
+
+
+                // Mark prompts as completed
+                event$.ofType(Event.PromptHidden.class)
+                        .map(Event.PromptHidden::getPrompt)
+                        .flatMapCompletable(prompt ->
+                                lessonPlan.markPromptCompleted())
+                        .subscribe()
         );
 
 
@@ -185,14 +197,16 @@ public class LessonViewModel extends ViewModel {
      * @return Live data
      */
     public LiveData<List<Prompt>> getPromptAdditions(int initialSize) {
+        Iterator<Single<Prompt>> iterator = lessonPlan.iterator();
+
         Observable<List<Prompt>> prompt$ = Observable.concat(
                 Observable.range(0, initialSize)
-                        .flatMapMaybe(__ -> lessonPlan.getNextPrompt())
+                        .concatMapSingle(__ -> iterator.next())
                         .toList()
                         .toObservable(),
 
                 event$.ofType(Event.PromptHidden.class)
-                        .flatMapMaybe(__ -> lessonPlan.getNextPrompt())
+                        .concatMapSingle(__ -> iterator.next())
                         .map(Collections::singletonList)
         );
 
@@ -231,7 +245,7 @@ public class LessonViewModel extends ViewModel {
     }
 
     void setLessonConstraints(LessonConstraints constraints) {
-        lessonPlan.setLessonConstraints(constraints);
+        lessonPlan = lessonPlanFactory.getLessonPlan(constraints.getLanguage(), constraints.getCategory());
     }
 
     void onPermissionGranted() {

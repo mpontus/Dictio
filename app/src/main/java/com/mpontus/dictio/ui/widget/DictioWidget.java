@@ -9,8 +9,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.widget.RemoteViews;
 
 import com.mpontus.dictio.R;
-import com.mpontus.dictio.data.PromptsRepository;
+import com.mpontus.dictio.data.DictioPreferences;
 import com.mpontus.dictio.data.TranslationManager;
+import com.mpontus.dictio.data.local.EntityMapper;
+import com.mpontus.dictio.data.local.PromptsDao;
+import com.mpontus.dictio.data.model.LessonConstraints;
 import com.mpontus.dictio.data.model.Prompt;
 import com.mpontus.dictio.ui.lesson.LessonActivity;
 import com.mpontus.dictio.ui.shared.LangaugeResources;
@@ -18,6 +21,9 @@ import com.mpontus.dictio.ui.shared.LangaugeResources;
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 /**
  * Implementation of App Widget functionality.
@@ -25,7 +31,10 @@ import dagger.android.AndroidInjection;
 public class DictioWidget extends AppWidgetProvider {
 
     @Inject
-    PromptsRepository promptsRepository;
+    PromptsDao promptsDao;
+
+    @Inject
+    DictioPreferences preferences;
 
     @Inject
     TranslationManager translationManager;
@@ -35,8 +44,12 @@ public class DictioWidget extends AppWidgetProvider {
 
     void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                          int appWidgetId) {
-
-        Prompt prompt = promptsRepository.getNextPrompt().blockingGet();
+        Single<String> languageSingle = preferences.getLessonLanguage().asObservable().firstOrError();
+        Single<String> categorySingle = preferences.getLessonCategory().asObservable().firstOrError();
+        Maybe<Prompt> promptMaybe = Single.zip(languageSingle, categorySingle, LessonConstraints::new)
+                .flatMapMaybe(constraints -> getReviewPrompt(constraints)
+                        .switchIfEmpty(getPendingPrompt(constraints)));
+        Prompt prompt = promptMaybe.blockingGet();
 
         if (prompt != null) {
             // Construct the RemoteViews object
@@ -76,6 +89,20 @@ public class DictioWidget extends AppWidgetProvider {
     @Override
     public void onDisabled(Context context) {
         // Enter relevant functionality for when the last widget is disabled
+    }
+
+    private Maybe<Prompt> getPendingPrompt(LessonConstraints constraints) {
+        return promptsDao.getPendingPrompts(constraints.getLanguage(), constraints.getCategory(), 1)
+                .flatMapObservable(Observable::fromIterable)
+                .firstElement()
+                .map(EntityMapper::transform);
+    }
+
+    private Maybe<Prompt> getReviewPrompt(LessonConstraints constraints) {
+        return promptsDao.getReviewPrompts(constraints.getLanguage(), constraints.getCategory(), 1)
+                .flatMapObservable(Observable::fromIterable)
+                .firstElement()
+                .map(EntityMapper::transform);
     }
 }
 
