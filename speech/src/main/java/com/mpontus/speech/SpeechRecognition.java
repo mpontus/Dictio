@@ -1,5 +1,7 @@
 package com.mpontus.speech;
 
+import java.util.Collection;
+
 public interface SpeechRecognition {
 
     boolean isReady();
@@ -23,7 +25,7 @@ public interface SpeechRecognition {
     interface Listener {
         void onReady();
 
-        void onRecognition(Iterable<String> alternatives);
+        void onRecognition(Collection<String> alternatives);
 
         void onRecognitionEnd();
 

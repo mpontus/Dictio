@@ -8,6 +8,7 @@ import com.google.cloud.speech.v1.SpeechGrpc;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import io.grpc.ManagedChannel;
 import io.grpc.internal.DnsNameResolverProvider;
@@ -21,7 +22,7 @@ public class GoogleSpeechRecognition implements SpeechRecognition {
     private final GoogleSpeechRecognitionHandler.Listener handlerCallback =
             new GoogleSpeechRecognitionHandler.Listener() {
                 @Override
-                public void onRecognition(Iterable<String> alternatives) {
+                public void onRecognition(Collection<String> alternatives) {
                     for (Listener listener : listeners) {
                         listener.onRecognition(alternatives);
                     }

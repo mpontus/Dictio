@@ -10,6 +10,7 @@ import com.google.cloud.speech.v1.StreamingRecognizeResponse;
 import com.google.protobuf.ByteString;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import io.grpc.stub.StreamObserver;
 
@@ -138,7 +139,7 @@ public class GoogleSpeechRecognitionHandler {
     }
 
     interface Listener {
-        void onRecognition(Iterable<String> alternatives);
+        void onRecognition(Collection<String> alternatives);
 
         void onRecognitionEnd();
 

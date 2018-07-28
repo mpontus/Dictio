@@ -1,11 +1,14 @@
 package com.mpontus.dictio.di;
 
-import android.app.Application;
+import android.content.Context;
 
 import com.google.auth.oauth2.AccessToken;
+import com.mpontus.dictio.device.Capture;
+import com.mpontus.dictio.device.PlaybackService;
+import com.mpontus.dictio.device.Speaker;
+import com.mpontus.dictio.device.VoiceService;
+import com.mpontus.dictio.domain.LessonServiceFactory;
 import com.mpontus.dictio.fundamentum.Fundamentum;
-import com.mpontus.dictio.service.LessonService;
-import com.mpontus.dictio.service.Speaker;
 import com.mpontus.speech.AudioRecordVoiceRecorder;
 import com.mpontus.speech.GoogleSpeechRecognition;
 import com.mpontus.speech.SpeechRecognition;
@@ -18,11 +21,6 @@ import dagger.Provides;
 
 @Module
 public class LessonServiceModule {
-
-    @Provides
-    Speaker provideSpeaker(Application application) {
-        return new Speaker(application);
-    }
 
     @Provides
     SpeechRecognition speechRecognition(Fundamentum api) {
@@ -42,7 +40,18 @@ public class LessonServiceModule {
     }
 
     @Provides
-    LessonService lessonService(Speaker speaker, VoiceRecorder voiceRecorder, SpeechRecognition speechRecognition) {
-        return new LessonService(speaker, voiceRecorder, speechRecognition);
+    PlaybackService playbackService(Context context) {
+        return new Speaker(context);
     }
+
+    @Provides
+    VoiceService voiceService(VoiceRecorder voiceRecorder, SpeechRecognition speechRecognition) {
+        return new Capture(voiceRecorder, speechRecognition);
+    }
+
+    @Provides
+    LessonServiceFactory lessonServiceFactory(PlaybackService playbackService, VoiceService voiceService) {
+        return new LessonServiceFactory(playbackService, voiceService);
+    }
+
 }
