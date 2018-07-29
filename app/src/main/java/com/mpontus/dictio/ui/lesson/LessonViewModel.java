@@ -9,13 +9,11 @@ import com.mpontus.dictio.data.model.PhraseComparison;
 import com.mpontus.dictio.data.model.Prompt;
 import com.mpontus.dictio.domain.LessonPlan;
 import com.mpontus.dictio.domain.LessonService;
-import com.mpontus.dictio.domain.LessonServiceFactory;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import io.reactivex.BackpressureStrategy;
@@ -89,21 +87,22 @@ public class LessonViewModel extends ViewModel {
         }
     };
 
-    private final LessonServiceFactory lessonServiceFactory;
-
     private final LessonPlan lessonPlan;
 
-    @Nullable
-    private LessonService lessonService;
+    private final LessonService lessonService;
 
     @Inject
-    public LessonViewModel(LessonServiceFactory lessonServiceFactory, LessonPlan lessonPlan) {
-        this.lessonServiceFactory = lessonServiceFactory;
+    public LessonViewModel(LessonService lessonService, LessonPlan lessonPlan) {
+        this.lessonService = lessonService;
         this.lessonPlan = lessonPlan;
+
+        lessonService.addListener(lessonServiceListener);
     }
 
     @Override
     protected void onCleared() {
+        lessonService.removeListener(lessonServiceListener);
+
         super.onCleared();
     }
 
@@ -146,27 +145,19 @@ public class LessonViewModel extends ViewModel {
     }
 
     void onPermissionGranted() {
-        if (lessonService != null) {
-            lessonService.onRecordPermissionGranted();
-        }
+        lessonService.onRecordPermissionGranted();
     }
 
     void onPermissionDenied() {
-        if (lessonService != null) {
-            lessonService.onRecordPermissionGranted();
-        }
+        lessonService.onRecordPermissionGranted();
     }
 
     void onPromptShown(Prompt prompt) {
-        lessonService = lessonServiceFactory.createLessonService(prompt);
-        lessonService.addListener(lessonServiceListener);
+        lessonService.onCardShown(prompt);
     }
 
     void onPromptHidden(Prompt prompt) {
-        if (lessonService != null) {
-            lessonService.removeListener(lessonServiceListener);
-            lessonService = null;
-        }
+        lessonService.onCardHidden();
     }
 
     LiveData<EventWrapper<ViewModelEvent>> getEvents() {
@@ -176,68 +167,14 @@ public class LessonViewModel extends ViewModel {
     }
 
     void onCardPress() {
-        if (lessonService != null) {
-            lessonService.onCardPressed();
-        }
+        lessonService.onCardPressed();
     }
 
     void onPlaybackToggle() {
-        if (lessonService != null) {
-            lessonService.onPlayButonPressed();
-        }
+        lessonService.onPlayButonPressed();
     }
 
     void onRecordToggle() {
-        if (lessonService != null) {
-            lessonService.onRecordButtonPressed();
-        }
+        lessonService.onRecordButtonPressed();
     }
-
-    static class ViewState {
-        private Prompt currentPrompt;
-
-        private boolean isSpeaking;
-
-        private boolean isListening;
-
-        private boolean isRecongizing;
-
-        private PhraseComparison match;
-    }
-
-    abstract class Event<T> {
-        private final T content;
-        private boolean isHandled = false;
-
-        Event(T content) {
-            this.content = content;
-        }
-
-        T getContentIfNotHandled() {
-            if (isHandled) {
-                return null;
-            }
-
-            isHandled = true;
-
-            return content;
-        }
-    }
-
-    enum Permission {RECORDING}
-
-    class RequestPermissionEvent extends Event<Permission> {
-        RequestPermissionEvent(Permission permission) {
-            super(permission);
-        }
-    }
-
-    enum SnackbarType {LANGUAGE_UNAVAILABLE, RECORD_PERMISSION_DENIED, VOLUME_OFF}
-
-    class ShowSnackbar extends Event<SnackbarType> {
-        ShowSnackbar(SnackbarType type) {
-            super(type);
-        }
-    }
-
 }

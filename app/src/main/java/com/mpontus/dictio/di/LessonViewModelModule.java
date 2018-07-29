@@ -12,7 +12,7 @@ import com.mpontus.dictio.device.Speaker;
 import com.mpontus.dictio.device.VoiceService;
 import com.mpontus.dictio.domain.LessonPlan;
 import com.mpontus.dictio.domain.LessonPlanFactory;
-import com.mpontus.dictio.domain.LessonServiceFactory;
+import com.mpontus.dictio.domain.LessonService;
 import com.mpontus.dictio.fundamentum.Fundamentum;
 import com.mpontus.speech.AudioRecordVoiceRecorder;
 import com.mpontus.speech.GoogleSpeechRecognition;
@@ -55,8 +55,8 @@ public class LessonViewModelModule {
     }
 
     @Provides
-    LessonServiceFactory lessonServiceFactory(PlaybackService playbackService, VoiceService voiceService) {
-        return new LessonServiceFactory(playbackService, voiceService);
+    LessonService lessonService(PlaybackService playbackService, VoiceService voiceService) {
+        return new LessonService(playbackService, voiceService);
     }
 
     @Provides

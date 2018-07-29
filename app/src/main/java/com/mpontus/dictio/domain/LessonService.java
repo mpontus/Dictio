@@ -26,13 +26,16 @@ public class LessonService {
 
     enum States implements StateEnum {
         INITIAL,
+        CARD_SHOWN,
         SPEAKER_READY,
-        READY,
         IDLE,
         PLAYING_TRANSITION,
         PLAYING,
+
+        // TODO: Group those by switching to FSM framework with circular transitions
         RECORDING_TRANSITION,
         RECORDER_PREPARE,
+
         RECORDING,
     }
 
@@ -54,6 +57,8 @@ public class LessonService {
     }
 
     class FlowContext extends StatefulContext {
+        private Prompt prompt;
+
         private boolean permissionGranted;
 
         private boolean permissionDenied;
@@ -129,56 +134,60 @@ public class LessonService {
     };
 
     private final EasyFlow<StatefulContext> flow = FlowBuilder.from(States.INITIAL).transit(
-            on(Events.speakerInitialized).to(States.SPEAKER_READY).transit(
-                    on(Events.cannotSpeak).to(States.IDLE).transit(
-                            on(Events.cardHidden).to(States.INITIAL),
-                            on(Events.canSpeak).to(States.PLAYING),
-                            on(Events.playButtonPressed).to(States.PLAYING_TRANSITION).transit(
+            on(Events.cardShown).to(States.CARD_SHOWN).transit(
+                    on(Events.speakerInitialized).to(States.SPEAKER_READY).transit(
+                            on(Events.cannotSpeak).to(States.IDLE).transit(
                                     on(Events.cardHidden).to(States.INITIAL),
-                                    on(Events.canSpeak).to(States.PLAYING).transit(
+                                    on(Events.canSpeak).to(States.PLAYING),
+                                    on(Events.playButtonPressed).to(States.PLAYING_TRANSITION).transit(
                                             on(Events.cardHidden).to(States.INITIAL),
-                                            on(Events.speechEnd).to(States.IDLE),
-                                            on(Events.playButtonPressed).to(States.IDLE),
-                                            on(Events.cardPressed).to(States.IDLE),
-                                            on(Events.recordButtonPressed).to(States.RECORDING_TRANSITION)
-                                    ),
-                                    on(Events.cannotSpeak).to(States.IDLE)
-                            ),
-                            on(Events.recordButtonPressed).to(States.RECORDING_TRANSITION).transit(
-                                    on(Events.cardHidden).to(States.INITIAL),
-                                    on(Events.recordPermissionGranted).to(States.RECORDER_PREPARE).transit(
-                                            on(Events.recorderInitialized).to(States.RECORDING).transit(
+                                            on(Events.canSpeak).to(States.PLAYING).transit(
                                                     on(Events.cardHidden).to(States.INITIAL),
-                                                    on(Events.recordEnd).to(States.IDLE),
-                                                    on(Events.recordButtonPressed).to(States.IDLE),
+                                                    on(Events.speechEnd).to(States.IDLE),
+                                                    on(Events.playButtonPressed).to(States.IDLE),
                                                     on(Events.cardPressed).to(States.IDLE),
-                                                    on(Events.playButtonPressed).to(States.PLAYING_TRANSITION)
-                                            )
+                                                    on(Events.recordButtonPressed).to(States.RECORDING_TRANSITION)
+                                            ),
+                                            on(Events.cannotSpeak).to(States.IDLE)
                                     ),
-                                    on(Events.recordPermissionDenied).to(States.IDLE)
+                                    on(Events.recordButtonPressed).to(States.RECORDING_TRANSITION).transit(
+                                            on(Events.cardHidden).to(States.INITIAL),
+                                            on(Events.recordPermissionGranted).to(States.RECORDER_PREPARE).transit(
+                                                    on(Events.recorderInitialized).to(States.RECORDING).transit(
+                                                            on(Events.cardHidden).to(States.INITIAL),
+                                                            on(Events.recordEnd).to(States.IDLE),
+                                                            on(Events.recordButtonPressed).to(States.IDLE),
+                                                            on(Events.cardPressed).to(States.IDLE),
+                                                            on(Events.playButtonPressed).to(States.PLAYING_TRANSITION)
+                                                    )
+                                            ),
+                                            on(Events.recordPermissionDenied).to(States.IDLE)
+                                    ),
+                                    on(Events.cardPressed).to(States.PLAYING_TRANSITION)
                             ),
-                            on(Events.cardPressed).to(States.PLAYING_TRANSITION)
-                    ),
-                    on(Events.canSpeak).to(States.PLAYING)
+                            on(Events.canSpeak).to(States.PLAYING)
+                    )
             )
     ).executor(new AsyncExecutor());
 
     @Inject
     public LessonService(PlaybackService playbackService,
-                         VoiceService voiceService,
-                         Prompt prompt) {
+                         VoiceService voiceService) {
 
         playbackService.addListener(playbackServiceListener);
         voiceService.addListener(voiceServiceListener);
 
-        flow.whenEnter(States.INITIAL, (FlowContext context) -> {
+        flow.whenEnter(States.CARD_SHOWN, (FlowContext context) -> {
             if (!context.speakerInitialized) {
                 playbackService.init();
+            } else {
+                flow.trigger(Events.speakerInitialized, context);
             }
         });
 
         flow.whenEnter(States.SPEAKER_READY, (FlowContext context) -> {
-            if (playbackService.isLanguageAvailable(prompt.getLanguage())) {
+            if (playbackService.getVolume() >= 0 &&
+                    playbackService.isLanguageAvailable(context.prompt.getLanguage())) {
                 flow.trigger(Events.canSpeak, context);
             } else {
                 flow.trigger(Events.cannotSpeak, context);
@@ -186,12 +195,6 @@ public class LessonService {
         });
 
         flow.whenEnter(States.PLAYING_TRANSITION, (FlowContext context) -> {
-            if (!context.speakerInitialized) {
-                playbackService.init();
-
-                return;
-            }
-
             if (playbackService.getVolume() == 0) {
                 for (Listener listener : listeners) {
                     listener.onVolumeDown();
@@ -202,7 +205,7 @@ public class LessonService {
                 return;
             }
 
-            if (!playbackService.isLanguageAvailable(prompt.getLanguage())) {
+            if (!playbackService.isLanguageAvailable(context.prompt.getLanguage())) {
                 for (Listener listener : listeners) {
                     listener.onLanguageUnavailable();
                 }
@@ -215,8 +218,8 @@ public class LessonService {
             flow.trigger(Events.canSpeak, context);
         });
 
-        flow.whenEnter(States.PLAYING, context -> {
-            playbackService.speak(prompt.getLanguage(), prompt.getText());
+        flow.whenEnter(States.PLAYING, (FlowContext context) -> {
+            playbackService.speak(context.prompt.getLanguage(), context.prompt.getText());
         });
 
         flow.whenLeave(States.PLAYING, context -> {
@@ -241,14 +244,6 @@ public class LessonService {
             }
         });
 
-        flow.whenEnter(States.RECORDER_PREPARE, (FlowContext context) -> {
-            if (!context.recorderInitialized) {
-                voiceService.init();
-            } else {
-                flow.trigger(Events.recorderInitialized, context);
-            }
-        });
-
         flow.whenLeave(States.RECORDING_TRANSITION, (FlowContext context) -> {
             if (context.permissionDenied) {
                 for (Listener listener : listeners) {
@@ -257,8 +252,16 @@ public class LessonService {
             }
         });
 
-        flow.whenEnter(States.RECORDING, context -> {
-            voiceService.start(prompt.getLanguage());
+        flow.whenEnter(States.RECORDER_PREPARE, (FlowContext context) -> {
+            if (!context.recorderInitialized) {
+                voiceService.init();
+            } else {
+                flow.trigger(Events.recorderInitialized, context);
+            }
+        });
+
+        flow.whenEnter(States.RECORDING, (FlowContext context) -> {
+            voiceService.start(context.prompt.getLanguage());
         });
 
         flow.whenLeave(States.RECORDING, context -> {
@@ -270,6 +273,18 @@ public class LessonService {
         flow.whenEnter((state, context) -> Timber.d("State: %s", state.name()));
 
         flow.start(context);
+    }
+
+    public void onCardShown(Prompt prompt) {
+        context.prompt = prompt;
+
+        flow.safeTrigger(Events.cardShown, context);
+    }
+
+    public void onCardHidden() {
+        context.prompt = null;
+
+        flow.safeTrigger(Events.cardHidden, context);
     }
 
     public void onCardPressed() {
