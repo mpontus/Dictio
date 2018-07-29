@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mpontus.dictio.R;
-import com.mpontus.dictio.data.model.LessonConstraints;
 import com.mpontus.dictio.data.model.Prompt;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -47,9 +46,6 @@ public class LessonActivity extends DaggerAppCompatActivity {
     @Inject
     LessonCardFactory lessonCardFactory;
 
-    @Inject
-    LessonConstraints lessonConstraints;
-
     @BindView(R.id.swipeView)
     SwipePlaceHolderView swipeView;
 
@@ -63,8 +59,6 @@ public class LessonActivity extends DaggerAppCompatActivity {
                 .setDisplayHomeAsUpEnabled(true);
 
         swipeView.getBuilder().setDisplayViewCount(2);
-
-        lessonViewModel.setLessonConstraints(lessonConstraints);
 
         lessonViewModel.getPromptAdditions(4).observe(this, prompts -> {
             assert prompts != null;

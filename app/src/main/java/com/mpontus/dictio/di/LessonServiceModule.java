@@ -22,36 +22,5 @@ import dagger.Provides;
 @Module
 public class LessonServiceModule {
 
-    @Provides
-    SpeechRecognition speechRecognition(Fundamentum api) {
-        return new GoogleSpeechRecognition(() -> {
-            // TODO: Find a way to deserialize response into AccessToken directly.
-            com.mpontus.dictio.fundamentum.model.AccessToken accessToken =
-                    api.getAccessToken().execute();
-
-            return new AccessToken(accessToken.getTokenValue(),
-                    new Date(accessToken.getExpirationTime().getValue()));
-        });
-    }
-
-    @Provides
-    VoiceRecorder voiceRecorder() {
-        return new AudioRecordVoiceRecorder();
-    }
-
-    @Provides
-    PlaybackService playbackService(Context context) {
-        return new Speaker(context);
-    }
-
-    @Provides
-    VoiceService voiceService(VoiceRecorder voiceRecorder, SpeechRecognition speechRecognition) {
-        return new Capture(voiceRecorder, speechRecognition);
-    }
-
-    @Provides
-    LessonServiceFactory lessonServiceFactory(PlaybackService playbackService, VoiceService voiceService) {
-        return new LessonServiceFactory(playbackService, voiceService);
-    }
 
 }

@@ -16,6 +16,9 @@ import au.com.ds.ef.EventEnum;
 import au.com.ds.ef.FlowBuilder;
 import au.com.ds.ef.StateEnum;
 import au.com.ds.ef.StatefulContext;
+import au.com.ds.ef.call.DefaultErrorHandler;
+import au.com.ds.ef.call.StateHandler;
+import timber.log.Timber;
 
 import static au.com.ds.ef.FlowBuilder.on;
 
@@ -47,7 +50,13 @@ public class LessonService {
         recordEnd,
     }
 
-    private final StatefulContext context = new StatefulContext();
+    class FlowContext extends StatefulContext {
+        private boolean permissionGranted;
+
+        private boolean permissionDenied;
+    }
+
+    private final FlowContext context = new FlowContext();
 
     private final ArrayList<Listener> listeners = new ArrayList<>();
 
@@ -62,7 +71,6 @@ public class LessonService {
             for (Listener listener : listeners) {
                 listener.onError(t);
             }
-
         }
     };
 
@@ -72,7 +80,6 @@ public class LessonService {
             for (Listener listener : listeners) {
                 listener.onRecognitionStart();
             }
-
         }
 
         @Override
@@ -94,6 +101,9 @@ public class LessonService {
 
         @Override
         public void onError(Throwable t) {
+            for (Listener listener : listeners) {
+                listener.onError(t);
+            }
 
         }
     };
@@ -134,11 +144,26 @@ public class LessonService {
                          VoiceService voiceService,
                          Prompt prompt) {
 
+        playbackService.addListener(playbackServiceListener);
+        voiceService.addListener(voiceServiceListener);
+
+        flow.whenEnter(States.INITIAL, context -> {
+            if (playbackService.isLanguageAvailable(prompt.getLanguage())) {
+                flow.trigger(Events.languageAvailable, context);
+            } else {
+                flow.trigger(Events.languageUnavailable, context);
+            }
+        });
+
         flow.whenEnter(States.PLAYING_TRANSITION, context -> {
             if (playbackService.isLanguageAvailable(prompt.getLanguage())) {
-                flow.safeTrigger(Events.languageUnavailable, context);
+                flow.trigger(Events.languageAvailable, context);
             } else {
-                flow.safeTrigger(Events.languageAvailable, context);
+                for (Listener listener : listeners) {
+                    listener.onLanguageUnavailable();
+                }
+
+                flow.trigger(Events.languageUnavailable, context);
             }
         });
 
@@ -156,12 +181,29 @@ public class LessonService {
             }
         });
 
+        flow.whenLeave(States.RECORDING_TRANSITION, (FlowContext context) -> {
+            if (context.permissionDenied) {
+                for (Listener listener : listeners) {
+                    listener.onPermissionDenied();
+                }
+            }
+        });
+
         flow.whenEnter(States.RECORDING, context -> {
             voiceService.start(prompt.getLanguage());
         });
 
         flow.whenLeave(States.RECORDING, context -> {
             voiceService.stop();
+        });
+
+        flow.whenError(new DefaultErrorHandler());
+
+        flow.whenEnter(new StateHandler<StatefulContext>() {
+            @Override
+            public void call(StateEnum state, StatefulContext context) throws Exception {
+                Timber.d("State: %s", state.name());
+            }
         });
 
         flow.start(context);
@@ -180,10 +222,16 @@ public class LessonService {
     }
 
     public void onRecordPermissionGranted() {
+        context.permissionDenied = false;
+        context.permissionGranted = true;
+
         flow.safeTrigger(Events.recordPermissionGranted, context);
     }
 
     public void onRecordPermissionDenied() {
+        context.permissionGranted = false;
+        context.permissionDenied = true;
+
         flow.safeTrigger(Events.recordPermissionDenied, context);
     }
 
@@ -211,6 +259,10 @@ public class LessonService {
         void onRecognition(Collection<String> alternatives);
 
         void onRequestRecordingPermission();
+
+        void onLanguageUnavailable();
+
+        void onPermissionDenied();
 
         void onError(Throwable t);
     }

@@ -124,7 +124,17 @@ class LessonCard {
     }
 
     @Click(R.id.container)
-    public void onClick() {
-        viewModel.onPlaybackToggle(!isPlaybackActive.getValue());
+    public void onCardClick() {
+        viewModel.onCardPress();
+    }
+
+    @Click(R.id.speak)
+    public void onPlayClick() {
+        viewModel.onPlaybackToggle();
+    }
+
+    @Click(R.id.speech)
+    public void onRecordClick() {
+        viewModel.onRecordToggle();
     }
 }

@@ -11,30 +11,38 @@ public class Capture implements VoiceService {
 
     private final List<Listener> listeners = new ArrayList<>();
 
-    private final RecordingService.Listener recordingServiceListener = new RecordingService.Listener() {
+    private final VoiceRecorder.Listener voiceRecorderListener = new VoiceRecorder.Listener() {
         @Override
-        public void onStart() {
-            recognitionService.startRecognizing(languageCode, recordingService.getSampleRate());
+        public void onReady() {
+            if (speechRecognition.isReady() && pendingAction != null) {
+                pendingAction.run();
+            }
+        }
+
+        @Override
+        public void onVoiceStart() {
+            speechRecognition.startRecognizing(
+                    languageCode,
+                    voiceRecorder.getSampleRate()
+            );
 
             for (Listener listener : listeners) {
                 listener.onVoiceStart();
             }
-
         }
 
         @Override
-        public void onData(byte[] data, int length) {
-            recognitionService.recognize(data, length);
+        public void onVoice(byte[] data, int size) {
+            speechRecognition.recognize(data, size);
         }
 
         @Override
-        public void onEnd() {
-            recognitionService.stopRecognitizing();
+        public void onVoiceEnd() {
+            speechRecognition.stopRecognizing();
 
             for (Listener listener : listeners) {
                 listener.onVoiceEnd();
             }
-
         }
 
         @Override
@@ -42,35 +50,41 @@ public class Capture implements VoiceService {
             for (Listener listener : listeners) {
                 listener.onError(t);
             }
-
         }
     };
 
-    private final RecognitionService.Listener recognitionServiceListener = new RecognitionService.Listener() {
+    private final SpeechRecognition.Listener speechRecognitionListener = new SpeechRecognition.Listener() {
         @Override
-        public void onRecognized(Collection<String> alternatives) {
+        public void onReady() {
+            if (voiceRecorder.isReady() && pendingAction != null) {
+                pendingAction.run();
+            }
+        }
+
+        @Override
+        public void onRecognition(Collection<String> alternatives) {
             for (Listener listener : listeners) {
                 listener.onRecognition(alternatives);
             }
         }
 
         @Override
-        public void onEnd() {
-            recordingService.dismiss();
+        public void onRecognitionEnd() {
+            voiceRecorder.dismiss();
         }
 
         @Override
-        public void onError(Throwable t) {
+        public void onRecognitionError(Throwable t) {
             for (Listener listener : listeners) {
                 listener.onError(t);
             }
-
         }
     };
 
     private final VoiceRecorder voiceRecorder;
     private final SpeechRecognition speechRecognition;
 
+    private Runnable pendingAction;
     private String languageCode;
 
     public Capture(VoiceRecorder voiceRecorder, SpeechRecognition speechRecognition) {
@@ -80,12 +94,26 @@ public class Capture implements VoiceService {
 
     @Override
     public void start(String languageCode) {
+        if (!voiceRecorder.isReady() || !speechRecognition.isReady()) {
+            this.pendingAction = () -> start(languageCode);
+
+            return;
+        }
+
         this.languageCode = languageCode;
+
+        voiceRecorder.start();
     }
 
     @Override
     public void stop() {
-        recordingService.stopRecording();
+        if (!voiceRecorder.isReady() || !speechRecognition.isReady()) {
+            this.pendingAction = null;
+
+            return;
+        }
+
+        this.voiceRecorder.stop();
     }
 
     @Override
