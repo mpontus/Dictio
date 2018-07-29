@@ -102,6 +102,7 @@ public class LessonViewModel extends ViewModel {
     @Override
     protected void onCleared() {
         lessonService.removeListener(lessonServiceListener);
+        lessonService.release();
 
         super.onCleared();
     }

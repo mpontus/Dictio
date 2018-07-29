@@ -42,7 +42,7 @@ public class LessonService {
     // Events cover any external influence
     enum Events implements EventEnum {
         cardShown,
-        cardHidden,
+        reset,
         cardPressed,
         playButtonPressed,
         recordButtonPressed,
@@ -135,44 +135,52 @@ public class LessonService {
 
     private final EasyFlow<StatefulContext> flow = FlowBuilder.from(States.INITIAL).transit(
             on(Events.cardShown).to(States.CARD_SHOWN).transit(
+                    on(Events.reset).to(States.INITIAL),
                     on(Events.speakerInitialized).to(States.SPEAKER_READY).transit(
+                            on(Events.reset).to(States.INITIAL),
+                            on(Events.canSpeak).to(States.PLAYING),
                             on(Events.cannotSpeak).to(States.IDLE).transit(
-                                    on(Events.cardHidden).to(States.INITIAL),
+                                    on(Events.reset).to(States.INITIAL),
                                     on(Events.canSpeak).to(States.PLAYING),
+                                    on(Events.cardPressed).to(States.PLAYING_TRANSITION),
                                     on(Events.playButtonPressed).to(States.PLAYING_TRANSITION).transit(
-                                            on(Events.cardHidden).to(States.INITIAL),
+                                            on(Events.reset).to(States.INITIAL),
+                                            on(Events.cannotSpeak).to(States.IDLE),
                                             on(Events.canSpeak).to(States.PLAYING).transit(
-                                                    on(Events.cardHidden).to(States.INITIAL),
+                                                    on(Events.reset).to(States.INITIAL),
                                                     on(Events.speechEnd).to(States.IDLE),
                                                     on(Events.playButtonPressed).to(States.IDLE),
                                                     on(Events.cardPressed).to(States.IDLE),
                                                     on(Events.recordButtonPressed).to(States.RECORDING_TRANSITION)
-                                            ),
-                                            on(Events.cannotSpeak).to(States.IDLE)
+                                            )
                                     ),
                                     on(Events.recordButtonPressed).to(States.RECORDING_TRANSITION).transit(
-                                            on(Events.cardHidden).to(States.INITIAL),
+                                            on(Events.reset).to(States.INITIAL),
+                                            on(Events.recordPermissionDenied).to(States.IDLE),
                                             on(Events.recordPermissionGranted).to(States.RECORDER_PREPARE).transit(
+                                                    on(Events.reset).to(States.INITIAL),
                                                     on(Events.recorderInitialized).to(States.RECORDING).transit(
-                                                            on(Events.cardHidden).to(States.INITIAL),
+                                                            on(Events.reset).to(States.INITIAL),
                                                             on(Events.recordEnd).to(States.IDLE),
                                                             on(Events.recordButtonPressed).to(States.IDLE),
                                                             on(Events.cardPressed).to(States.IDLE),
                                                             on(Events.playButtonPressed).to(States.PLAYING_TRANSITION)
                                                     )
-                                            ),
-                                            on(Events.recordPermissionDenied).to(States.IDLE)
-                                    ),
-                                    on(Events.cardPressed).to(States.PLAYING_TRANSITION)
-                            ),
-                            on(Events.canSpeak).to(States.PLAYING)
+                                            )
+                                    )
+                            )
                     )
             )
     ).executor(new AsyncExecutor());
 
+    private final PlaybackService playbackService;
+    private final VoiceService voiceService;
+
     @Inject
     public LessonService(PlaybackService playbackService,
                          VoiceService voiceService) {
+        this.playbackService = playbackService;
+        this.voiceService = voiceService;
 
         playbackService.addListener(playbackServiceListener);
         voiceService.addListener(voiceServiceListener);
@@ -275,6 +283,12 @@ public class LessonService {
         flow.start(context);
     }
 
+    public void release() {
+        flow.safeTrigger(Events.reset, context);
+        playbackService.release();
+        voiceService.release();
+    }
+
     public void onCardShown(Prompt prompt) {
         context.prompt = prompt;
 
@@ -284,7 +298,7 @@ public class LessonService {
     public void onCardHidden() {
         context.prompt = null;
 
-        flow.safeTrigger(Events.cardHidden, context);
+        flow.safeTrigger(Events.reset, context);
     }
 
     public void onCardPressed() {
