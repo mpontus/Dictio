@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.media.AudioManager;
 import android.preference.PreferenceManager;
 
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
@@ -30,6 +31,11 @@ public abstract class ApplicationModule {
     @Provides
     static SharedPreferences sharedPreferences(Application application) {
         return PreferenceManager.getDefaultSharedPreferences(application);
+    }
+
+    @Provides
+    static AudioManager audioManager(Application application) {
+        return (AudioManager) application.getSystemService(Context.AUDIO_SERVICE);
     }
 
     @Singleton

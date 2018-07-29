@@ -1,6 +1,7 @@
 package com.mpontus.dictio.device;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
@@ -44,11 +45,13 @@ public class Speaker implements PlaybackService {
     };
 
     private final Context context;
+    private final AudioManager audioManager;
 
     private TextToSpeech textToSpeech;
 
-    public Speaker(Context context) {
+    public Speaker(Context context, AudioManager audioManager) {
         this.context = context;
+        this.audioManager = audioManager;
     }
 
     @Override
@@ -84,6 +87,11 @@ public class Speaker implements PlaybackService {
         int languageAvailable = textToSpeech.isLanguageAvailable(LocaleUtils.getLocaleFromCode(language));
 
         return languageAvailable >= TextToSpeech.LANG_AVAILABLE;
+    }
+
+    @Override
+    public int getVolume() {
+        return audioManager.getStreamVolume(TextToSpeech.Engine.DEFAULT_STREAM);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.mpontus.dictio.di;
 
 import android.content.Context;
+import android.media.AudioManager;
 
 import com.google.auth.oauth2.AccessToken;
 import com.mpontus.dictio.data.DictioPreferences;
@@ -44,8 +45,8 @@ public class LessonViewModelModule {
     }
 
     @Provides
-    PlaybackService playbackService(Context context) {
-        return new Speaker(context);
+    PlaybackService playbackService(Context context, AudioManager audioManager) {
+        return new Speaker(context, audioManager);
     }
 
     @Provides

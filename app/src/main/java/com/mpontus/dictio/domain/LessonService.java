@@ -44,8 +44,8 @@ public class LessonService {
         playButtonPressed,
         recordButtonPressed,
         speakerInitialized,
-        languageAvailable,
-        languageUnavailable,
+        canSpeak,
+        cannotSpeak,
         recordPermissionGranted,
         recordPermissionDenied,
         recorderInitialized,
@@ -130,19 +130,19 @@ public class LessonService {
 
     private final EasyFlow<StatefulContext> flow = FlowBuilder.from(States.INITIAL).transit(
             on(Events.speakerInitialized).to(States.SPEAKER_READY).transit(
-                    on(Events.languageUnavailable).to(States.IDLE).transit(
+                    on(Events.cannotSpeak).to(States.IDLE).transit(
                             on(Events.cardHidden).to(States.INITIAL),
-                            on(Events.languageAvailable).to(States.PLAYING),
+                            on(Events.canSpeak).to(States.PLAYING),
                             on(Events.playButtonPressed).to(States.PLAYING_TRANSITION).transit(
                                     on(Events.cardHidden).to(States.INITIAL),
-                                    on(Events.languageAvailable).to(States.PLAYING).transit(
+                                    on(Events.canSpeak).to(States.PLAYING).transit(
                                             on(Events.cardHidden).to(States.INITIAL),
                                             on(Events.speechEnd).to(States.IDLE),
                                             on(Events.playButtonPressed).to(States.IDLE),
                                             on(Events.cardPressed).to(States.IDLE),
                                             on(Events.recordButtonPressed).to(States.RECORDING_TRANSITION)
                                     ),
-                                    on(Events.languageUnavailable).to(States.IDLE)
+                                    on(Events.cannotSpeak).to(States.IDLE)
                             ),
                             on(Events.recordButtonPressed).to(States.RECORDING_TRANSITION).transit(
                                     on(Events.cardHidden).to(States.INITIAL),
@@ -159,7 +159,7 @@ public class LessonService {
                             ),
                             on(Events.cardPressed).to(States.PLAYING_TRANSITION)
                     ),
-                    on(Events.languageAvailable).to(States.PLAYING)
+                    on(Events.canSpeak).to(States.PLAYING)
             )
     ).executor(new AsyncExecutor());
 
@@ -179,9 +179,9 @@ public class LessonService {
 
         flow.whenEnter(States.SPEAKER_READY, (FlowContext context) -> {
             if (playbackService.isLanguageAvailable(prompt.getLanguage())) {
-                flow.trigger(Events.languageAvailable, context);
+                flow.trigger(Events.canSpeak, context);
             } else {
-                flow.trigger(Events.languageUnavailable, context);
+                flow.trigger(Events.cannotSpeak, context);
             }
         });
 
@@ -192,17 +192,27 @@ public class LessonService {
                 return;
             }
 
-            if (playbackService.isLanguageAvailable(prompt.getLanguage())) {
-                flow.trigger(Events.languageAvailable, context);
+            if (playbackService.getVolume() == 0) {
+                for (Listener listener : listeners) {
+                    listener.onVolumeDown();
+                }
+
+                flow.trigger(Events.cannotSpeak, context);
 
                 return;
             }
 
-            for (Listener listener : listeners) {
-                listener.onLanguageUnavailable();
+            if (!playbackService.isLanguageAvailable(prompt.getLanguage())) {
+                for (Listener listener : listeners) {
+                    listener.onLanguageUnavailable();
+                }
+
+                flow.trigger(Events.cannotSpeak, context);
+
+                return;
             }
 
-            flow.trigger(Events.languageUnavailable, context);
+            flow.trigger(Events.canSpeak, context);
         });
 
         flow.whenEnter(States.PLAYING, context -> {
@@ -314,6 +324,8 @@ public class LessonService {
         void onRequestRecordingPermission();
 
         void onLanguageUnavailable();
+
+        void onVolumeDown();
 
         void onPermissionDenied();
 

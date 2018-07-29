@@ -34,6 +34,10 @@ public abstract class ViewModelEvent {
 
     }
 
+    static class VolumeDown extends ViewModelEvent {
+
+    }
+
     static class PermissionDenied extends ViewModelEvent {
 
     }

@@ -74,6 +74,11 @@ public class LessonViewModel extends ViewModel {
         }
 
         @Override
+        public void onVolumeDown() {
+            events.onNext(new ViewModelEvent.VolumeDown());
+        }
+
+        @Override
         public void onPermissionDenied() {
             events.onNext(new ViewModelEvent.PermissionDenied());
         }

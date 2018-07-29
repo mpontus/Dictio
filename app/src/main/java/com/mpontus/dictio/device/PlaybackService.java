@@ -8,6 +8,8 @@ public interface PlaybackService {
 
     boolean isLanguageAvailable(String language);
 
+    int getVolume();
+
     void speak(String language, String text);
 
     void stopSpeaking();

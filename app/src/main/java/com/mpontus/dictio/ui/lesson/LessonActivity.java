@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
@@ -54,6 +55,9 @@ public class LessonActivity extends DaggerAppCompatActivity {
     @BindView(R.id.swipeView)
     SwipePlaceHolderView swipeView;
 
+    @Nullable
+    Toast toast;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,11 +85,11 @@ public class LessonActivity extends DaggerAppCompatActivity {
             ViewModelEvent content = event.getContentIfNotHandled();
 
             if (content instanceof ViewModelEvent.LanguageUnavailable) {
-                Toast.makeText(this, R.string.toast_lang_unavailable, Toast.LENGTH_SHORT)
-                        .show();
+                showToast(Toast.makeText(this, R.string.toast_lang_unavailable, Toast.LENGTH_SHORT));
+            } else if (content instanceof ViewModelEvent.VolumeDown) {
+                showToast(Toast.makeText(this, R.string.toast_volume_down, Toast.LENGTH_SHORT));
             } else if (content instanceof ViewModelEvent.PermissionDenied) {
-                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT)
-                        .show();
+                showToast(Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT));
             } else if (content instanceof ViewModelEvent.RequestRecordingPermission) {
                 requestRecordingPermission();
             }
@@ -108,6 +112,15 @@ public class LessonActivity extends DaggerAppCompatActivity {
         compositeDisposable.dispose();
 
         super.onStop();
+    }
+
+    private void showToast(Toast toast) {
+        if (this.toast != null) {
+            this.toast.cancel();
+        }
+
+        this.toast = toast;
+        toast.show();
     }
 
     private void requestRecordingPermission() {
