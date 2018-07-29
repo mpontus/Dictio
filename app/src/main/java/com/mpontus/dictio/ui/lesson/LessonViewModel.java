@@ -2,9 +2,9 @@ package com.mpontus.dictio.ui.lesson;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.LiveDataReactiveStreams;
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.mpontus.dictio.data.PhraseMatcher;
 import com.mpontus.dictio.data.model.PhraseComparison;
 import com.mpontus.dictio.data.model.Prompt;
 import com.mpontus.dictio.domain.LessonPlan;
@@ -37,7 +37,21 @@ public class LessonViewModel extends ViewModel {
 
     private final PublishSubject<Boolean> isRecognizing = PublishSubject.create();
 
+    private final PublishSubject<Collection<String>> recognitions = PublishSubject.create();
+
     private final PublishSubject<ViewModelEvent> events = PublishSubject.create();
+
+    /**
+     * Results of matching prompt text against TTS recognitions grouped by recognition session
+     */
+    private final Observable<Observable<PhraseComparison>> matches = shownPrompt
+            .map(Prompt::getText)
+            .map(PhraseMatcher::new)
+            .switchMap(matcher -> recognitions
+                    .flatMap(Observable::fromIterable)
+                    .map(matcher::match)
+                    .window(isRecognizing.filter(it -> it), __ -> isRecognizing.filter(it -> !it))
+                    .map(observable -> observable.startWith(matcher.emptyMatch())));
 
     private final LessonService.Listener lessonServiceListener = new LessonService.Listener() {
         @Override
@@ -72,7 +86,7 @@ public class LessonViewModel extends ViewModel {
 
         @Override
         public void onRecognition(Collection<String> alternatives) {
-
+            recognitions.onNext(alternatives);
         }
 
         @Override
@@ -154,30 +168,53 @@ public class LessonViewModel extends ViewModel {
     }
 
     public LiveData<Prompt> getPromptRemovals() {
-        return new MutableLiveData<>();
+        Observable<Prompt> completeMatches = matches
+                .flatMap(it -> it)
+                .filter(PhraseComparison::isComplete)
+                .withLatestFrom(shownPrompt, (match, prompt) -> prompt);
+
+        return LiveDataReactiveStreams.fromPublisher(
+                completeMatches.toFlowable(BackpressureStrategy.ERROR));
     }
 
     LiveData<PhraseComparison> getMatch(Prompt prompt) {
-        return new MutableLiveData<>();
+        Observable<Boolean> isCardRecognizing = shownPrompt.filter(prompt::equals)
+                .switchMap(__ -> isRecognizing
+                        .takeUntil(hiddenPrompt.filter(prompt::equals)));
+
+        Observable<Observable<String>> cardRecognitions = recognitions
+                .flatMap(Observable::fromIterable)
+                .window(isCardRecognizing.filter(Boolean::valueOf),
+                        __ -> isCardRecognizing.filter(isRecognizing -> !isRecognizing));
+
+        PhraseMatcher phraseMatcher = new PhraseMatcher(prompt.getText());
+
+        Observable<PhraseComparison> phraseComparisonObservable = cardRecognitions
+                .flatMap(promptRecognitions -> promptRecognitions
+                        .map(phraseMatcher::match)
+                        .startWith(phraseMatcher.emptyMatch()));
+
+        return LiveDataReactiveStreams.fromPublisher(
+                phraseComparisonObservable.toFlowable(BackpressureStrategy.LATEST));
     }
 
     LiveData<Boolean> isPlaybackActive(Prompt prompt) {
-        Observable<Boolean> isPromptPlaying = shownPrompt.filter(prompt::equals)
+        Observable<Boolean> isCardPlaying = shownPrompt.filter(prompt::equals)
                 .switchMap(__ -> isPlaying
                         .takeUntil(hiddenPrompt.filter(prompt::equals)));
 
         return LiveDataReactiveStreams.fromPublisher(
-                isPromptPlaying.toFlowable(BackpressureStrategy.LATEST));
+                isCardPlaying.toFlowable(BackpressureStrategy.LATEST));
     }
 
     LiveData<Boolean> isRecordingActive(Prompt prompt) {
-        Observable<Boolean> isPromptPlaying = shownPrompt.filter(prompt::equals)
+        Observable<Boolean> isCardRecording = shownPrompt.filter(prompt::equals)
                 .switchMap(__ -> isRecording
                         .takeUntil(hiddenPrompt.filter(prompt::equals)));
 
 
         return LiveDataReactiveStreams.fromPublisher(
-                isPromptPlaying.toFlowable(BackpressureStrategy.LATEST));
+                isCardRecording.toFlowable(BackpressureStrategy.LATEST));
     }
 
     LiveData<Boolean> isRecognitionActive(Prompt prompt) {
