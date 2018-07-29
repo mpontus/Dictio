@@ -16,9 +16,7 @@ public class Capture implements VoiceService {
     private final VoiceRecorder.Listener voiceRecorderListener = new VoiceRecorder.Listener() {
         @Override
         public void onReady() {
-            if (speechRecognition.isReady() && pendingAction != null) {
-                pendingAction.run();
-            }
+            notifyReady();
         }
 
         @Override
@@ -58,14 +56,15 @@ public class Capture implements VoiceService {
     private final SpeechRecognition.Listener speechRecognitionListener = new SpeechRecognition.Listener() {
         @Override
         public void onReady() {
-            if (voiceRecorder.isReady() && pendingAction != null) {
-                pendingAction.run();
-            }
+            notifyReady();
         }
 
         @Override
         public void onRecognition(Collection<String> alternatives) {
-            Timber.d("Recognitions: %d", alternatives.size());
+            for (String alternative : alternatives) {
+                Timber.d("Recognition: %s", alternative);
+            }
+
 
             for (Listener listener : listeners) {
                 listener.onRecognition(alternatives);
@@ -88,7 +87,6 @@ public class Capture implements VoiceService {
     private final VoiceRecorder voiceRecorder;
     private final SpeechRecognition speechRecognition;
 
-    private Runnable pendingAction;
     private String languageCode;
 
     public Capture(VoiceRecorder voiceRecorder, SpeechRecognition speechRecognition) {
@@ -97,13 +95,25 @@ public class Capture implements VoiceService {
     }
 
     @Override
+    public void init() {
+        voiceRecorder.addListener(voiceRecorderListener);
+        speechRecognition.addListener(speechRecognitionListener);
+
+        voiceRecorder.init();
+        speechRecognition.init();
+    }
+
+    @Override
+    public void release() {
+        voiceRecorder.removeListener(voiceRecorderListener);
+        speechRecognition.removeListener(speechRecognitionListener);
+
+        voiceRecorder.release();
+        speechRecognition.release();
+    }
+
+    @Override
     public void start(String languageCode) {
-        if (!voiceRecorder.isReady() || !speechRecognition.isReady()) {
-            this.pendingAction = () -> start(languageCode);
-
-            return;
-        }
-
         this.languageCode = languageCode;
 
         voiceRecorder.start();
@@ -111,13 +121,15 @@ public class Capture implements VoiceService {
 
     @Override
     public void stop() {
-        if (!voiceRecorder.isReady() || !speechRecognition.isReady()) {
-            this.pendingAction = null;
-
-            return;
-        }
-
         this.voiceRecorder.stop();
+    }
+
+    private void notifyReady() {
+        if (speechRecognition.isReady() && voiceRecorder.isReady()) {
+            for (Listener listener : listeners) {
+                listener.onReady();
+            }
+        }
     }
 
     @Override

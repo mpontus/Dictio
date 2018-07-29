@@ -2,9 +2,9 @@ package com.mpontus.dictio.device;
 
 public interface PlaybackService {
 
-    void addListener(Listener listener);
+    void init();
 
-    void removeListener(Listener listener);
+    void release();
 
     boolean isLanguageAvailable(String language);
 
@@ -12,7 +12,13 @@ public interface PlaybackService {
 
     void stopSpeaking();
 
+    void addListener(Listener listener);
+
+    void removeListener(Listener listener);
+
     interface Listener {
+        void onReady();
+
         void onEnd();
 
         void onError(Throwable t);

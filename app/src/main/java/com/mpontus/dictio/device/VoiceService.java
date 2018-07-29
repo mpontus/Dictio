@@ -4,6 +4,10 @@ import java.util.Collection;
 
 public interface VoiceService {
 
+    void init();
+
+    void release();
+
     void start(String languageCode);
 
     void stop();
@@ -13,6 +17,8 @@ public interface VoiceService {
     void removeListener(Listener listener);
 
     interface Listener {
+        void onReady();
+
         void onVoiceStart();
 
         void onRecognition(Collection<String> alternatives);

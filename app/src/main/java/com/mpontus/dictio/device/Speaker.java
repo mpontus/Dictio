@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
-import android.support.annotation.Nullable;
 
 import com.mpontus.dictio.utils.LocaleUtils;
 
@@ -13,7 +12,6 @@ import java.util.List;
 
 public class Speaker implements PlaybackService {
 
-    // This parameter has no significance as far as I'm aware
     private static final String UTTERANCE_ID = "UTTERANCE_ID";
 
     private final List<Listener> listeners = new ArrayList<>();
@@ -45,30 +43,40 @@ public class Speaker implements PlaybackService {
         }
     };
 
-    private final TextToSpeech textToSpeech;
+    private final Context context;
 
-    private boolean isInitialized = false;
-
-    @Nullable
-    private Runnable pendingAction = null;
+    private TextToSpeech textToSpeech;
 
     public Speaker(Context context) {
+        this.context = context;
+    }
+
+    @Override
+    public void init() {
         textToSpeech = new TextToSpeech(context, (int status) -> {
             if (status < TextToSpeech.SUCCESS) {
-                // TODO: Handle errors better
+                RuntimeException error = new RuntimeException("Failed to initialize TTS");
+
+                for (Listener listener : listeners) {
+                    listener.onError(error);
+                }
+
                 return;
             }
 
-            isInitialized = true;
-
-            if (pendingAction != null) {
-                pendingAction.run();
-
-                pendingAction = null;
+            for (Listener listener : listeners) {
+                listener.onReady();
             }
         });
 
         textToSpeech.setOnUtteranceProgressListener(utteranceProgressListener);
+    }
+
+    @Override
+    public void release() {
+        if (textToSpeech != null) {
+            textToSpeech.shutdown();
+        }
     }
 
     @Override
@@ -80,9 +88,7 @@ public class Speaker implements PlaybackService {
 
     @Override
     public void speak(String language, String text) {
-        if (!isInitialized) {
-            this.pendingAction = () -> speak(language, text);
-
+        if (textToSpeech == null) {
             return;
         }
 
@@ -100,7 +106,10 @@ public class Speaker implements PlaybackService {
 
     @Override
     public void stopSpeaking() {
-        pendingAction = null;
+        if (textToSpeech == null) {
+            return;
+        }
+
         textToSpeech.stop();
     }
 

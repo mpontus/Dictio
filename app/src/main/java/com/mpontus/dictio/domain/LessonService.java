@@ -17,7 +17,6 @@ import au.com.ds.ef.FlowBuilder;
 import au.com.ds.ef.StateEnum;
 import au.com.ds.ef.StatefulContext;
 import au.com.ds.ef.call.DefaultErrorHandler;
-import au.com.ds.ef.call.StateHandler;
 import timber.log.Timber;
 
 import static au.com.ds.ef.FlowBuilder.on;
@@ -27,11 +26,13 @@ public class LessonService {
 
     enum States implements StateEnum {
         INITIAL,
+        SPEAKER_READY,
         READY,
         IDLE,
         PLAYING_TRANSITION,
         PLAYING,
         RECORDING_TRANSITION,
+        RECORDER_PREPARE,
         RECORDING,
     }
 
@@ -42,10 +43,12 @@ public class LessonService {
         cardPressed,
         playButtonPressed,
         recordButtonPressed,
+        speakerInitialized,
         languageAvailable,
         languageUnavailable,
         recordPermissionGranted,
         recordPermissionDenied,
+        recorderInitialized,
         speechEnd,
         recordEnd,
     }
@@ -54,6 +57,10 @@ public class LessonService {
         private boolean permissionGranted;
 
         private boolean permissionDenied;
+
+        private boolean speakerInitialized;
+
+        private boolean recorderInitialized;
     }
 
     private final FlowContext context = new FlowContext();
@@ -61,6 +68,12 @@ public class LessonService {
     private final ArrayList<Listener> listeners = new ArrayList<>();
 
     private final PlaybackService.Listener playbackServiceListener = new PlaybackService.Listener() {
+        public void onReady() {
+            context.speakerInitialized = true;
+
+            flow.safeTrigger(Events.speakerInitialized, context);
+        }
+
         @Override
         public void onEnd() {
             flow.safeTrigger(Events.speechEnd, context);
@@ -75,6 +88,13 @@ public class LessonService {
     };
 
     private final VoiceService.Listener voiceServiceListener = new VoiceService.Listener() {
+        @Override
+        public void onReady() {
+            context.recorderInitialized = true;
+
+            flow.safeTrigger(Events.recorderInitialized, context);
+        }
+
         @Override
         public void onVoiceStart() {
             for (Listener listener : listeners) {
@@ -109,34 +129,38 @@ public class LessonService {
     };
 
     private final EasyFlow<StatefulContext> flow = FlowBuilder.from(States.INITIAL).transit(
-            on(Events.languageUnavailable).to(States.IDLE).transit(
-                    on(Events.cardHidden).to(States.INITIAL),
-                    on(Events.languageAvailable).to(States.PLAYING),
-                    on(Events.playButtonPressed).to(States.PLAYING_TRANSITION).transit(
+            on(Events.speakerInitialized).to(States.SPEAKER_READY).transit(
+                    on(Events.languageUnavailable).to(States.IDLE).transit(
                             on(Events.cardHidden).to(States.INITIAL),
-                            on(Events.languageAvailable).to(States.PLAYING).transit(
+                            on(Events.languageAvailable).to(States.PLAYING),
+                            on(Events.playButtonPressed).to(States.PLAYING_TRANSITION).transit(
                                     on(Events.cardHidden).to(States.INITIAL),
-                                    on(Events.speechEnd).to(States.IDLE),
-                                    on(Events.playButtonPressed).to(States.IDLE),
-                                    on(Events.cardPressed).to(States.IDLE),
-                                    on(Events.recordButtonPressed).to(States.RECORDING_TRANSITION)
+                                    on(Events.languageAvailable).to(States.PLAYING).transit(
+                                            on(Events.cardHidden).to(States.INITIAL),
+                                            on(Events.speechEnd).to(States.IDLE),
+                                            on(Events.playButtonPressed).to(States.IDLE),
+                                            on(Events.cardPressed).to(States.IDLE),
+                                            on(Events.recordButtonPressed).to(States.RECORDING_TRANSITION)
+                                    ),
+                                    on(Events.languageUnavailable).to(States.IDLE)
                             ),
-                            on(Events.languageUnavailable).to(States.IDLE)
-                    ),
-                    on(Events.recordButtonPressed).to(States.RECORDING_TRANSITION).transit(
-                            on(Events.cardHidden).to(States.INITIAL),
-                            on(Events.recordPermissionGranted).to(States.RECORDING).transit(
+                            on(Events.recordButtonPressed).to(States.RECORDING_TRANSITION).transit(
                                     on(Events.cardHidden).to(States.INITIAL),
-                                    on(Events.recordEnd).to(States.IDLE),
-                                    on(Events.recordButtonPressed).to(States.IDLE),
-                                    on(Events.cardPressed).to(States.IDLE),
-                                    on(Events.playButtonPressed).to(States.PLAYING_TRANSITION)
+                                    on(Events.recordPermissionGranted).to(States.RECORDER_PREPARE).transit(
+                                            on(Events.recorderInitialized).to(States.RECORDING).transit(
+                                                    on(Events.cardHidden).to(States.INITIAL),
+                                                    on(Events.recordEnd).to(States.IDLE),
+                                                    on(Events.recordButtonPressed).to(States.IDLE),
+                                                    on(Events.cardPressed).to(States.IDLE),
+                                                    on(Events.playButtonPressed).to(States.PLAYING_TRANSITION)
+                                            )
+                                    ),
+                                    on(Events.recordPermissionDenied).to(States.IDLE)
                             ),
-                            on(Events.recordPermissionDenied).to(States.IDLE)
+                            on(Events.cardPressed).to(States.PLAYING_TRANSITION)
                     ),
-                    on(Events.cardPressed).to(States.PLAYING_TRANSITION)
-            ),
-            on(Events.languageAvailable).to(States.PLAYING)
+                    on(Events.languageAvailable).to(States.PLAYING)
+            )
     ).executor(new AsyncExecutor());
 
     @Inject
@@ -147,7 +171,13 @@ public class LessonService {
         playbackService.addListener(playbackServiceListener);
         voiceService.addListener(voiceServiceListener);
 
-        flow.whenEnter(States.INITIAL, context -> {
+        flow.whenEnter(States.INITIAL, (FlowContext context) -> {
+            if (!context.speakerInitialized) {
+                playbackService.init();
+            }
+        });
+
+        flow.whenEnter(States.SPEAKER_READY, (FlowContext context) -> {
             if (playbackService.isLanguageAvailable(prompt.getLanguage())) {
                 flow.trigger(Events.languageAvailable, context);
             } else {
@@ -155,16 +185,24 @@ public class LessonService {
             }
         });
 
-        flow.whenEnter(States.PLAYING_TRANSITION, context -> {
+        flow.whenEnter(States.PLAYING_TRANSITION, (FlowContext context) -> {
+            if (!context.speakerInitialized) {
+                playbackService.init();
+
+                return;
+            }
+
             if (playbackService.isLanguageAvailable(prompt.getLanguage())) {
                 flow.trigger(Events.languageAvailable, context);
-            } else {
-                for (Listener listener : listeners) {
-                    listener.onLanguageUnavailable();
-                }
 
-                flow.trigger(Events.languageUnavailable, context);
+                return;
             }
+
+            for (Listener listener : listeners) {
+                listener.onLanguageUnavailable();
+            }
+
+            flow.trigger(Events.languageUnavailable, context);
         });
 
         flow.whenEnter(States.PLAYING, context -> {
@@ -175,9 +213,29 @@ public class LessonService {
             playbackService.stopSpeaking();
         });
 
-        flow.whenEnter(States.RECORDING_TRANSITION, context -> {
+        flow.whenEnter(States.RECORDING_TRANSITION, (FlowContext context) -> {
+            if (context.permissionGranted) {
+                flow.trigger(Events.recordPermissionGranted, context);
+
+                return;
+            }
+
+            if (context.permissionDenied) {
+                flow.trigger(Events.recordPermissionDenied, context);
+
+                return;
+            }
+
             for (Listener listener : listeners) {
                 listener.onRequestRecordingPermission();
+            }
+        });
+
+        flow.whenEnter(States.RECORDER_PREPARE, (FlowContext context) -> {
+            if (!context.recorderInitialized) {
+                voiceService.init();
+            } else {
+                flow.trigger(Events.recorderInitialized, context);
             }
         });
 
@@ -199,12 +257,7 @@ public class LessonService {
 
         flow.whenError(new DefaultErrorHandler());
 
-        flow.whenEnter(new StateHandler<StatefulContext>() {
-            @Override
-            public void call(StateEnum state, StatefulContext context) throws Exception {
-                Timber.d("State: %s", state.name());
-            }
-        });
+        flow.whenEnter((state, context) -> Timber.d("State: %s", state.name()));
 
         flow.start(context);
     }
