@@ -44,14 +44,13 @@ public class LessonViewModel extends ViewModel {
     /**
      * Results of matching prompt text against TTS recognitions grouped by recognition session
      */
-    private final Observable<Observable<PhraseComparison>> matches = shownPrompt
+    private final Observable<PhraseComparison> matches = shownPrompt
             .map(Prompt::getText)
             .map(PhraseMatcher::new)
             .switchMap(matcher -> recognitions
                     .flatMap(Observable::fromIterable)
-                    .map(matcher::match)
-                    .window(isRecognizing.filter(it -> it), __ -> isRecognizing.filter(it -> !it))
-                    .map(observable -> observable.startWith(matcher.emptyMatch())));
+                    .map(matcher::match))
+            .share();
 
     private final LessonService.Listener lessonServiceListener = new LessonService.Listener() {
         @Override
@@ -169,7 +168,6 @@ public class LessonViewModel extends ViewModel {
 
     public LiveData<Prompt> getPromptRemovals() {
         Observable<Prompt> completeMatches = matches
-                .flatMap(it -> it)
                 .filter(PhraseComparison::isComplete)
                 .withLatestFrom(shownPrompt, (match, prompt) -> prompt);
 
@@ -178,21 +176,11 @@ public class LessonViewModel extends ViewModel {
     }
 
     LiveData<PhraseComparison> getMatch(Prompt prompt) {
-        Observable<Boolean> isCardRecognizing = shownPrompt.filter(prompt::equals)
-                .switchMap(__ -> isRecognizing
-                        .takeUntil(hiddenPrompt.filter(prompt::equals)));
-
-        Observable<Observable<String>> cardRecognitions = recognitions
-                .flatMap(Observable::fromIterable)
-                .window(isCardRecognizing.filter(Boolean::valueOf),
-                        __ -> isCardRecognizing.filter(isRecognizing -> !isRecognizing));
-
-        PhraseMatcher phraseMatcher = new PhraseMatcher(prompt.getText());
-
-        Observable<PhraseComparison> phraseComparisonObservable = cardRecognitions
-                .flatMap(promptRecognitions -> promptRecognitions
-                        .map(phraseMatcher::match)
-                        .startWith(phraseMatcher.emptyMatch()));
+        Observable<PhraseComparison> phraseComparisonObservable = shownPrompt.filter(prompt::equals)
+                .switchMap(__ -> matches
+                        .takeUntil(hiddenPrompt.filter(prompt::equals)))
+                .window(isRecording.filter(it -> it), __ -> isRecognizing.filter(it -> !it))
+                .flatMap(observable -> observable.startWith(PhraseComparison.empty()));
 
         return LiveDataReactiveStreams.fromPublisher(
                 phraseComparisonObservable.toFlowable(BackpressureStrategy.LATEST));

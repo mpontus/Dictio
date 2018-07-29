@@ -13,10 +13,6 @@ public class PhraseMatcher {
         this.phrase = new Phrase(text);
     }
 
-    public PhraseComparison emptyMatch() {
-        return new PhraseComparison();
-    }
-
     public PhraseComparison match(String text) {
         Phrase against = new Phrase(text);
         PhraseComparison phraseComparison = new PhraseComparison();

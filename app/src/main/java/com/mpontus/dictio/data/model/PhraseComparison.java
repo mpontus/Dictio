@@ -8,6 +8,10 @@ import java.util.List;
 
 public class PhraseComparison implements Iterable<PhraseComparisonRegion> {
 
+    public static PhraseComparison empty() {
+        return new PhraseComparison();
+    }
+
     /**
      * Whether two phrases match completely
      */
