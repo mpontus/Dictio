@@ -12,4 +12,6 @@
     <string name="current_language">Current language</string>
     <string name="speak">Speak</string>
     <string name="add_widget">Add widget</string>
+    <string name="toast_lang_unavailable">Language is unavailable</string>
+    <string name="permission_denied">Enable recording permission</string>
 </resources>

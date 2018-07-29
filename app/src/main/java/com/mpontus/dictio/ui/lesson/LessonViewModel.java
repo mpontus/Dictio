@@ -11,6 +11,7 @@ import com.mpontus.dictio.domain.LessonPlan;
 import com.mpontus.dictio.domain.LessonService;
 import com.mpontus.dictio.domain.LessonServiceFactory;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,8 +21,68 @@ import javax.inject.Inject;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.subjects.PublishSubject;
 
 public class LessonViewModel extends ViewModel {
+
+    private final PublishSubject<ViewModelEvent> events = PublishSubject.create();
+
+    private final LessonService.Listener lessonServiceListener = new LessonService.Listener() {
+        @Override
+        public void onSpeechStart() {
+            events.onNext(new ViewModelEvent.SpeechStart());
+        }
+
+        @Override
+        public void onSpeechEnd() {
+            events.onNext(new ViewModelEvent.SpeechEnd());
+        }
+
+        @Override
+        public void onRecordingStart() {
+            events.onNext(new ViewModelEvent.RecordingStart());
+        }
+
+        @Override
+        public void onRecordingEnd() {
+            events.onNext(new ViewModelEvent.RecordingEnd());
+        }
+
+        @Override
+        public void onRecognitionStart() {
+            events.onNext(new ViewModelEvent.RecognitionStart());
+        }
+
+        @Override
+        public void onRecognitionEnd() {
+            events.onNext(new ViewModelEvent.RecognitionEnd());
+        }
+
+        @Override
+        public void onRecognition(Collection<String> alternatives) {
+
+        }
+
+        @Override
+        public void onRequestRecordingPermission() {
+            events.onNext(new ViewModelEvent.RequestRecordingPermission());
+        }
+
+        @Override
+        public void onLanguageUnavailable() {
+            events.onNext(new ViewModelEvent.LanguageUnavailable());
+        }
+
+        @Override
+        public void onPermissionDenied() {
+            events.onNext(new ViewModelEvent.PermissionDenied());
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            events.onNext(new ViewModelEvent.Error(t));
+        }
+    };
 
     private final LessonServiceFactory lessonServiceFactory;
 
@@ -93,10 +154,20 @@ public class LessonViewModel extends ViewModel {
 
     void onPromptShown(Prompt prompt) {
         lessonService = lessonServiceFactory.createLessonService(prompt);
+        lessonService.addListener(lessonServiceListener);
     }
 
     void onPromptHidden(Prompt prompt) {
-        lessonService = null;
+        if (lessonService != null) {
+            lessonService.removeListener(lessonServiceListener);
+            lessonService = null;
+        }
+    }
+
+    LiveData<EventWrapper<ViewModelEvent>> getEvents() {
+        return LiveDataReactiveStreams.fromPublisher(
+                events.toFlowable(BackpressureStrategy.LATEST)
+                        .map(EventWrapper::new));
     }
 
     void onCardPress() {

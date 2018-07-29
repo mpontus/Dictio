@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import timber.log.Timber;
+
 public class Capture implements VoiceService {
 
     private final List<Listener> listeners = new ArrayList<>();
@@ -63,6 +65,8 @@ public class Capture implements VoiceService {
 
         @Override
         public void onRecognition(Collection<String> alternatives) {
+            Timber.d("Recognitions: %d", alternatives.size());
+
             for (Listener listener : listeners) {
                 listener.onRecognition(alternatives);
             }

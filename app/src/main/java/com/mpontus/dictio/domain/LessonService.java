@@ -243,7 +243,7 @@ public class LessonService {
         listeners.remove(listener);
     }
 
-    interface Listener {
+    public interface Listener {
         void onSpeechStart();
 
         void onSpeechEnd();

@@ -3,7 +3,11 @@ package com.mpontus.dictio.ui.lesson;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.widget.Toast;
 
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mpontus.dictio.R;
@@ -23,6 +27,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public class LessonActivity extends DaggerAppCompatActivity {
     public static final String EXTRA_LANGUAGE = "LANGUAGE";
     public static final String EXTRA_CATEGORY = "CATEGORY";
+    private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
 
     public static Intent createIntent(Context context, String language, String category) {
         Intent intent = new Intent(context, LessonActivity.class);
@@ -71,6 +76,20 @@ public class LessonActivity extends DaggerAppCompatActivity {
         lessonViewModel.getPromptRemovals().observe(this, prompt -> {
             swipeView.doSwipe(random.nextBoolean());
         });
+
+        lessonViewModel.getEvents().observe(this, event -> {
+            ViewModelEvent content = event.getContentIfNotHandled();
+
+            if (content instanceof ViewModelEvent.LanguageUnavailable) {
+                Toast.makeText(this, R.string.toast_lang_unavailable, Toast.LENGTH_SHORT)
+                        .show();
+            } else if (content instanceof ViewModelEvent.PermissionDenied) {
+                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT)
+                        .show();
+            } else if (content instanceof ViewModelEvent.RequestRecordingPermission) {
+                requestRecordingPermission();
+            }
+        });
     }
 
     @Override
@@ -89,5 +108,42 @@ public class LessonActivity extends DaggerAppCompatActivity {
         compositeDisposable.dispose();
 
         super.onStop();
+    }
+
+    private void requestRecordingPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                == PackageManager.PERMISSION_GRANTED) {
+            onRecordingPermissionGranted();
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.RECORD_AUDIO)) {
+            // TODO: Not sure what to do here.
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
+                    REQUEST_RECORD_AUDIO_PERMISSION);
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
+            if (permissions.length == 1 && grantResults.length == 1
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                onRecordingPermissionGranted();
+            } else {
+                onRecordingPermissionDenied();
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    void onRecordingPermissionGranted() {
+        lessonViewModel.onPermissionGranted();
+    }
+
+    void onRecordingPermissionDenied() {
+        lessonViewModel.onPermissionDenied();
     }
 }
