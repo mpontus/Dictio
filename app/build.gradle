@@ -99,7 +99,6 @@ dependencies {
     implementation 'com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.1'
     implementation 'com.github.VictorAlbertos:RxActivityResult:0.4.5-2.x'
     implementation 'com.f2prateek.rx.preferences2:rx-preferences:2.0.0'
-    implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar'
 
     // Install PlaceHolderView for card swipe layout
     implementation('com.mindorks.android:placeholderview:1.0.3') {

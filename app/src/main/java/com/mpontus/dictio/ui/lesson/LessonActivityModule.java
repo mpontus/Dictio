@@ -4,7 +4,6 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 
 import com.mpontus.dictio.R;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import dagger.Module;
 import dagger.Provides;
@@ -20,10 +19,5 @@ public class LessonActivityModule {
     @Provides
     LessonViewModel lessonViewModel(ViewModelProvider.Factory viewModelFactory, LessonActivity activity) {
         return ViewModelProviders.of(activity, viewModelFactory).get(LessonViewModel.class);
-    }
-
-    @Provides
-    RxPermissions provideRxPersmissions(LessonActivity activity) {
-        return new RxPermissions(activity);
     }
 }
