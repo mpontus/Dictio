@@ -11,6 +11,7 @@ import com.mpontus.dictio.domain.LessonPlan;
 import com.mpontus.dictio.domain.LessonService;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,41 +20,54 @@ import javax.inject.Inject;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subjects.PublishSubject;
 
 public class LessonViewModel extends ViewModel {
+
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    private final PublishSubject<Prompt> shownPrompt = PublishSubject.create();
+
+    private final PublishSubject<Prompt> hiddenPrompt = PublishSubject.create();
+
+    private final PublishSubject<Boolean> isPlaying = PublishSubject.create();
+
+    private final PublishSubject<Boolean> isRecording = PublishSubject.create();
+
+    private final PublishSubject<Boolean> isRecognizing = PublishSubject.create();
 
     private final PublishSubject<ViewModelEvent> events = PublishSubject.create();
 
     private final LessonService.Listener lessonServiceListener = new LessonService.Listener() {
         @Override
         public void onSpeechStart() {
-            events.onNext(new ViewModelEvent.SpeechStart());
+            isPlaying.onNext(true);
         }
 
         @Override
         public void onSpeechEnd() {
-            events.onNext(new ViewModelEvent.SpeechEnd());
+            isPlaying.onNext(false);
         }
 
         @Override
         public void onRecordingStart() {
-            events.onNext(new ViewModelEvent.RecordingStart());
+            isRecording.onNext(true);
         }
 
         @Override
         public void onRecordingEnd() {
-            events.onNext(new ViewModelEvent.RecordingEnd());
+            isRecording.onNext(false);
         }
 
         @Override
         public void onRecognitionStart() {
-            events.onNext(new ViewModelEvent.RecognitionStart());
+            isRecognizing.onNext(true);
         }
 
         @Override
         public void onRecognitionEnd() {
-            events.onNext(new ViewModelEvent.RecognitionEnd());
+            isRecognizing.onNext(false);
         }
 
         @Override
@@ -97,6 +111,11 @@ public class LessonViewModel extends ViewModel {
         this.lessonPlan = lessonPlan;
 
         lessonService.addListener(lessonServiceListener);
+
+        compositeDisposable.addAll(
+                shownPrompt.subscribe(lessonService::onCardShown),
+                hiddenPrompt.subscribe(__ -> lessonService.onCardHidden())
+        );
     }
 
     @Override
@@ -122,7 +141,12 @@ public class LessonViewModel extends ViewModel {
         Observable<List<Prompt>> prompt$ = Observable.range(0, initialSize)
                 .concatMapSingle(__ -> iterator.next())
                 .toList()
-                .toObservable();
+                .toObservable()
+                .concatWith(
+                        hiddenPrompt
+                                .concatMapSingle(__ -> iterator.next())
+                                .map(Collections::singletonList)
+                );
 
 
         return LiveDataReactiveStreams.fromPublisher(
@@ -138,33 +162,46 @@ public class LessonViewModel extends ViewModel {
     }
 
     LiveData<Boolean> isPlaybackActive(Prompt prompt) {
-        return new MutableLiveData<>();
+        Observable<Boolean> isPromptPlaying = shownPrompt.filter(prompt::equals)
+                .switchMap(__ -> isPlaying
+                        .takeUntil(hiddenPrompt.filter(prompt::equals)));
+
+        return LiveDataReactiveStreams.fromPublisher(
+                isPromptPlaying.toFlowable(BackpressureStrategy.LATEST));
     }
 
     LiveData<Boolean> isRecordingActive(Prompt prompt) {
-        return new MutableLiveData<>();
+        Observable<Boolean> isPromptPlaying = shownPrompt.filter(prompt::equals)
+                .switchMap(__ -> isRecording
+                        .takeUntil(hiddenPrompt.filter(prompt::equals)));
+
+
+        return LiveDataReactiveStreams.fromPublisher(
+                isPromptPlaying.toFlowable(BackpressureStrategy.LATEST));
     }
 
-    void onPermissionGranted() {
-        lessonService.onRecordPermissionGranted();
-    }
+    LiveData<Boolean> isRecognitionActive(Prompt prompt) {
+        Observable<Boolean> isPromptPlaying = shownPrompt.filter(prompt::equals)
+                .switchMap(__ -> isRecognizing
+                        .takeUntil(hiddenPrompt.filter(prompt::equals)));
 
-    void onPermissionDenied() {
-        lessonService.onRecordPermissionGranted();
-    }
 
-    void onPromptShown(Prompt prompt) {
-        lessonService.onCardShown(prompt);
-    }
-
-    void onPromptHidden(Prompt prompt) {
-        lessonService.onCardHidden();
+        return LiveDataReactiveStreams.fromPublisher(
+                isPromptPlaying.toFlowable(BackpressureStrategy.LATEST));
     }
 
     LiveData<EventWrapper<ViewModelEvent>> getEvents() {
         return LiveDataReactiveStreams.fromPublisher(
                 events.toFlowable(BackpressureStrategy.LATEST)
                         .map(EventWrapper::new));
+    }
+
+    void onPromptShown(Prompt prompt) {
+        shownPrompt.onNext(prompt);
+    }
+
+    void onPromptHidden(Prompt prompt) {
+        hiddenPrompt.onNext(prompt);
     }
 
     void onCardPress() {
@@ -177,5 +214,13 @@ public class LessonViewModel extends ViewModel {
 
     void onRecordToggle() {
         lessonService.onRecordButtonPressed();
+    }
+
+    void onPermissionGranted() {
+        lessonService.onRecordPermissionGranted();
+    }
+
+    void onPermissionDenied() {
+        lessonService.onRecordPermissionGranted();
     }
 }

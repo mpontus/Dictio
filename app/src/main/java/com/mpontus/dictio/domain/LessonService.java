@@ -228,10 +228,18 @@ public class LessonService {
 
         flow.whenEnter(States.PLAYING, (FlowContext context) -> {
             playbackService.speak(context.prompt.getLanguage(), context.prompt.getText());
+
+            for (Listener listener : listeners) {
+                listener.onSpeechStart();
+            }
         });
 
         flow.whenLeave(States.PLAYING, context -> {
             playbackService.stopSpeaking();
+
+            for (Listener listener : listeners) {
+                listener.onSpeechEnd();
+            }
         });
 
         flow.whenEnter(States.RECORDING_TRANSITION, (FlowContext context) -> {
@@ -270,10 +278,18 @@ public class LessonService {
 
         flow.whenEnter(States.RECORDING, (FlowContext context) -> {
             voiceService.start(context.prompt.getLanguage());
+
+            for (Listener listener : listeners) {
+                listener.onRecordingStart();
+            }
         });
 
         flow.whenLeave(States.RECORDING, context -> {
             voiceService.stop();
+
+            for (Listener listener : listeners) {
+                listener.onRecordingEnd();
+            }
         });
 
         flow.whenError(new DefaultErrorHandler());
