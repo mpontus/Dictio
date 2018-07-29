@@ -19,6 +19,7 @@ import javax.inject.Inject;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subjects.PublishSubject;
@@ -167,52 +168,38 @@ public class LessonViewModel extends ViewModel {
     }
 
     public LiveData<Prompt> getPromptRemovals() {
-        Observable<Prompt> completeMatches = matches
-                .filter(PhraseComparison::isComplete)
-                .withLatestFrom(shownPrompt, (match, prompt) -> prompt);
-
         return LiveDataReactiveStreams.fromPublisher(
-                completeMatches.toFlowable(BackpressureStrategy.ERROR));
+                matches.filter(PhraseComparison::isComplete)
+                        .withLatestFrom(shownPrompt, (match, prompt) -> prompt)
+                        .toFlowable(BackpressureStrategy.ERROR));
     }
 
     LiveData<PhraseComparison> getMatch(Prompt prompt) {
-        Observable<PhraseComparison> phraseComparisonObservable = shownPrompt.filter(prompt::equals)
-                .switchMap(__ -> matches
-                        .takeUntil(hiddenPrompt.filter(prompt::equals)))
-                .window(isRecording.filter(it -> it), __ -> isRecognizing.filter(it -> !it))
-                .flatMap(observable -> observable.startWith(PhraseComparison.empty()));
+        Observable<PhraseComparison> phraseComparisonObservable =
+                matches.compose(takeDuringPrompt(prompt))
+                        .window(isRecording.filter(it -> it), __ -> isRecognizing.filter(it -> !it))
+                        .flatMap(observable -> observable.startWith(PhraseComparison.empty()));
 
         return LiveDataReactiveStreams.fromPublisher(
                 phraseComparisonObservable.toFlowable(BackpressureStrategy.LATEST));
     }
 
     LiveData<Boolean> isPlaybackActive(Prompt prompt) {
-        Observable<Boolean> isCardPlaying = shownPrompt.filter(prompt::equals)
-                .switchMap(__ -> isPlaying
-                        .takeUntil(hiddenPrompt.filter(prompt::equals)));
-
         return LiveDataReactiveStreams.fromPublisher(
-                isCardPlaying.toFlowable(BackpressureStrategy.LATEST));
+                isPlaying.compose(takeDuringPrompt(prompt))
+                        .toFlowable(BackpressureStrategy.LATEST));
     }
 
     LiveData<Boolean> isRecordingActive(Prompt prompt) {
-        Observable<Boolean> isCardRecording = shownPrompt.filter(prompt::equals)
-                .switchMap(__ -> isRecording
-                        .takeUntil(hiddenPrompt.filter(prompt::equals)));
-
-
         return LiveDataReactiveStreams.fromPublisher(
-                isCardRecording.toFlowable(BackpressureStrategy.LATEST));
+                isRecording.compose(takeDuringPrompt(prompt))
+                        .toFlowable(BackpressureStrategy.LATEST));
     }
 
     LiveData<Boolean> isRecognitionActive(Prompt prompt) {
-        Observable<Boolean> isPromptPlaying = shownPrompt.filter(prompt::equals)
-                .switchMap(__ -> isRecognizing
-                        .takeUntil(hiddenPrompt.filter(prompt::equals)));
-
-
         return LiveDataReactiveStreams.fromPublisher(
-                isPromptPlaying.toFlowable(BackpressureStrategy.LATEST));
+                isRecognizing.compose(takeDuringPrompt(prompt))
+                        .toFlowable(BackpressureStrategy.LATEST));
     }
 
     LiveData<EventWrapper<ViewModelEvent>> getEvents() {
@@ -247,5 +234,11 @@ public class LessonViewModel extends ViewModel {
 
     void onPermissionDenied() {
         lessonService.onRecordPermissionGranted();
+    }
+
+    private <T> ObservableTransformer<T, T> takeDuringPrompt(Prompt prompt) {
+        return upstream -> shownPrompt.filter(prompt::equals)
+                .switchMap(__ -> upstream
+                        .takeUntil(hiddenPrompt.filter(prompt::equals)));
     }
 }
