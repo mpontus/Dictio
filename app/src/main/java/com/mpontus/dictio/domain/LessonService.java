@@ -194,7 +194,7 @@ public class LessonService {
         });
 
         flow.whenEnter(States.SPEAKER_READY, (FlowContext context) -> {
-            if (playbackService.getVolume() >= 0 &&
+            if (playbackService.getVolume() > 0 &&
                     playbackService.isLanguageAvailable(context.prompt.getLanguage())) {
                 flow.trigger(Events.canSpeak, context);
             } else {
