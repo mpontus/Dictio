@@ -20,13 +20,9 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.Single;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subjects.PublishSubject;
-import timber.log.Timber;
 
 public class LessonViewModel extends ViewModel {
-
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private final PublishSubject<Prompt> shownPrompt = PublishSubject.create();
 
@@ -125,13 +121,6 @@ public class LessonViewModel extends ViewModel {
         this.lessonPlan = lessonPlan;
 
         lessonService.addListener(lessonServiceListener);
-
-        compositeDisposable.addAll(
-                // Notify service of prompt additions and removals
-                shownPrompt.subscribe(lessonService::onCardShown),
-                hiddenPrompt.subscribe(__ -> lessonService.onCardHidden())
-
-        );
     }
 
     @Override
@@ -139,19 +128,14 @@ public class LessonViewModel extends ViewModel {
         lessonService.removeListener(lessonServiceListener);
         lessonService.release();
 
-        compositeDisposable.dispose();
-
         super.onCleared();
     }
 
     /**
      * Return a list of prompts in the stack of cards
-     * <p>
-     * This method is responsible for card addition and removal.
      *
-     * @return
+     * @return A list of prompts in the current stack.
      */
-
     LiveData<List<Prompt>> getPrompts(int stackSize) {
         Iterator<Single<Prompt>> iterator = lessonPlan.iterator();
 
@@ -186,15 +170,7 @@ public class LessonViewModel extends ViewModel {
                 .subscribe(extraCardsForCardRemoved);
 
         return LiveDataReactiveStreams.fromPublisher(
-                stacks
-                        .doOnNext(stack -> {
-                            Timber.d("----");
-                            for (Prompt prompt : stack) {
-                                Timber.d("Prompt in stack: %s", prompt.getText());
-                            }
-
-                        })
-                        .toFlowable(BackpressureStrategy.LATEST));
+                stacks.toFlowable(BackpressureStrategy.LATEST));
     }
 
 
@@ -254,10 +230,14 @@ public class LessonViewModel extends ViewModel {
     }
 
     void onPromptShown(Prompt prompt) {
+        lessonService.onCardShown(prompt);
+
         shownPrompt.onNext(prompt);
     }
 
     void onPromptHidden(Prompt prompt) {
+        lessonService.onCardHidden();
+
         hiddenPrompt.onNext(prompt);
     }
 
