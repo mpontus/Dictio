@@ -19,7 +19,6 @@ import java.util.Random;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.disposables.CompositeDisposable;
@@ -42,14 +41,40 @@ public class LessonActivity extends DaggerAppCompatActivity {
 
     private final Random random = new Random();
 
+    private final LessonCard.Callback lessonCardCallback = new LessonCard.Callback() {
+        @Override
+        public void onShown(Prompt prompt) {
+            lessonViewModel.onPromptShown(prompt);
+        }
+
+        @Override
+        public void onHidden(Prompt prompt) {
+            lessonViewModel.onPromptHidden(prompt);
+        }
+
+        @Override
+        public void onCardClick() {
+            lessonViewModel.onCardPress();
+        }
+
+        @Override
+        public void onPlayClick() {
+            lessonViewModel.onPlaybackToggle();
+        }
+
+        @Override
+        public void onRecordClick() {
+            lessonViewModel.onRecordToggle();
+        }
+    };
+
+    private LessonCardStack lessonCardStack = null;
+
     @Inject
     LessonViewModel lessonViewModel;
 
     @Inject
     LessonCardFactory lessonCardFactory;
-
-    @BindView(R.id.swipeView)
-    SwipePlaceHolderView swipeView;
 
     @Nullable
     Toast toast;
@@ -63,7 +88,19 @@ public class LessonActivity extends DaggerAppCompatActivity {
         Objects.requireNonNull(getSupportActionBar())
                 .setDisplayHomeAsUpEnabled(true);
 
+        SwipePlaceHolderView swipeView = findViewById(R.id.swipeView);
+
         swipeView.getBuilder().setDisplayViewCount(2);
+
+        lessonCardStack = new LessonCardStack(lessonCardFactory, swipeView, lessonCardCallback);
+
+        lessonViewModel.getPrompts(2).observe(this, prompts -> {
+            if (prompts == null) {
+                return;
+            }
+
+            lessonCardStack.update(prompts);
+        });
 
         lessonViewModel.getEvents().observe(this, event -> {
             if (event == null) {
@@ -76,11 +113,7 @@ public class LessonActivity extends DaggerAppCompatActivity {
                 return;
             }
 
-            if (event instanceof ViewModelEvent.AddPrompt) {
-                swipeView.addView(lessonCardFactory.createCard((Prompt) content));
-            } else if (event instanceof ViewModelEvent.RemovePrompt) {
-                swipeView.doSwipe(random.nextBoolean());
-            } else if (event instanceof ViewModelEvent.ShowDialog) {
+            if (event instanceof ViewModelEvent.ShowDialog) {
                 switch ((ViewModelEvent.Dialog) content) {
                     case LANGUAGE_UNAVAILABLE:
                         showToast(Toast.makeText(this, R.string.toast_lang_unavailable, Toast.LENGTH_SHORT));
@@ -95,7 +128,7 @@ public class LessonActivity extends DaggerAppCompatActivity {
                         return;
 
                     default:
-                        throw new IllegalStateException("Unknown permission type");
+                        throw new IllegalStateException("Unknown dialog type");
                 }
             } else if (event instanceof ViewModelEvent.RequestPermission) {
                 switch ((ViewModelEvent.Permission) content) {

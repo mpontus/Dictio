@@ -12,6 +12,7 @@ import com.mpontus.dictio.domain.LessonService;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -21,6 +22,7 @@ import io.reactivex.ObservableTransformer;
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subjects.PublishSubject;
+import timber.log.Timber;
 
 public class LessonViewModel extends ViewModel {
 
@@ -140,6 +142,59 @@ public class LessonViewModel extends ViewModel {
         compositeDisposable.dispose();
 
         super.onCleared();
+    }
+
+    /**
+     * Return a list of prompts in the stack of cards
+     * <p>
+     * This method is responsible for card addition and removal.
+     *
+     * @return
+     */
+
+    LiveData<List<Prompt>> getPrompts(int stackSize) {
+        Iterator<Single<Prompt>> iterator = lessonPlan.iterator();
+
+        // We add a few cards initially
+        Observable<Prompt> initialCards = Observable.range(0, stackSize)
+                .concatMapSingle(__ -> iterator.next());
+
+        // Add an extra card for each completed prompt, which will shift the window and
+        // remove top card
+        Observable<Prompt> extraCardsForCardCompleted = matches
+                .filter(PhraseComparison::isComplete)
+                .concatMapSingle(__ -> iterator.next());
+
+        // Create a Subject for cards which prompts to be added when the card is manually
+        // removed. Subject is needed because we'll need to reference existing cards to find
+        // out whether prompt removal is manual or automatic.
+        PublishSubject<Prompt> extraCardsForCardRemoved = PublishSubject.create();
+
+        // Combine all prompts into a single stream
+        Observable<Prompt> allCards = Observable.concat(initialCards,
+                Observable.merge(extraCardsForCardCompleted, extraCardsForCardRemoved));
+
+        // Group prompts using a moving window which captures last N prmpts
+        Observable<List<Prompt>> stacks = allCards.buffer(stackSize, 1)
+                .cache();
+
+        // Add prompt for each prompt which were removed manually. Manually removed prompts
+        // exist at the top of the stack at the time of removal.
+        hiddenPrompt.withLatestFrom(stacks.map(stack -> stack.get(0)), Object::equals)
+                .filter(it -> it)
+                .concatMapSingle(__ -> iterator.next())
+                .subscribe(extraCardsForCardRemoved);
+
+        return LiveDataReactiveStreams.fromPublisher(
+                stacks
+                        .doOnNext(stack -> {
+                            Timber.d("----");
+                            for (Prompt prompt : stack) {
+                                Timber.d("Prompt in stack: %s", prompt.getText());
+                            }
+
+                        })
+                        .toFlowable(BackpressureStrategy.LATEST));
     }
 
 

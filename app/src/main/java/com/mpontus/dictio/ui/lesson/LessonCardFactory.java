@@ -23,7 +23,7 @@ public class LessonCardFactory {
         this.promptPainter = promptPainter;
     }
 
-    public LessonCard createCard(Prompt prompt) {
-        return new LessonCard(activity, lessonViewModel, promptPainter, translationManager, prompt);
+    public LessonCard createCard(Prompt prompt, LessonCard.Callback callback) {
+        return new LessonCard(activity, lessonViewModel, promptPainter, translationManager, prompt, callback);
     }
 }

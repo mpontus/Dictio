@@ -3,7 +3,6 @@ package com.mpontus.dictio.ui.lesson;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.support.annotation.NonNull;
 import android.text.SpannableString;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -26,15 +25,27 @@ import com.mpontus.dictio.data.model.Prompt;
 @Layout(R.layout.lesson_card_view)
 class LessonCard {
 
+    private final Prompt prompt;
+
     private final LifecycleOwner lifecycleOwner;
 
-    private final LessonViewModel viewModel;
+    private final LiveData<PhraseComparison> match;
+
+    private final LiveData<Boolean> isPlaybackActive;
+
+    private final LiveData<Boolean> isRecordingActive;
 
     private final PromptPainter promptPainter;
 
     private final TranslationManager translationManager;
 
-    private final Prompt prompt;
+    private final Callback callback;
+
+    private Observer<PhraseComparison> matchObserver;
+
+    private Observer<Boolean> playbackObserver;
+
+    private Observer<Boolean> recordingObserver;
 
     @View(R.id.speak)
     public ImageView speakButton;
@@ -48,48 +59,43 @@ class LessonCard {
     @View(R.id.translation)
     public TextView translationView;
 
-    private final LiveData<PhraseComparison> match;
-    private final LiveData<Boolean> isPlaybackActive;
-    private final LiveData<Boolean> isRecordingActive;
-
-    private final Observer<PhraseComparison> matchObserver;
-
-    private final Observer<Boolean> playbackObserver = isActive -> {
-        assert isActive != null;
-
-        int newState = (isActive ? 1 : -1) * android.R.attr.state_activated;
-
-        speakButton.getBackground().setState(new int[]{newState});
-    };
-
-    private final Observer<Boolean> recordingObserver = isActive -> {
-        assert isActive != null;
-
-        int newState = (isActive ? 1 : -1) * android.R.attr.state_activated;
-
-        speechView.getBackground().setState(new int[]{newState});
-    };
-
-    // TODO: Refactor using LiveDataReactiveStreams
     LessonCard(LifecycleOwner lifecycleOwner,
                LessonViewModel viewModel,
                PromptPainter promptPainter,
                TranslationManager translationManager,
-               @NonNull Prompt prompt) {
+               Prompt prompt,
+               Callback callback) {
         this.lifecycleOwner = lifecycleOwner;
-        this.viewModel = viewModel;
         this.promptPainter = promptPainter;
         this.translationManager = translationManager;
         this.prompt = prompt;
+        this.callback = callback;
 
         match = viewModel.getMatch(prompt);
         isPlaybackActive = viewModel.isPlaybackActive(prompt);
         isRecordingActive = viewModel.isRecordingActive(prompt);
 
         matchObserver = match -> {
-            SpannableString spannableString = this.promptPainter.colorToMatch(prompt.getText(), match);
+            String text = (this).prompt.getText();
+            SpannableString spannableString = (this).promptPainter.colorToMatch(text, match);
 
             promptView.setText(spannableString, TextView.BufferType.SPANNABLE);
+        };
+
+        playbackObserver = isActive -> {
+            assert isActive != null;
+
+            int newState = (isActive ? 1 : -1) * android.R.attr.state_activated;
+
+            speakButton.getBackground().setState(new int[]{newState});
+        };
+
+        recordingObserver = isActive -> {
+            assert isActive != null;
+
+            int newState = (isActive ? 1 : -1) * android.R.attr.state_activated;
+
+            speechView.getBackground().setState(new int[]{newState});
         };
     }
 
@@ -110,7 +116,7 @@ class LessonCard {
 
     @SwipeHead
     public void onShown() {
-        viewModel.onPromptShown(prompt);
+        callback.onShown(prompt);
     }
 
     @SwipeIn
@@ -120,21 +126,33 @@ class LessonCard {
         isPlaybackActive.removeObserver(playbackObserver);
         isRecordingActive.removeObserver(recordingObserver);
 
-        viewModel.onPromptHidden(prompt);
+        callback.onHidden(prompt);
     }
 
     @Click(R.id.container)
     public void onCardClick() {
-        viewModel.onCardPress();
+        callback.onCardClick();
     }
 
     @Click(R.id.speak)
     public void onPlayClick() {
-        viewModel.onPlaybackToggle();
+        callback.onPlayClick();
     }
 
     @Click(R.id.speech)
     public void onRecordClick() {
-        viewModel.onRecordToggle();
+        callback.onRecordClick();
+    }
+
+    interface Callback {
+        void onShown(Prompt prompt);
+
+        void onHidden(Prompt prompt);
+
+        void onCardClick();
+
+        void onPlayClick();
+
+        void onRecordClick();
     }
 }
