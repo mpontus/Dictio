@@ -65,29 +65,47 @@ public class LessonActivity extends DaggerAppCompatActivity {
 
         swipeView.getBuilder().setDisplayViewCount(2);
 
-        lessonViewModel.getPromptAdditions(4).observe(this, prompts -> {
-            assert prompts != null;
-
-            for (Prompt prompt : prompts) {
-                swipeView.addView(lessonCardFactory.createCard(prompt));
-            }
-        });
-
-        lessonViewModel.getPromptRemovals().observe(this, prompt -> {
-            swipeView.doSwipe(random.nextBoolean());
-        });
-
         lessonViewModel.getEvents().observe(this, event -> {
-            ViewModelEvent content = event.getContentIfNotHandled();
+            if (event == null) {
+                return;
+            }
 
-            if (content instanceof ViewModelEvent.LanguageUnavailable) {
-                showToast(Toast.makeText(this, R.string.toast_lang_unavailable, Toast.LENGTH_SHORT));
-            } else if (content instanceof ViewModelEvent.VolumeDown) {
-                showToast(Toast.makeText(this, R.string.toast_volume_down, Toast.LENGTH_SHORT));
-            } else if (content instanceof ViewModelEvent.PermissionDenied) {
-                showToast(Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT));
-            } else if (content instanceof ViewModelEvent.RequestRecordingPermission) {
-                requestRecordingPermission();
+            Object content = event.getContentIfNotHandled();
+
+            if (content == null) {
+                return;
+            }
+
+            if (event instanceof ViewModelEvent.AddPrompt) {
+                swipeView.addView(lessonCardFactory.createCard((Prompt) content));
+            } else if (event instanceof ViewModelEvent.RemovePrompt) {
+                swipeView.doSwipe(random.nextBoolean());
+            } else if (event instanceof ViewModelEvent.ShowDialog) {
+                switch ((ViewModelEvent.Dialog) content) {
+                    case LANGUAGE_UNAVAILABLE:
+                        showToast(Toast.makeText(this, R.string.toast_lang_unavailable, Toast.LENGTH_SHORT));
+                        return;
+
+                    case PERMISSION_DENIED:
+                        showToast(Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT));
+                        return;
+
+                    case VOLUME_DOWN:
+                        showToast(Toast.makeText(this, R.string.toast_volume_down, Toast.LENGTH_SHORT));
+                        return;
+
+                    default:
+                        throw new IllegalStateException("Unknown permission type");
+                }
+            } else if (event instanceof ViewModelEvent.RequestPermission) {
+                switch ((ViewModelEvent.Permission) content) {
+                    case RECORD:
+                        requestRecordingPermission();
+
+                        return;
+                    default:
+                        throw new IllegalStateException("Unknown permission type");
+                }
             }
         });
     }

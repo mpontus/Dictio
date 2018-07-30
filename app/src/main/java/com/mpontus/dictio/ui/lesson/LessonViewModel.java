@@ -11,9 +11,7 @@ import com.mpontus.dictio.domain.LessonPlan;
 import com.mpontus.dictio.domain.LessonService;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -40,7 +38,7 @@ public class LessonViewModel extends ViewModel {
 
     private final PublishSubject<Collection<String>> recognitions = PublishSubject.create();
 
-    private final PublishSubject<ViewModelEvent> events = PublishSubject.create();
+    private final PublishSubject<ViewModelEvent> serviceEvents = PublishSubject.create();
 
     /**
      * Results of matching prompt text against TTS recognitions grouped by recognition session
@@ -91,27 +89,27 @@ public class LessonViewModel extends ViewModel {
 
         @Override
         public void onRequestRecordingPermission() {
-            events.onNext(new ViewModelEvent.RequestRecordingPermission());
+            serviceEvents.onNext(new ViewModelEvent.RequestPermission(ViewModelEvent.Permission.RECORD));
         }
 
         @Override
         public void onLanguageUnavailable() {
-            events.onNext(new ViewModelEvent.LanguageUnavailable());
+            serviceEvents.onNext(new ViewModelEvent.ShowDialog(ViewModelEvent.Dialog.LANGUAGE_UNAVAILABLE));
         }
 
         @Override
         public void onVolumeDown() {
-            events.onNext(new ViewModelEvent.VolumeDown());
+            serviceEvents.onNext(new ViewModelEvent.ShowDialog(ViewModelEvent.Dialog.VOLUME_DOWN));
         }
 
         @Override
         public void onPermissionDenied() {
-            events.onNext(new ViewModelEvent.PermissionDenied());
+            serviceEvents.onNext(new ViewModelEvent.ShowDialog(ViewModelEvent.Dialog.PERMISSION_DENIED));
         }
 
         @Override
         public void onError(Throwable t) {
-            events.onNext(new ViewModelEvent.Error(t));
+            serviceEvents.onNext(new ViewModelEvent.ShowError(t));
         }
     };
 
@@ -127,8 +125,10 @@ public class LessonViewModel extends ViewModel {
         lessonService.addListener(lessonServiceListener);
 
         compositeDisposable.addAll(
+                // Notify service of prompt additions and removals
                 shownPrompt.subscribe(lessonService::onCardShown),
                 hiddenPrompt.subscribe(__ -> lessonService.onCardHidden())
+
         );
     }
 
@@ -137,46 +137,42 @@ public class LessonViewModel extends ViewModel {
         lessonService.removeListener(lessonServiceListener);
         lessonService.release();
 
+        compositeDisposable.dispose();
+
         super.onCleared();
     }
 
-    /**
-     * Get lists of prompts to be added to the card stack
-     * <p>
-     * Needs to be a list because LiveData will dismiss emissions before subscription, which will
-     * result in only the last prompt being added.
-     *
-     * @param initialSize How many prompts to add initially
-     * @return Live data
-     */
-    public LiveData<List<Prompt>> getPromptAdditions(int initialSize) {
+
+    LiveData<ViewModelEvent> getEvents() {
         Iterator<Single<Prompt>> iterator = lessonPlan.iterator();
 
-        Observable<List<Prompt>> prompt$ = Observable.range(0, initialSize)
-                .concatMapSingle(__ -> iterator.next())
-                .toList()
-                .toObservable()
-                .concatWith(
-                        hiddenPrompt
-                                .concatMapSingle(__ -> iterator.next())
-                                .map(Collections::singletonList)
-                );
+        // Add 5 prompts initially and one extra for each removed prompt
+        Observable<ViewModelEvent.AddPrompt> promptAdditions =
+                Observable.concat(Observable.range(0, 5), hiddenPrompt)
+                        .concatMapSingle(__ -> iterator.next())
+                        .map(ViewModelEvent.AddPrompt::new);
 
-
-        return LiveDataReactiveStreams.fromPublisher(
-                prompt$.toFlowable(BackpressureStrategy.LATEST));
-    }
-
-    public LiveData<Prompt> getPromptRemovals() {
-        return LiveDataReactiveStreams.fromPublisher(
+        // Remove top prompt on complete match
+        Observable<ViewModelEvent.RemovePrompt> promptRemovals =
                 matches.filter(PhraseComparison::isComplete)
                         .withLatestFrom(shownPrompt, (match, prompt) -> prompt)
-                        .toFlowable(BackpressureStrategy.ERROR));
+                        .map(ViewModelEvent.RemovePrompt::new);
+
+
+        Observable<ViewModelEvent> events = Observable.merge(
+                serviceEvents,
+                promptAdditions,
+                promptRemovals
+        );
+
+        return LiveDataReactiveStreams.fromPublisher(
+                events.toFlowable(BackpressureStrategy.LATEST));
     }
 
     LiveData<PhraseComparison> getMatch(Prompt prompt) {
         Observable<PhraseComparison> phraseComparisonObservable =
                 matches.compose(takeDuringPrompt(prompt))
+                        // Group matches by recording session and start each group with empty match
                         .window(isRecording.filter(it -> it), __ -> isRecognizing.filter(it -> !it))
                         .flatMap(observable -> observable.startWith(PhraseComparison.empty()));
 
@@ -200,12 +196,6 @@ public class LessonViewModel extends ViewModel {
         return LiveDataReactiveStreams.fromPublisher(
                 isRecognizing.compose(takeDuringPrompt(prompt))
                         .toFlowable(BackpressureStrategy.LATEST));
-    }
-
-    LiveData<EventWrapper<ViewModelEvent>> getEvents() {
-        return LiveDataReactiveStreams.fromPublisher(
-                events.toFlowable(BackpressureStrategy.LATEST)
-                        .map(EventWrapper::new));
     }
 
     void onPromptShown(Prompt prompt) {
@@ -236,6 +226,13 @@ public class LessonViewModel extends ViewModel {
         lessonService.onRecordPermissionGranted();
     }
 
+    /**
+     * Transform input observable to only emit values while the prompt is shown
+     *
+     * @param prompt Prompt to be shown
+     * @param <T>    Any type
+     * @return Transformer
+     */
     private <T> ObservableTransformer<T, T> takeDuringPrompt(Prompt prompt) {
         return upstream -> shownPrompt.filter(prompt::equals)
                 .switchMap(__ -> upstream
