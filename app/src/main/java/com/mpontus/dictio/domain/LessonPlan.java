@@ -7,7 +7,7 @@ import com.mpontus.dictio.data.local.EntityMapper;
 import com.mpontus.dictio.data.local.PromptEntity;
 import com.mpontus.dictio.data.local.PromptWithTranslations;
 import com.mpontus.dictio.data.local.PromptsDao;
-import com.mpontus.dictio.data.model.Prompt;
+import com.mpontus.dictio.domain.model.Prompt;
 
 import java.util.ArrayList;
 import java.util.Iterator;

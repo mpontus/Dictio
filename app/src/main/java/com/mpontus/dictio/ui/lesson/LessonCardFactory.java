@@ -1,7 +1,7 @@
 package com.mpontus.dictio.ui.lesson;
 
-import com.mpontus.dictio.data.TranslationManager;
-import com.mpontus.dictio.data.model.Prompt;
+import com.mpontus.dictio.domain.TranslationManager;
+import com.mpontus.dictio.domain.model.Prompt;
 
 import javax.inject.Inject;
 

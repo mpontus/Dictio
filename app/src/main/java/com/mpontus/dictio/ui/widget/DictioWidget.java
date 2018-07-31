@@ -10,11 +10,11 @@ import android.widget.RemoteViews;
 
 import com.mpontus.dictio.R;
 import com.mpontus.dictio.data.DictioPreferences;
-import com.mpontus.dictio.data.TranslationManager;
+import com.mpontus.dictio.domain.TranslationManager;
 import com.mpontus.dictio.data.local.EntityMapper;
 import com.mpontus.dictio.data.local.PromptsDao;
-import com.mpontus.dictio.data.model.LessonConstraints;
-import com.mpontus.dictio.data.model.Prompt;
+import com.mpontus.dictio.domain.model.LessonConstraints;
+import com.mpontus.dictio.domain.model.Prompt;
 import com.mpontus.dictio.ui.lesson.LessonActivity;
 import com.mpontus.dictio.ui.shared.LangaugeResources;
 

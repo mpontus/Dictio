@@ -1,8 +1,8 @@
-package com.mpontus.dictio.data;
+package com.mpontus.dictio.domain;
 
 import android.support.annotation.Nullable;
 
-import com.mpontus.dictio.data.model.Prompt;
+import com.mpontus.dictio.domain.model.Prompt;
 
 import java.util.Locale;
 import java.util.Map;

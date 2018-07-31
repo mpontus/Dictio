@@ -1,4 +1,4 @@
-package com.mpontus.dictio.data.model;
+package com.mpontus.dictio.domain.model;
 
 public class LessonConstraints {
     private String language;

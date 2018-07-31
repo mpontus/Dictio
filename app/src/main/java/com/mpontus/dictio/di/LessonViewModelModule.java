@@ -5,7 +5,7 @@ import android.media.AudioManager;
 
 import com.google.auth.oauth2.AccessToken;
 import com.mpontus.dictio.data.DictioPreferences;
-import com.mpontus.dictio.data.model.LessonConstraints;
+import com.mpontus.dictio.domain.model.LessonConstraints;
 import com.mpontus.dictio.device.Capture;
 import com.mpontus.dictio.device.PlaybackService;
 import com.mpontus.dictio.device.Speaker;

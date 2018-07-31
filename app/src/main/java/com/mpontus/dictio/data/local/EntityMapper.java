@@ -1,6 +1,6 @@
 package com.mpontus.dictio.data.local;
 
-import com.mpontus.dictio.data.model.Prompt;
+import com.mpontus.dictio.domain.model.Prompt;
 
 import java.util.ArrayList;
 import java.util.HashMap;

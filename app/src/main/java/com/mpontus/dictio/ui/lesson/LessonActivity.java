@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mpontus.dictio.R;
-import com.mpontus.dictio.data.model.Prompt;
+import com.mpontus.dictio.domain.model.Prompt;
 
 import java.util.Objects;
 import java.util.Random;

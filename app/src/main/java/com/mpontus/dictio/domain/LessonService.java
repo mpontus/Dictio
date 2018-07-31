@@ -1,6 +1,6 @@
 package com.mpontus.dictio.domain;
 
-import com.mpontus.dictio.data.model.Prompt;
+import com.mpontus.dictio.domain.model.Prompt;
 import com.mpontus.dictio.device.PlaybackService;
 import com.mpontus.dictio.device.VoiceService;
 

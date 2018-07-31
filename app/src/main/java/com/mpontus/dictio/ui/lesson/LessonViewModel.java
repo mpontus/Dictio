@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.LiveDataReactiveStreams;
 import android.arch.lifecycle.ViewModel;
 
-import com.mpontus.dictio.data.model.Prompt;
+import com.mpontus.dictio.domain.model.Prompt;
 import com.mpontus.dictio.domain.LessonPlan;
 import com.mpontus.dictio.domain.LessonService;
 import com.mpontus.dictio.domain.PhraseMatcher;

@@ -17,8 +17,8 @@ import com.mindorks.placeholderview.annotations.swipe.SwipeHead;
 import com.mindorks.placeholderview.annotations.swipe.SwipeIn;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOut;
 import com.mpontus.dictio.R;
-import com.mpontus.dictio.data.TranslationManager;
-import com.mpontus.dictio.data.model.Prompt;
+import com.mpontus.dictio.domain.TranslationManager;
+import com.mpontus.dictio.domain.model.Prompt;
 import com.mpontus.dictio.domain.PhraseMatcher;
 
 @NonReusable

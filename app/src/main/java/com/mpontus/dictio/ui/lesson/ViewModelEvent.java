@@ -2,7 +2,7 @@ package com.mpontus.dictio.ui.lesson;
 
 import android.support.annotation.Nullable;
 
-import com.mpontus.dictio.data.model.Prompt;
+import com.mpontus.dictio.domain.model.Prompt;
 
 public abstract class ViewModelEvent<T> {
 
