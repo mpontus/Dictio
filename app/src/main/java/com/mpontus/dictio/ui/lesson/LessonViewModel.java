@@ -4,11 +4,11 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.LiveDataReactiveStreams;
 import android.arch.lifecycle.ViewModel;
 
-import com.mpontus.dictio.domain.model.Prompt;
 import com.mpontus.dictio.domain.LessonPlan;
 import com.mpontus.dictio.domain.LessonService;
 import com.mpontus.dictio.domain.PhraseMatcher;
 import com.mpontus.dictio.domain.PhraseMatcherFactory;
+import com.mpontus.dictio.domain.model.Prompt;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -241,6 +241,10 @@ public class LessonViewModel extends ViewModel {
         lessonService.onCardHidden();
 
         hiddenPrompt.onNext(prompt);
+    }
+
+    void onBackground() {
+        lessonService.onBackground();
     }
 
     void onCardPress() {

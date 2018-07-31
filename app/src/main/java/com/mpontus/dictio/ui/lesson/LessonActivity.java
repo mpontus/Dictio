@@ -143,6 +143,13 @@ public class LessonActivity extends DaggerAppCompatActivity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        lessonViewModel.onBackground();
+
+        super.onPause();
+    }
+
     private void showToast(Toast toast) {
         if (this.toast != null) {
             this.toast.cancel();

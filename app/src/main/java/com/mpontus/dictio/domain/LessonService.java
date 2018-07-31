@@ -1,8 +1,8 @@
 package com.mpontus.dictio.domain;
 
-import com.mpontus.dictio.domain.model.Prompt;
 import com.mpontus.dictio.device.PlaybackService;
 import com.mpontus.dictio.device.VoiceService;
+import com.mpontus.dictio.domain.model.Prompt;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,46 +25,96 @@ import static au.com.ds.ef.FlowBuilder.on;
 public class LessonService {
 
     enum States implements StateEnum {
+
+        // Before card is shown
         INITIAL,
+
+        // After card is shown
         CARD_SHOWN,
+
+        // Speaker is initialized, should we speak or wait for user input?
         SPEAKER_READY,
+
+        // Waiting for user input
         IDLE,
+
+        // User wants to hear TTS, find out if its possible
         PLAYING_TRANSITION,
+
+        // TTS is speaking
         PLAYING,
 
-        // TODO: Group those by switching to FSM framework with circular transitions
+        // User wants to speak, ask them for the permission to record
         RECORDING_TRANSITION,
+
+        // User has granted permission, initialize STT
         RECORDER_PREPARE,
 
+        // User is speaking
         RECORDING,
     }
 
     // Events cover any external influence
     enum Events implements EventEnum {
+
+        // Card is shown
         cardShown,
+
+        // Card is hidden
         reset,
+
+        // App put in the background
+        background,
+
+        // User clicks on the card
         cardPressed,
+
+        // User clicks on Play button
         playButtonPressed,
+
+        // User clicks on Record button
         recordButtonPressed,
+
+        // TTS initialized
         speakerInitialized,
+
+        // Language supported & Volume is up
         canSpeak,
+
+        // Language unsupported or volume is down
         cannotSpeak,
-        recordPermissionGranted,
-        recordPermissionDenied,
-        recorderInitialized,
+
+        // TTS Done speaking
         speechEnd,
-        recordEnd,
+
+        // User has granted record persmission
+        recordPermissionGranted,
+
+        // User has denied record permission
+        recordPermissionDenied,
+
+        // STT initialized
+        recorderInitialized,
+
+        // STT ended
+        recordEnd
     }
 
     class FlowContext extends StatefulContext {
+
+        // Currently shown prompt
         private Prompt prompt;
 
+        // User has granted recording permission
         private boolean permissionGranted;
 
+        // User has denied recording permission
         private boolean permissionDenied;
 
+        // Speaker has been initialized
         private boolean speakerInitialized;
 
+        // Recorder has been initialized
         private boolean recorderInitialized;
     }
 
@@ -145,9 +195,11 @@ public class LessonService {
                                     on(Events.cardPressed).to(States.PLAYING_TRANSITION),
                                     on(Events.playButtonPressed).to(States.PLAYING_TRANSITION).transit(
                                             on(Events.reset).to(States.INITIAL),
+                                            on(Events.background).to(States.IDLE),
                                             on(Events.cannotSpeak).to(States.IDLE),
                                             on(Events.canSpeak).to(States.PLAYING).transit(
                                                     on(Events.reset).to(States.INITIAL),
+                                                    on(Events.background).to(States.IDLE),
                                                     on(Events.speechEnd).to(States.IDLE),
                                                     on(Events.playButtonPressed).to(States.IDLE),
                                                     on(Events.cardPressed).to(States.IDLE),
@@ -156,11 +208,14 @@ public class LessonService {
                                     ),
                                     on(Events.recordButtonPressed).to(States.RECORDING_TRANSITION).transit(
                                             on(Events.reset).to(States.INITIAL),
+                                            on(Events.background).to(States.IDLE),
                                             on(Events.recordPermissionDenied).to(States.IDLE),
                                             on(Events.recordPermissionGranted).to(States.RECORDER_PREPARE).transit(
                                                     on(Events.reset).to(States.INITIAL),
+                                                    on(Events.background).to(States.IDLE),
                                                     on(Events.recorderInitialized).to(States.RECORDING).transit(
                                                             on(Events.reset).to(States.INITIAL),
+                                                            on(Events.background).to(States.IDLE),
                                                             on(Events.recordEnd).to(States.IDLE),
                                                             on(Events.recordButtonPressed).to(States.IDLE),
                                                             on(Events.cardPressed).to(States.IDLE),
@@ -315,6 +370,10 @@ public class LessonService {
         context.prompt = null;
 
         flow.safeTrigger(Events.reset, context);
+    }
+
+    public void onBackground() {
+        flow.safeTrigger(Events.background, context);
     }
 
     public void onCardPressed() {
