@@ -6,7 +6,6 @@ import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.mpontus.dictio.data.SynchronizationManager;
 
@@ -34,11 +33,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        Log.d("SyncAdapter", "Running");
-
         synchronizationManager.forceSynchronize()
                 .blockingAwait();
-
-        Log.d("SyncAdapter", "Done");
     }
 }
