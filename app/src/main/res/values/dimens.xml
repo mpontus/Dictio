@@ -7,4 +7,5 @@
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="widget_content_margin">8dp</dimen>
     <dimen name="flag_margin">8dp</dimen>
+    <dimen name="card_margin_bottom">160dp</dimen>
 </resources>
