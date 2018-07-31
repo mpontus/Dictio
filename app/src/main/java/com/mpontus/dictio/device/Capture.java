@@ -121,7 +121,8 @@ public class Capture implements VoiceService {
 
     @Override
     public void stop() {
-        this.voiceRecorder.stop();
+        voiceRecorder.stop();
+        speechRecognition.stopRecognizing();
     }
 
     private void notifyReady() {
