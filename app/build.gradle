@@ -140,6 +140,9 @@ dependencies {
         exclude(group: 'org.apache.httpcomponents', module: 'httpclient')
     }
 
+    // Install AdMob to try and recoup some of the GCS costs
+    implementation 'com.google.android.gms:play-services-ads:15.0.1'
+
     implementation('com.google.api-client:google-api-client:1.23.0') {
         exclude module: 'guava-jdk5'
         // Exclude artifacts that the Android SDK/Runtime provides.

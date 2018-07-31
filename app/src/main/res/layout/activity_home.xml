@@ -21,22 +21,22 @@
         tools:context=".ui.home.HomeActivity">
 
         <android.support.v7.widget.AppCompatButton
-            style="@style/Widget.AppCompat.Spinner.Underlined"
-            android:drawablePadding="@dimen/language_button_drawable_padding"
             android:id="@+id/language"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/language_margin"
+            android:drawablePadding="@dimen/language_button_drawable_padding"
             android:paddingLeft="@dimen/language_button_padding_start"
             android:paddingRight="@dimen/language_button_padding_end"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             app:backgroundTint="@android:color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/language_margin"
-            tools:text="@string/language"
             app:layout_constraintBottom_toTopOf="@+id/words"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="@string/language" />
 
         <Button
             android:id="@+id/words"
