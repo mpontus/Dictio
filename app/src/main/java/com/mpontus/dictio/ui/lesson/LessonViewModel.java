@@ -36,12 +36,12 @@ public class LessonViewModel extends ViewModel {
 
     private final PublishSubject<Collection<String>> recognitions = PublishSubject.create();
 
-    private final PublishSubject<ViewModelEvent> serviceEvents = PublishSubject.create();
+    private final PublishSubject<ViewModelEvent> events = PublishSubject.create();
 
     /**
      * Results of matching prompt text against TTS recognitions grouped by recognition session
      */
-    private final Observable<com.mpontus.dictio.domain.PhraseMatcher.Result> matches = shownPrompt
+    private final Observable<PhraseMatcher.Result> matches = shownPrompt
             .map(prompt -> (this).phraseMatcherFactory.create(prompt.getLanguage(), prompt.getText()))
             .switchMap(matcher -> recognitions
                     .flatMap(Observable::fromIterable)
@@ -86,27 +86,27 @@ public class LessonViewModel extends ViewModel {
 
         @Override
         public void onRequestRecordingPermission() {
-            serviceEvents.onNext(new ViewModelEvent.RequestPermission(ViewModelEvent.Permission.RECORD));
+            events.onNext(new ViewModelEvent.RequestPermission(ViewModelEvent.Permission.RECORD));
         }
 
         @Override
         public void onLanguageUnavailable() {
-            serviceEvents.onNext(new ViewModelEvent.ShowDialog(ViewModelEvent.Dialog.LANGUAGE_UNAVAILABLE));
+            events.onNext(new ViewModelEvent.ShowDialog(ViewModelEvent.Dialog.LANGUAGE_UNAVAILABLE));
         }
 
         @Override
         public void onVolumeDown() {
-            serviceEvents.onNext(new ViewModelEvent.ShowDialog(ViewModelEvent.Dialog.VOLUME_DOWN));
+            events.onNext(new ViewModelEvent.ShowDialog(ViewModelEvent.Dialog.VOLUME_DOWN));
         }
 
         @Override
         public void onPermissionDenied() {
-            serviceEvents.onNext(new ViewModelEvent.ShowDialog(ViewModelEvent.Dialog.PERMISSION_DENIED));
+            events.onNext(new ViewModelEvent.ShowDialog(ViewModelEvent.Dialog.PERMISSION_DENIED));
         }
 
         @Override
         public void onError(Throwable t) {
-            serviceEvents.onNext(new ViewModelEvent.ShowError(t));
+            events.onNext(new ViewModelEvent.ShowError(t));
         }
     };
 
@@ -193,7 +193,7 @@ public class LessonViewModel extends ViewModel {
 
 
         Observable<ViewModelEvent> events = Observable.merge(
-                serviceEvents,
+                this.events,
                 promptAdditions,
                 promptRemovals
         );
