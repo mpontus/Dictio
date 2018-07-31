@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="colorWordMatched">#699F38</color>
+    <color name="colorWordPartial">#B59A23</color>
     <color name="colorWordMismatched">#EF6C00</color>
 
     <color name="colorGrey">#9E9E9E</color>

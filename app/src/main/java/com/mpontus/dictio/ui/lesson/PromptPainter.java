@@ -11,12 +11,14 @@ import io.reactivex.annotations.NonNull;
 public class PromptPainter {
     private final int styleSame;
     private final int styleDifferent;
+    private final int stylePartial;
     private final Context context;
 
-    public PromptPainter(Context context, int styleSame, int styleDifferent) {
+    public PromptPainter(Context context, int styleSame, int styleDifferent, int stylePartial) {
         this.context = context;
         this.styleSame = styleSame;
         this.styleDifferent = styleDifferent;
+        this.stylePartial = stylePartial;
     }
 
     public SpannableString colorToMatch(String text, @NonNull PhraseMatcher.Result comparison) {
@@ -30,10 +32,18 @@ public class PromptPainter {
             int start = region.getStart();
             int end = region.getEnd();
 
-            if (region.isMatch()) {
-                result.setSpan(new TextAppearanceSpan(context, styleSame), start, end, 0);
-            } else if (region.isFound()) {
-                result.setSpan(new TextAppearanceSpan(context, styleDifferent), start, end, 0);
+            switch (region.getRank()) {
+                case COMPLETE:
+                    result.setSpan(new TextAppearanceSpan(context, styleSame), start, end, 0);
+                    break;
+
+                case PARTIAL:
+                    result.setSpan(new TextAppearanceSpan(context, stylePartial), start, end, 0);
+                    break;
+
+                case INVALID:
+                    result.setSpan(new TextAppearanceSpan(context, styleDifferent), start, end, 0);
+                    break;
             }
         }
 

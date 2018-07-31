@@ -37,4 +37,8 @@
     <style name="prompt_mismatched_word">
         <item name="android:textColor">@color/colorWordMismatched</item>
     </style>
+
+    <style name="prompt_partial_match_word">
+        <item name="android:textColor">@color/colorWordPartial</item>
+    </style>
 </resources>
