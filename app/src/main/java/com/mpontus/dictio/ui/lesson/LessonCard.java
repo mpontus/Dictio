@@ -18,8 +18,8 @@ import com.mindorks.placeholderview.annotations.swipe.SwipeIn;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOut;
 import com.mpontus.dictio.R;
 import com.mpontus.dictio.data.TranslationManager;
-import com.mpontus.dictio.data.model.PhraseComparison;
 import com.mpontus.dictio.data.model.Prompt;
+import com.mpontus.dictio.domain.PhraseMatcher;
 
 @NonReusable
 @Layout(R.layout.lesson_card_view)
@@ -29,7 +29,7 @@ class LessonCard {
 
     private final LifecycleOwner lifecycleOwner;
 
-    private final LiveData<PhraseComparison> match;
+    private final LiveData<PhraseMatcher.Result> match;
 
     private final LiveData<Boolean> isPlaybackActive;
 
@@ -41,7 +41,7 @@ class LessonCard {
 
     private final Callback callback;
 
-    private Observer<PhraseComparison> matchObserver;
+    private Observer<PhraseMatcher.Result> matchObserver;
 
     private Observer<Boolean> playbackObserver;
 

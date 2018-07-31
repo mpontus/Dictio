@@ -4,11 +4,11 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.LiveDataReactiveStreams;
 import android.arch.lifecycle.ViewModel;
 
-import com.mpontus.dictio.data.PhraseMatcher;
-import com.mpontus.dictio.data.model.PhraseComparison;
 import com.mpontus.dictio.data.model.Prompt;
 import com.mpontus.dictio.domain.LessonPlan;
 import com.mpontus.dictio.domain.LessonService;
+import com.mpontus.dictio.domain.PhraseMatcher;
+import com.mpontus.dictio.domain.PhraseMatcherFactory;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -41,9 +41,8 @@ public class LessonViewModel extends ViewModel {
     /**
      * Results of matching prompt text against TTS recognitions grouped by recognition session
      */
-    private final Observable<PhraseComparison> matches = shownPrompt
-            .map(Prompt::getText)
-            .map(PhraseMatcher::new)
+    private final Observable<com.mpontus.dictio.domain.PhraseMatcher.Result> matches = shownPrompt
+            .map(prompt -> (this).phraseMatcherFactory.create(prompt.getLanguage(), prompt.getText()))
             .switchMap(matcher -> recognitions
                     .flatMap(Observable::fromIterable)
                     .map(matcher::match))
@@ -115,10 +114,13 @@ public class LessonViewModel extends ViewModel {
 
     private final LessonService lessonService;
 
+    private final PhraseMatcherFactory phraseMatcherFactory;
+
     @Inject
-    public LessonViewModel(LessonService lessonService, LessonPlan lessonPlan) {
+    public LessonViewModel(LessonService lessonService, LessonPlan lessonPlan, PhraseMatcherFactory phraseMatcherFactory) {
         this.lessonService = lessonService;
         this.lessonPlan = lessonPlan;
+        this.phraseMatcherFactory = phraseMatcherFactory;
 
         lessonService.addListener(lessonServiceListener);
     }
@@ -146,7 +148,7 @@ public class LessonViewModel extends ViewModel {
         // Add an extra card for each completed prompt, which will shift the window and
         // remove top card
         Observable<Prompt> extraCardsForCardCompleted = matches
-                .filter(PhraseComparison::isComplete)
+                .filter(PhraseMatcher.Result::isComplete)
                 .concatMapSingle(__ -> iterator.next());
 
         // Create a Subject for cards which prompts to be added when the card is manually
@@ -185,7 +187,7 @@ public class LessonViewModel extends ViewModel {
 
         // Remove top prompt on complete match
         Observable<ViewModelEvent.RemovePrompt> promptRemovals =
-                matches.filter(PhraseComparison::isComplete)
+                matches.filter(com.mpontus.dictio.domain.PhraseMatcher.Result::isComplete)
                         .withLatestFrom(shownPrompt, (match, prompt) -> prompt)
                         .map(ViewModelEvent.RemovePrompt::new);
 
@@ -200,12 +202,12 @@ public class LessonViewModel extends ViewModel {
                 events.toFlowable(BackpressureStrategy.LATEST));
     }
 
-    LiveData<PhraseComparison> getMatch(Prompt prompt) {
-        Observable<PhraseComparison> phraseComparisonObservable =
+    LiveData<PhraseMatcher.Result> getMatch(Prompt prompt) {
+        Observable<PhraseMatcher.Result> phraseComparisonObservable =
                 matches.compose(takeDuringPrompt(prompt))
                         // Group matches by recording session and start each group with empty match
                         .window(isRecording.filter(it -> it), __ -> isRecognizing.filter(it -> !it))
-                        .flatMap(observable -> observable.startWith(PhraseComparison.empty()));
+                        .flatMap(observable -> observable.startWith(PhraseMatcher.emptyResult()));
 
         return LiveDataReactiveStreams.fromPublisher(
                 phraseComparisonObservable.toFlowable(BackpressureStrategy.LATEST));

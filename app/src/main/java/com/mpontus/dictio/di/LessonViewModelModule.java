@@ -10,9 +10,11 @@ import com.mpontus.dictio.device.Capture;
 import com.mpontus.dictio.device.PlaybackService;
 import com.mpontus.dictio.device.Speaker;
 import com.mpontus.dictio.device.VoiceService;
+import com.mpontus.dictio.domain.BasicTokenizer;
 import com.mpontus.dictio.domain.LessonPlan;
 import com.mpontus.dictio.domain.LessonPlanFactory;
 import com.mpontus.dictio.domain.LessonService;
+import com.mpontus.dictio.domain.PhraseMatcherFactory;
 import com.mpontus.dictio.fundamentum.Fundamentum;
 import com.mpontus.speech.AudioRecordVoiceRecorder;
 import com.mpontus.speech.GoogleSpeechRecognition;
@@ -20,6 +22,7 @@ import com.mpontus.speech.SpeechRecognition;
 import com.mpontus.speech.VoiceRecorder;
 
 import java.util.Date;
+import java.util.HashMap;
 
 import dagger.Module;
 import dagger.Provides;
@@ -27,6 +30,11 @@ import dagger.Provides;
 // TODO: Is there a way to not have this module injected in AppComponent?
 @Module
 public class LessonViewModelModule {
+    @Provides
+    PhraseMatcherFactory phraseMatcherFactory() {
+        return new PhraseMatcherFactory(new BasicTokenizer(), new HashMap<>());
+    }
+
     @Provides
     SpeechRecognition speechRecognition(Fundamentum api) {
         return new GoogleSpeechRecognition(() -> {
