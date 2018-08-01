@@ -1,11 +1,10 @@
-package com.mpontus.dictio.di;
+package com.mpontus.dictio.ui.lesson;
 
 import android.content.Context;
 import android.media.AudioManager;
 
 import com.google.auth.oauth2.AccessToken;
 import com.mpontus.dictio.data.DictioPreferences;
-import com.mpontus.dictio.domain.model.LessonConstraints;
 import com.mpontus.dictio.device.Capture;
 import com.mpontus.dictio.device.PlaybackService;
 import com.mpontus.dictio.device.Speaker;
@@ -15,6 +14,7 @@ import com.mpontus.dictio.domain.LessonPlan;
 import com.mpontus.dictio.domain.LessonPlanFactory;
 import com.mpontus.dictio.domain.LessonService;
 import com.mpontus.dictio.domain.PhraseMatcherFactory;
+import com.mpontus.dictio.domain.model.LessonConstraints;
 import com.mpontus.dictio.fundamentum.Fundamentum;
 import com.mpontus.speech.AudioRecordVoiceRecorder;
 import com.mpontus.speech.GoogleSpeechRecognition;
@@ -27,7 +27,6 @@ import java.util.HashMap;
 import dagger.Module;
 import dagger.Provides;
 
-// TODO: Is there a way to not have this module injected in AppComponent?
 @Module
 public class LessonViewModelModule {
     @Provides
