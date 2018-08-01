@@ -4,8 +4,7 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.text.SpannableString;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.mindorks.placeholderview.annotations.Click;
@@ -17,9 +16,9 @@ import com.mindorks.placeholderview.annotations.swipe.SwipeHead;
 import com.mindorks.placeholderview.annotations.swipe.SwipeIn;
 import com.mindorks.placeholderview.annotations.swipe.SwipeOut;
 import com.mpontus.dictio.R;
+import com.mpontus.dictio.domain.PhraseMatcher;
 import com.mpontus.dictio.domain.TranslationManager;
 import com.mpontus.dictio.domain.model.Prompt;
-import com.mpontus.dictio.domain.PhraseMatcher;
 
 @NonReusable
 @Layout(R.layout.lesson_card_view)
@@ -48,10 +47,10 @@ class LessonCard {
     private Observer<Boolean> recordingObserver;
 
     @View(R.id.speak)
-    public ImageView speakButton;
+    public ImageButton speakButton;
 
     @View(R.id.speech)
-    public FrameLayout speechView;
+    public ImageButton speechView;
 
     @View(R.id.prompt)
     public TextView promptView;
