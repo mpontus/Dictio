@@ -1,5 +1,8 @@
 package com.mpontus.dictio.ui.lesson;
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
+
 import com.mpontus.dictio.R;
 
 import dagger.Module;
@@ -14,5 +17,10 @@ public class LessonActivityModule {
                 R.style.prompt_matched_word,
                 R.style.prompt_mismatched_word,
                 R.style.prompt_partial_match_word);
+    }
+
+    @Provides
+    LessonViewModel provideLessonViewModel(ViewModelProvider.Factory viewModelFactory, LessonActivity activity) {
+        return ViewModelProviders.of(activity, viewModelFactory).get(LessonViewModel.class);
     }
 }
