@@ -10,9 +10,9 @@ import android.widget.RemoteViews;
 
 import com.mpontus.dictio.R;
 import com.mpontus.dictio.data.DictioPreferences;
-import com.mpontus.dictio.domain.TranslationManager;
 import com.mpontus.dictio.data.local.EntityMapper;
 import com.mpontus.dictio.data.local.PromptsDao;
+import com.mpontus.dictio.domain.TranslationManager;
 import com.mpontus.dictio.domain.model.LessonConstraints;
 import com.mpontus.dictio.domain.model.Prompt;
 import com.mpontus.dictio.ui.lesson.LessonActivity;
@@ -24,6 +24,7 @@ import dagger.android.AndroidInjection;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Implementation of App Widget functionality.
@@ -49,7 +50,9 @@ public class DictioWidget extends AppWidgetProvider {
         Maybe<Prompt> promptMaybe = Single.zip(languageSingle, categorySingle, LessonConstraints::new)
                 .flatMapMaybe(constraints -> getReviewPrompt(constraints)
                         .switchIfEmpty(getPendingPrompt(constraints)));
-        Prompt prompt = promptMaybe.blockingGet();
+        Prompt prompt = promptMaybe
+                .subscribeOn(Schedulers.io())
+                .blockingGet();
 
         if (prompt != null) {
             // Construct the RemoteViews object
