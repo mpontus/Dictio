@@ -104,6 +104,7 @@ public class LessonPlan implements Iterable<Single<Prompt>> {
                             this::createPage
                     );
                 })
+                .subscribeOn(Schedulers.io())
                 .cache();
     }
 
@@ -123,6 +124,7 @@ public class LessonPlan implements Iterable<Single<Prompt>> {
                             this::createPage
                     );
                 })
+                .subscribeOn(Schedulers.io())
                 .cache();
     }
 
