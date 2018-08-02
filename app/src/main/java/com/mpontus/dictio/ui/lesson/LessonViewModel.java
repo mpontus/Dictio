@@ -20,6 +20,7 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.Single;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.subjects.PublishSubject;
 
 public class LessonViewModel extends ViewModel {
@@ -37,6 +38,8 @@ public class LessonViewModel extends ViewModel {
     private final PublishSubject<Collection<String>> recognitions = PublishSubject.create();
 
     private final PublishSubject<ViewModelEvent> events = PublishSubject.create();
+
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     /**
      * Results of matching prompt text against TTS recognitions grouped by recognition session
@@ -129,6 +132,8 @@ public class LessonViewModel extends ViewModel {
     protected void onCleared() {
         lessonService.removeListener(lessonServiceListener);
         lessonService.release();
+
+        compositeDisposable.dispose();
 
         super.onCleared();
     }
@@ -241,6 +246,10 @@ public class LessonViewModel extends ViewModel {
         lessonService.onCardHidden();
 
         hiddenPrompt.onNext(prompt);
+
+        compositeDisposable.add(
+                lessonPlan.markPromptCompleted().subscribe()
+        );
     }
 
     void onBackground() {
