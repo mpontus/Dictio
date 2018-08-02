@@ -48,8 +48,8 @@ public class DictioWidget extends AppWidgetProvider {
         Single<String> languageSingle = preferences.getLessonLanguage().asObservable().firstOrError();
         Single<String> categorySingle = preferences.getLessonCategory().asObservable().firstOrError();
         Maybe<Prompt> promptMaybe = Single.zip(languageSingle, categorySingle, LessonConstraints::new)
-                .flatMapMaybe(constraints -> getReviewPrompt(constraints)
-                        .switchIfEmpty(getPendingPrompt(constraints)));
+                .flatMapMaybe(constraints -> getPendingPrompt(constraints)
+                        .switchIfEmpty(getReviewPrompt(constraints)));
         Prompt prompt = promptMaybe
                 .subscribeOn(Schedulers.io())
                 .blockingGet();
