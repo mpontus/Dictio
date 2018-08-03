@@ -35,6 +35,19 @@ public class LessonViewModelModule {
     }
 
     @Provides
+    LessonConstraints lessonConstraints(DictioPreferences preferences) {
+        String language = preferences.getLessonLanguage().get();
+        String category = preferences.getLessonCategory().get();
+
+        return new LessonConstraints(language, category);
+    }
+
+    @Provides
+    LessonPlan lessonPlan(LessonPlanFactory lessonPlanFactory, LessonConstraints constraints) {
+        return lessonPlanFactory.getLessonPlan(constraints.getLanguage(), constraints.getCategory());
+    }
+
+    @Provides
     SpeechRecognition speechRecognition(Fundamentum api) {
         return new GoogleSpeechRecognition(() -> {
             // TODO: Find a way to deserialize response into AccessToken directly.
@@ -67,15 +80,9 @@ public class LessonViewModelModule {
     }
 
     @Provides
-    LessonConstraints lessonConstraints(DictioPreferences preferences) {
-        String language = preferences.getLessonLanguage().get();
-        String category = preferences.getLessonCategory().get();
-
-        return new LessonConstraints(language, category);
-    }
-
-    @Provides
-    LessonPlan lessonPlan(LessonPlanFactory lessonPlanFactory, LessonConstraints constraints) {
-        return lessonPlanFactory.getLessonPlan(constraints.getLanguage(), constraints.getCategory());
+    LessonViewModel lessonViewModel(LessonService lessonService,
+                                    LessonPlan lessonPlan,
+                                    PhraseMatcherFactory phraseMatcherFactory) {
+        return new LessonViewModel(lessonService, lessonPlan, phraseMatcherFactory);
     }
 }

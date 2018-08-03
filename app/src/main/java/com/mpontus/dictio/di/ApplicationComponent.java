@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.mpontus.dictio.DictioApplication;
 import com.mpontus.dictio.data.DataModule;
-import com.mpontus.dictio.ui.lesson.LessonViewModelModule;
 
 import javax.inject.Singleton;
 
@@ -21,8 +20,6 @@ import dagger.android.support.AndroidSupportInjectionModule;
         DataModule.class,
         ViewModelModule.class,
         AndroidSupportInjectionModule.class,
-        // TODO: This should not be here, but I can't quite get subcomponents right
-        LessonViewModelModule.class
 })
 public interface ApplicationComponent extends AndroidInjector<DictioApplication> {
 
