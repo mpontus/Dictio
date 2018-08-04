@@ -273,7 +273,7 @@ public class LessonViewModel extends ViewModel {
     }
 
     void onPermissionDenied() {
-        lessonService.onRecordPermissionGranted();
+        lessonService.onRecordPermissionDenied();
     }
 
     /**

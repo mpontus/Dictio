@@ -304,12 +304,6 @@ public class LessonService {
                 return;
             }
 
-            if (context.permissionDenied) {
-                flow.trigger(Events.recordPermissionDenied, context);
-
-                return;
-            }
-
             for (Listener listener : listeners) {
                 listener.onRequestRecordingPermission();
             }

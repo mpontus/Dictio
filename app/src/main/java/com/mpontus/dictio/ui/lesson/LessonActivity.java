@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.disposables.CompositeDisposable;
+import timber.log.Timber;
 
 public class LessonActivity extends DaggerAppCompatActivity {
 
@@ -181,10 +182,12 @@ public class LessonActivity extends DaggerAppCompatActivity {
     private void requestRecordingPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 == PackageManager.PERMISSION_GRANTED) {
-            onRecordingPermissionGranted();
+            lessonViewModel.onPermissionGranted();
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.RECORD_AUDIO)) {
-            // TODO: Not sure what to do here.
+            Timber.d("Must show rationale");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
+                    REQUEST_RECORD_AUDIO_PERMISSION);
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO},
                     REQUEST_RECORD_AUDIO_PERMISSION);
@@ -198,20 +201,12 @@ public class LessonActivity extends DaggerAppCompatActivity {
         if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
             if (permissions.length == 1 && grantResults.length == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                onRecordingPermissionGranted();
+                lessonViewModel.onPermissionGranted();
             } else {
-                onRecordingPermissionDenied();
+                lessonViewModel.onPermissionDenied();
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-    }
-
-    void onRecordingPermissionGranted() {
-        lessonViewModel.onPermissionGranted();
-    }
-
-    void onRecordingPermissionDenied() {
-        lessonViewModel.onPermissionDenied();
     }
 }
