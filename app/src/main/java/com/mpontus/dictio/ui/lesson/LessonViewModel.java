@@ -182,29 +182,8 @@ public class LessonViewModel extends ViewModel {
 
 
     LiveData<ViewModelEvent> getEvents() {
-        Iterator<Single<Prompt>> iterator = lessonPlan.iterator();
-
-        // Add 5 prompts initially and one extra for each removed prompt
-        Observable<ViewModelEvent.AddPrompt> promptAdditions =
-                Observable.concat(Observable.range(0, 5), hiddenPrompt)
-                        .concatMapSingle(__ -> iterator.next())
-                        .map(ViewModelEvent.AddPrompt::new);
-
-        // Remove top prompt on complete match
-        Observable<ViewModelEvent.RemovePrompt> promptRemovals =
-                matches.filter(com.mpontus.dictio.domain.PhraseMatcher.Result::isComplete)
-                        .withLatestFrom(shownPrompt, (match, prompt) -> prompt)
-                        .map(ViewModelEvent.RemovePrompt::new);
-
-
-        Observable<ViewModelEvent> events = Observable.merge(
-                this.events,
-                promptAdditions,
-                promptRemovals
-        );
-
         return LiveDataReactiveStreams.fromPublisher(
-                events.toFlowable(BackpressureStrategy.LATEST));
+                this.events.toFlowable(BackpressureStrategy.LATEST));
     }
 
     LiveData<PhraseMatcher.Result> getMatch(Prompt prompt) {
