@@ -8,6 +8,7 @@ import com.mpontus.dictio.ui.language.LanguageActivity;
 import com.mpontus.dictio.ui.language.LanguageActivityModule;
 import com.mpontus.dictio.ui.lesson.LessonActivity;
 import com.mpontus.dictio.ui.lesson.LessonActivityModule;
+import com.mpontus.dictio.ui.splash.SplashActivity;
 import com.mpontus.dictio.ui.widget.DictioWidget;
 
 import dagger.Module;
@@ -15,6 +16,10 @@ import dagger.android.ContributesAndroidInjector;
 
 @Module
 public abstract class ActivityBindingModule {
+    @ActivityScoped
+    @ContributesAndroidInjector
+    abstract SplashActivity splashActivity();
+
     @ActivityScoped
     @ContributesAndroidInjector(modules = HomeActivityModule.class)
     abstract HomeActivity homeActivity();
