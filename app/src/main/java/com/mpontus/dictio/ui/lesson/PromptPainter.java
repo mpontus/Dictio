@@ -28,6 +28,12 @@ public class PromptPainter {
             return result;
         }
 
+        if (comparison.isComplete()) {
+            result.setSpan(new TextAppearanceSpan(context, styleSame), 0, text.length(), 0);
+
+            return result;
+        }
+
         for (PhraseMatcher.Region region : comparison) {
             int start = region.getStart();
             int end = region.getEnd();

@@ -13,6 +13,7 @@ import com.mpontus.dictio.domain.model.Prompt;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -154,6 +155,8 @@ public class LessonViewModel extends ViewModel {
         // remove top card
         Observable<Prompt> extraCardsForCardCompleted = matches
                 .filter(PhraseMatcher.Result::isComplete)
+                // Introduce small delay to allow complete match to be painted
+                .delay(400, TimeUnit.MILLISECONDS)
                 .concatMapSingle(__ -> iterator.next());
 
         // Create a Subject for cards which prompts to be added when the card is manually
