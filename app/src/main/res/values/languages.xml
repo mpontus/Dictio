@@ -2,25 +2,34 @@
 <resources>
     <array name="language_codes">
         <item>en-US</item>
-        <item>ru-RU</item>
+        <item>es-ES</item>
+        <item>it-IT</item>
         <item>fr-FR</item>
         <item>de-DE</item>
-        <item>ja-JP</item>
+        <item>sv-SE</item>
+        <item>ru-RU</item>
+        <item>tr-TR</item>
     </array>
 
     <array name="language_names">
         <item>@string/language_en</item>
-        <item>@string/language_ru</item>
+        <item>@string/language_es</item>
+        <item>@string/language_it</item>
         <item>@string/language_fr</item>
         <item>@string/language_de</item>
-        <item>@string/language_jp</item>
+        <item>@string/language_se</item>
+        <item>@string/language_ru</item>
+        <item>@string/language_tr</item>
     </array>
 
     <array name="language_icons">
         <item>@drawable/us</item>
-        <item>@drawable/ru</item>
+        <item>@drawable/es</item>
+        <item>@drawable/it</item>
         <item>@drawable/fr</item>
         <item>@drawable/de</item>
-        <item>@drawable/jp</item>
+        <item>@drawable/se</item>
+        <item>@drawable/ru</item>
+        <item>@drawable/tr</item>
     </array>
 </resources>

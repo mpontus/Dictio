@@ -5,10 +5,14 @@
     <string name="phrases">Phrases</string>
 
     <string name="language_en">English</string>
-    <string name="language_ru">Russian</string>
+    <string name="language_es">Spanish</string>
+    <string name="language_it">Italian</string>
     <string name="language_fr">French</string>
     <string name="language_de">German</string>
-    <string name="language_jp">Japanese</string>
+    <string name="language_se">Swedish</string>
+    <string name="language_ru">Russian</string>
+    <string name="language_tr">Turkish</string>
+
     <string name="current_language">Current language</string>
     <string name="speak">Speak</string>
     <string name="record">Record</string>
