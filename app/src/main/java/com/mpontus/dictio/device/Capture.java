@@ -92,15 +92,17 @@ public class Capture implements VoiceService {
     public Capture(VoiceRecorder voiceRecorder, SpeechRecognition speechRecognition) {
         this.voiceRecorder = voiceRecorder;
         this.speechRecognition = speechRecognition;
+
+        // Start Speech Recongition in advance to avoid delay when the user presses the button
+        speechRecognition.addListener(speechRecognitionListener);
+        speechRecognition.init();
     }
 
     @Override
     public void init() {
+        // Delay voice recorder initialization until the permission is granted
         voiceRecorder.addListener(voiceRecorderListener);
-        speechRecognition.addListener(speechRecognitionListener);
-
         voiceRecorder.init();
-        speechRecognition.init();
     }
 
     @Override
