@@ -20,4 +20,7 @@
     <string name="toast_lang_unavailable">Language is unavailable</string>
     <string name="permission_denied">Enable recording permission</string>
     <string name="toast_volume_down">Turn up the volume</string>
+    <string name="dialog_missing_language">Install voice data for %1$s language by visiting Text-to-Speech settings.</string>
+    <string name="dialog_open_settings">Open Settings</string>
+    <string name="dialog_cancel">Cancel</string>
 </resources>

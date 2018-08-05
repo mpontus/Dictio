@@ -287,7 +287,7 @@ public class LessonService {
 
             if (!playbackService.isLanguageAvailable(context.prompt.getLanguage())) {
                 for (Listener listener : listeners) {
-                    listener.onLanguageUnavailable();
+                    listener.onLanguageUnavailable(context.prompt.getLanguage());
                 }
 
                 flow.trigger(Events.cannotSpeak, context);
@@ -439,7 +439,7 @@ public class LessonService {
 
         void onRequestRecordingPermission();
 
-        void onLanguageUnavailable();
+        void onLanguageUnavailable(String language);
 
         void onVolumeDown();
 

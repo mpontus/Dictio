@@ -2,8 +2,6 @@ package com.mpontus.dictio.ui.lesson;
 
 import android.support.annotation.Nullable;
 
-import com.mpontus.dictio.domain.model.Prompt;
-
 public abstract class ViewModelEvent<T> {
 
     enum Permission {RECORD}
@@ -29,14 +27,8 @@ public abstract class ViewModelEvent<T> {
         return content;
     }
 
-    static class AddPrompt extends ViewModelEvent<Prompt> {
-        public AddPrompt(Prompt content) {
-            super(content);
-        }
-    }
-
-    static class RemovePrompt extends ViewModelEvent<Prompt> {
-        public RemovePrompt(Prompt content) {
+    static class LanguageUnavailable extends ViewModelEvent<String> {
+        public LanguageUnavailable(String content) {
             super(content);
         }
     }

@@ -16,6 +16,7 @@ import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mpontus.dictio.R;
 import com.mpontus.dictio.domain.model.Prompt;
+import com.mpontus.dictio.ui.shared.LangaugeResources;
 import com.mpontus.dictio.utils.DisplayUtils;
 
 import java.util.Objects;
@@ -30,9 +31,13 @@ import timber.log.Timber;
 
 public class LessonActivity extends DaggerAppCompatActivity {
 
+    public static final String DIALOG_TAG_MISSING_LANGUAGE = "missing_language";
+
+    // TODO: We are no longer passing language and category via intent. Remove those.
     public static final String EXTRA_LANGUAGE = "LANGUAGE";
     public static final String EXTRA_CATEGORY = "CATEGORY";
-    private static final int CARD_STACK_SIZE = 5;
+
+    private static final int CARD_STACK_SIZE = 4;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
 
     public static Intent createIntent(Context context, String language, String category) {
@@ -78,6 +83,9 @@ public class LessonActivity extends DaggerAppCompatActivity {
     private LessonCardStack lessonCardStack = null;
 
     @Inject
+    LangaugeResources langaugeResources;
+
+    @Inject
     LessonViewModel lessonViewModel;
 
     @Inject
@@ -121,12 +129,11 @@ public class LessonActivity extends DaggerAppCompatActivity {
                 return;
             }
 
-            if (event instanceof ViewModelEvent.ShowDialog) {
+            if (event instanceof ViewModelEvent.LanguageUnavailable) {
+                MissingLanguageDialogFragment.newInstance(langaugeResources.getName((String) content))
+                        .show(getSupportFragmentManager(), DIALOG_TAG_MISSING_LANGUAGE);
+            } else if (event instanceof ViewModelEvent.ShowDialog) {
                 switch ((ViewModelEvent.Dialog) content) {
-                    case LANGUAGE_UNAVAILABLE:
-                        showToast(Toast.makeText(this, R.string.toast_lang_unavailable, Toast.LENGTH_SHORT));
-                        return;
-
                     case PERMISSION_DENIED:
                         showToast(Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT));
                         return;

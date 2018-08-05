@@ -86,8 +86,8 @@ public class LessonViewModel extends ViewModel {
         }
 
         @Override
-        public void onLanguageUnavailable() {
-            events.onNext(new ViewModelEvent.ShowDialog(ViewModelEvent.Dialog.LANGUAGE_UNAVAILABLE));
+        public void onLanguageUnavailable(String language) {
+            events.onNext(new ViewModelEvent.LanguageUnavailable(language));
         }
 
         @Override
