@@ -36,21 +36,13 @@ public class LessonViewModel extends ViewModel {
 
     private final PublishSubject<Boolean> isRecognizing = PublishSubject.create();
 
+    private final PublishSubject<PhraseMatcher.Result> matches = PublishSubject.create();
+
     private final PublishSubject<Collection<String>> recognitions = PublishSubject.create();
 
     private final PublishSubject<ViewModelEvent> events = PublishSubject.create();
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-
-    /**
-     * Results of matching prompt text against TTS recognitions grouped by recognition session
-     */
-    private final Observable<PhraseMatcher.Result> matches = shownPrompt
-            .map(prompt -> (this).phraseMatcherFactory.create(prompt.getLanguage(), prompt.getText()))
-            .switchMap(matcher -> recognitions
-                    .flatMap(Observable::fromIterable)
-                    .map(matcher::match))
-            .share();
 
     private final LessonService.Listener lessonServiceListener = new LessonService.Listener() {
         @Override
@@ -84,8 +76,8 @@ public class LessonViewModel extends ViewModel {
         }
 
         @Override
-        public void onRecognition(Collection<String> alternatives) {
-            recognitions.onNext(alternatives);
+        public void onMatch(PhraseMatcher.Result match) {
+            matches.onNext(match);
         }
 
         @Override
@@ -118,13 +110,10 @@ public class LessonViewModel extends ViewModel {
 
     private final LessonService lessonService;
 
-    private final PhraseMatcherFactory phraseMatcherFactory;
-
     @Inject
     public LessonViewModel(LessonService lessonService, LessonPlan lessonPlan, PhraseMatcherFactory phraseMatcherFactory) {
         this.lessonService = lessonService;
         this.lessonPlan = lessonPlan;
-        this.phraseMatcherFactory = phraseMatcherFactory;
 
         lessonService.addListener(lessonServiceListener);
     }
@@ -153,8 +142,11 @@ public class LessonViewModel extends ViewModel {
 
         // Add an extra card for each completed prompt, which will shift the window and
         // remove top card
-        Observable<Prompt> extraCardsForCardCompleted = matches
-                .filter(PhraseMatcher.Result::isComplete)
+        Observable<Prompt> extraCardsForCardCompleted = shownPrompt
+                // Switch map ensures that for each shown prompt there will be at most one complete match
+                .switchMapMaybe(prompt -> matches
+                        .filter(PhraseMatcher.Result::isComplete)
+                        .firstElement())
                 // Introduce small delay to allow complete match to be painted
                 .delay(400, TimeUnit.MILLISECONDS)
                 .concatMapSingle(__ -> iterator.next());

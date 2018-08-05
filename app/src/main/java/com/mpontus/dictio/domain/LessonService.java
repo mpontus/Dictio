@@ -1,11 +1,10 @@
 package com.mpontus.dictio.domain;
 
+import com.mpontus.dictio.device.JingleService;
 import com.mpontus.dictio.device.PlaybackService;
-import com.mpontus.dictio.device.VoiceService;
 import com.mpontus.dictio.domain.model.Prompt;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -142,7 +141,11 @@ public class LessonService {
         }
     };
 
-    private final VoiceService.Listener voiceServiceListener = new VoiceService.Listener() {
+
+    private final MatchService.Listener matchServiceListener = new MatchService.Listener() {
+
+        private boolean isCompleteMatch;
+
         @Override
         public void onReady() {
             context.recorderInitialized = true;
@@ -151,22 +154,33 @@ public class LessonService {
         }
 
         @Override
-        public void onVoiceStart() {
+        public void onStart() {
+            isCompleteMatch = false;
+
             for (Listener listener : listeners) {
                 listener.onRecognitionStart();
             }
         }
 
         @Override
-        public void onRecognition(Collection<String> alternatives) {
-            for (Listener listener : listeners) {
-                listener.onRecognition(alternatives);
+        public void onMatch(PhraseMatcher.Result result) {
+            if (result.isComplete()) {
+                isCompleteMatch = true;
             }
 
+            for (Listener listener : listeners) {
+                listener.onMatch(result);
+            }
         }
 
         @Override
-        public void onVoiceEnd() {
+        public void onEnd() {
+            if (isCompleteMatch) {
+                jingleService.playSuccess();
+            } else {
+                jingleService.playOut();
+            }
+
             flow.safeTrigger(Events.recordEnd, context);
 
             for (Listener listener : listeners) {
@@ -229,16 +243,19 @@ public class LessonService {
     ).executor(new AsyncExecutor());
 
     private final PlaybackService playbackService;
-    private final VoiceService voiceService;
+    private final MatchService matchService;
+    private final JingleService jingleService;
 
     @Inject
     public LessonService(PlaybackService playbackService,
-                         VoiceService voiceService) {
+                         MatchService matchService,
+                         JingleService jingleService) {
         this.playbackService = playbackService;
-        this.voiceService = voiceService;
+        this.matchService = matchService;
+        this.jingleService = jingleService;
 
         playbackService.addListener(playbackServiceListener);
-        voiceService.addListener(voiceServiceListener);
+        matchService.addListener(matchServiceListener);
 
         flow.whenEnter(States.CARD_SHOWN, (FlowContext context) -> {
             if (!context.speakerInitialized) {
@@ -319,14 +336,15 @@ public class LessonService {
 
         flow.whenEnter(States.RECORDER_PREPARE, (FlowContext context) -> {
             if (!context.recorderInitialized) {
-                voiceService.init();
+                matchService.init();
             } else {
                 flow.trigger(Events.recorderInitialized, context);
             }
         });
 
         flow.whenEnter(States.RECORDING, (FlowContext context) -> {
-            voiceService.start(context.prompt.getLanguage());
+            jingleService.playIn();
+            matchService.start(context.prompt);
 
             for (Listener listener : listeners) {
                 listener.onRecordingStart();
@@ -334,7 +352,7 @@ public class LessonService {
         });
 
         flow.whenLeave(States.RECORDING, context -> {
-            voiceService.stop();
+            matchService.stop();
 
             for (Listener listener : listeners) {
                 listener.onRecordingEnd();
@@ -351,7 +369,7 @@ public class LessonService {
     public void release() {
         flow.safeTrigger(Events.reset, context);
         playbackService.release();
-        voiceService.release();
+        matchService.release();
     }
 
     public void onCardShown(Prompt prompt) {
@@ -417,7 +435,7 @@ public class LessonService {
 
         void onRecognitionEnd();
 
-        void onRecognition(Collection<String> alternatives);
+        void onMatch(PhraseMatcher.Result match);
 
         void onRequestRecordingPermission();
 

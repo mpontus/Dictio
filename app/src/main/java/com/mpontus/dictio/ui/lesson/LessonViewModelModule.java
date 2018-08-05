@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import com.google.auth.oauth2.AccessToken;
 import com.mpontus.dictio.data.DictioPreferences;
 import com.mpontus.dictio.device.Capture;
+import com.mpontus.dictio.device.JingleService;
 import com.mpontus.dictio.device.PlaybackService;
 import com.mpontus.dictio.device.Speaker;
 import com.mpontus.dictio.device.VoiceService;
@@ -13,6 +14,7 @@ import com.mpontus.dictio.domain.BasicTokenizer;
 import com.mpontus.dictio.domain.LessonPlan;
 import com.mpontus.dictio.domain.LessonPlanFactory;
 import com.mpontus.dictio.domain.LessonService;
+import com.mpontus.dictio.domain.MatchService;
 import com.mpontus.dictio.domain.PhraseMatcherFactory;
 import com.mpontus.dictio.domain.model.LessonConstraints;
 import com.mpontus.dictio.fundamentum.Fundamentum;
@@ -75,8 +77,15 @@ public class LessonViewModelModule {
     }
 
     @Provides
-    LessonService lessonService(PlaybackService playbackService, VoiceService voiceService) {
-        return new LessonService(playbackService, voiceService);
+    MatchService matchService(VoiceService voiceService, PhraseMatcherFactory phraseMatcherFactory) {
+        return new MatchService(voiceService, phraseMatcherFactory);
+    }
+
+    @Provides
+    LessonService lessonService(PlaybackService playbackService,
+                                MatchService matchService,
+                                JingleService jingleService) {
+        return new LessonService(playbackService, matchService, jingleService);
     }
 
     @Provides

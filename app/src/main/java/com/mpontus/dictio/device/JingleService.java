@@ -29,27 +29,25 @@ public class JingleService {
     }
 
     public void playSuccess() {
-        play(R.raw.victory, 0.12f);
+        play(R.raw.victory, 0.10f);
     }
 
     public void playIn() {
-        play(R.raw.in, 0.12f);
+        play(R.raw.in, 0.14f);
     }
 
     public void playOut() {
         play(R.raw.out, 0.04f);
     }
 
-    public void play(int resId) {
-        play(resId, 0.12f);
-    }
-
-    public void play(int resId, float volume) {
+    private void play(int resId, float volume) {
         mediaPlayer.reset();
         AssetFileDescriptor fd = resources.openRawResourceFd(resId);
 
         try {
             mediaPlayer.setDataSource(fd.getFileDescriptor(), fd.getStartOffset(), fd.getLength());
+            fd.close();
+
             mediaPlayer.setVolume(volume, volume);
             mediaPlayer.prepare();
             mediaPlayer.start();
