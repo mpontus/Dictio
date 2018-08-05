@@ -13,7 +13,7 @@ public class BasicTokenizer implements PhraseMatcher.Tokenizer {
     // 30A0-30FF : katakana
     // FF00-FFEF : Full-width roman + half-width katakana
     // 4E00-9FAF : Common and uncommon kanji
-    private static Pattern WORD_PATTERN = Pattern.compile("(?i)([\\u3040-\\u30ff\\uff00-\\uffef\\u4e00-\\u9faf]|[\\w'’-]+)");
+    private static Pattern WORD_PATTERN = Pattern.compile("(?i)([\\u3040-\\u30ff\\uff00-\\uffef\\u4e00-\\u9faf]|[\\w'’]+)");
 
     @Override
     public Collection<PhraseMatcher.Token> tokenize(String phrase) {
