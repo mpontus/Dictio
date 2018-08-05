@@ -7,6 +7,8 @@ import android.support.v4.util.Pair;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 
@@ -101,7 +103,7 @@ public class PhraseMatcher {
 
     private final String phrase;
 
-    private Collection<Token> tokens;
+    private List<Token> tokens;
 
     public PhraseMatcher(Tokenizer tokenizer, String phrase) {
         this.tokenizer = tokenizer;
@@ -116,16 +118,15 @@ public class PhraseMatcher {
      */
     public Result match(String candidate) {
         if (tokens == null) {
-            tokens = tokenizer.tokenize(phrase);
+            tokens = Collections.list(tokenizer.tokenize(phrase));
         }
 
         List<Region> regions = new ArrayList<>();
-        List<Token> phraseTokens = new ArrayList<>(tokens);
-        List<Token> candidateTokens = new ArrayList<>(tokenizer.tokenize(candidate));
-        List<Rank> ranks = matchTokens(phraseTokens, candidateTokens);
+        List<Token> candidateTokens = Collections.list(tokenizer.tokenize(candidate));
+        List<Rank> ranks = matchTokens(tokens, candidateTokens);
 
         for (int i = 0; i < tokens.size(); ++i) {
-            Token token = phraseTokens.get(i);
+            Token token = tokens.get(i);
             Rank rank = ranks.get(i);
             Region region = new Region(token.getStart(), token.getEnd(), rank);
 
@@ -138,8 +139,8 @@ public class PhraseMatcher {
     /**
      * Tokenizer interface which converts a string to a series of tokens
      */
-    interface Tokenizer {
-        Collection<Token> tokenize(String phrase);
+    public interface Tokenizer {
+        Enumeration<Token> tokenize(String phrase);
     }
 
     /**
@@ -167,13 +168,13 @@ public class PhraseMatcher {
     /**
      * Token in in the original phrase
      */
-    static class Token {
+    public static class Token {
 
         private final Boundaries boundaries;
 
         private final String value;
 
-        Token(int start, int end, String value) {
+        public Token(int start, int end, String value) {
             this.boundaries = new Boundaries(start, end);
             this.value = value;
         }

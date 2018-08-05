@@ -10,7 +10,6 @@ import com.mpontus.dictio.device.JingleService;
 import com.mpontus.dictio.device.PlaybackService;
 import com.mpontus.dictio.device.Speaker;
 import com.mpontus.dictio.device.VoiceService;
-import com.mpontus.dictio.domain.BasicTokenizer;
 import com.mpontus.dictio.domain.LessonPlan;
 import com.mpontus.dictio.domain.LessonPlanFactory;
 import com.mpontus.dictio.domain.LessonService;
@@ -24,18 +23,12 @@ import com.mpontus.speech.SpeechRecognition;
 import com.mpontus.speech.VoiceRecorder;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import dagger.Module;
 import dagger.Provides;
 
 @Module
 public class LessonViewModelModule {
-    @Provides
-    PhraseMatcherFactory phraseMatcherFactory() {
-        return new PhraseMatcherFactory(new BasicTokenizer(), new HashMap<>());
-    }
-
     @Provides
     LessonConstraints lessonConstraints(DictioPreferences preferences) {
         String language = preferences.getLessonLanguage().get();
