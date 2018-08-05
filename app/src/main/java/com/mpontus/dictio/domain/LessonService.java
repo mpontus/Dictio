@@ -178,7 +178,7 @@ public class LessonService {
             if (isCompleteMatch) {
                 jingleService.playSuccess();
             } else {
-                jingleService.playOut();
+                jingleService.playExit();
             }
 
             flow.safeTrigger(Events.recordEnd, context);
@@ -343,7 +343,7 @@ public class LessonService {
         });
 
         flow.whenEnter(States.RECORDING, (FlowContext context) -> {
-            jingleService.playIn();
+            jingleService.playEnter();
             matchService.start(context.prompt);
 
             for (Listener listener : listeners) {

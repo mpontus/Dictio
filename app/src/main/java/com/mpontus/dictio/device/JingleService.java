@@ -21,38 +21,53 @@ public class JingleService {
 
     private final Resources resources;
 
+    private final int audioSessionId;
+
+    private final MediaPlayer enterJingle;
+
+    private final MediaPlayer exitJingle;
+
+    private final MediaPlayer successJingle;
+
     @Inject
     public JingleService(AudioManager audioManager, Resources resources) {
         this.resources = resources;
 
-        mediaPlayer.setAudioSessionId(audioManager.generateAudioSessionId());
+        audioSessionId = audioManager.generateAudioSessionId();
+        enterJingle = createMediaPlayer(R.raw.enter, 0.14f);
+        exitJingle = createMediaPlayer(R.raw.exit, 0.04f);
+        successJingle = createMediaPlayer(R.raw.success, 0.1f);
     }
 
     public void playSuccess() {
-        play(R.raw.victory, 0.10f);
+        successJingle.start();
     }
 
-    public void playIn() {
-        play(R.raw.in, 0.14f);
+    public void playEnter() {
+        enterJingle.start();
     }
 
-    public void playOut() {
-        play(R.raw.out, 0.04f);
+    public void playExit() {
+        exitJingle.start();
     }
 
-    private void play(int resId, float volume) {
-        mediaPlayer.reset();
+    private MediaPlayer createMediaPlayer(int resId, float volume) {
         AssetFileDescriptor fd = resources.openRawResourceFd(resId);
 
         try {
+            MediaPlayer mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioSessionId(audioSessionId);
             mediaPlayer.setDataSource(fd.getFileDescriptor(), fd.getStartOffset(), fd.getLength());
-            fd.close();
-
             mediaPlayer.setVolume(volume, volume);
             mediaPlayer.prepare();
-            mediaPlayer.start();
+            fd.close();
+
+            return mediaPlayer;
         } catch (IOException e) {
             Timber.e(e);
+
+            return null;
+        } finally {
         }
     }
 }
