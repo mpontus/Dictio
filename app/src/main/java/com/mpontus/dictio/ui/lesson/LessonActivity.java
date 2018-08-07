@@ -37,7 +37,7 @@ public class LessonActivity extends DaggerAppCompatActivity {
     public static final String EXTRA_LANGUAGE = "LANGUAGE";
     public static final String EXTRA_CATEGORY = "CATEGORY";
 
-    private static final int CARD_STACK_SIZE = 4;
+    private static final int CARD_STACK_SIZE = 5;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 1;
 
     public static Intent createIntent(Context context, String language, String category) {
