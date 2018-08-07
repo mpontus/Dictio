@@ -51,7 +51,7 @@
 
         <Button
             android:id="@+id/phrases"
-            style="@android:style/Widget.Material.Light.Button.Borderless"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/phrases"
