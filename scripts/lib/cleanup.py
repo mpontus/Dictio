@@ -1,8 +1,13 @@
-# Replace '_' with '-' in locale specifying prompt language
+import re
+import html
+
+# Replace '_' with '-' in language
+# This is the language format used by Google STT and by extension Dictio application
 def formatSourceLanguage(lang):
     return lang.replace('_', '-')
 
 # Cut off country part
+# This is the format used for translations since country doesn't really matter
 def formatTranslationLanguage(lang):
     return lang.split('_')[0]
 

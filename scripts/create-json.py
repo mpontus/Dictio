@@ -4,6 +4,7 @@ import csv
 import json
 import re
 import html
+from lib.cleanup import formatSourceLanguage, formatTranslationLanguage, formatText
 
 def getKey(language, text):
     return language + text
@@ -29,7 +30,7 @@ prompts = []
 
 id = 0
 with open(args.prompts) as tf:
-    for difficulty, lang, category, text in csv.reader(tf):
+    for lang, category, difficulty, text in csv.reader(tf):
         key = getKey(lang, text)
 
         prompt = {
