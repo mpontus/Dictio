@@ -3,10 +3,12 @@ package com.mpontus.dictio.ui.lesson;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.os.Bundle;
 import android.text.SpannableString;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mindorks.placeholderview.annotations.Click;
 import com.mindorks.placeholderview.annotations.Layout;
 import com.mindorks.placeholderview.annotations.NonReusable;
@@ -38,6 +40,8 @@ class LessonCard {
 
     private final TranslationManager translationManager;
 
+    private final FirebaseAnalytics analytics;
+
     private final Callback callback;
 
     private Observer<PhraseMatcher.Result> matchObserver;
@@ -62,11 +66,13 @@ class LessonCard {
                LessonViewModel viewModel,
                PromptPainter promptPainter,
                TranslationManager translationManager,
+               FirebaseAnalytics analytics,
                Prompt prompt,
                Callback callback) {
         this.lifecycleOwner = lifecycleOwner;
         this.promptPainter = promptPainter;
         this.translationManager = translationManager;
+        this.analytics = analytics;
         this.prompt = prompt;
         this.callback = callback;
 
@@ -115,6 +121,13 @@ class LessonCard {
 
     @SwipeHead
     public void onShown() {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "prompt");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID,
+                prompt.getLanguage() + ':' + prompt.getCategory() + ':' + prompt.getId());
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, prompt.getText());
+        analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
         callback.onShown(prompt);
     }
 

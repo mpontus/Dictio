@@ -8,6 +8,7 @@ import android.media.AudioManager;
 import android.preference.PreferenceManager;
 
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mpontus.dictio.ui.shared.LangaugeResources;
 
 import java.util.Locale;
@@ -53,6 +54,12 @@ public abstract class ApplicationModule {
     @Provides
     static Locale locale(Resources resources) {
         return resources.getConfiguration().locale;
+    }
+
+    @Provides
+    @Singleton
+    static FirebaseAnalytics firebaseAnalytics(Application application) {
+        return FirebaseAnalytics.getInstance(application);
     }
 
 }
