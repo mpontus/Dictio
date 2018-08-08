@@ -171,3 +171,4 @@ dependencies {
 }
 
 apply plugin: 'com.bugsnag.android.gradle'
+apply plugin: 'com.google.gms.google-services'

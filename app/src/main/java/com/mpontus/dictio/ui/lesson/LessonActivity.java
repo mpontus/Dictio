@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.view.Gravity;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mindorks.placeholderview.SwipeDecor;
 import com.mindorks.placeholderview.SwipePlaceHolderView;
 import com.mpontus.dictio.R;
@@ -33,7 +34,6 @@ public class LessonActivity extends DaggerAppCompatActivity {
 
     public static final String DIALOG_TAG_MISSING_LANGUAGE = "missing_language";
 
-    // TODO: We are no longer passing language and category via intent. Remove those.
     public static final String EXTRA_LANGUAGE = "LANGUAGE";
     public static final String EXTRA_CATEGORY = "CATEGORY";
 
@@ -91,6 +91,9 @@ public class LessonActivity extends DaggerAppCompatActivity {
     @Inject
     LessonCardFactory lessonCardFactory;
 
+    @Inject
+    FirebaseAnalytics analytics;
+
     @Nullable
     Toast toast;
 
@@ -99,6 +102,14 @@ public class LessonActivity extends DaggerAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lesson);
         ButterKnife.bind(this);
+
+        Intent intent = getIntent();
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "lesson");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID,
+                intent.getStringExtra(EXTRA_LANGUAGE) + ':' +
+                        intent.getStringExtra(EXTRA_CATEGORY));
+        analytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
         Objects.requireNonNull(getSupportActionBar())
                 .setDisplayHomeAsUpEnabled(true);

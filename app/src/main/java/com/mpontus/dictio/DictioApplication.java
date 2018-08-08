@@ -5,8 +5,11 @@ import android.os.StrictMode;
 import com.bugsnag.android.Bugsnag;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mpontus.dictio.di.DaggerApplicationComponent;
 import com.squareup.leakcanary.LeakCanary;
+
+import javax.inject.Inject;
 
 import dagger.android.AndroidInjector;
 import dagger.android.support.DaggerApplication;
@@ -15,6 +18,9 @@ import rx_activity_result2.RxActivityResult;
 import timber.log.Timber;
 
 public class DictioApplication extends DaggerApplication {
+
+    @Inject
+    FirebaseAnalytics analytics;
 
     @Override
     public void onCreate() {
@@ -44,7 +50,6 @@ public class DictioApplication extends DaggerApplication {
                 LeakCanary.install(this);
             }
         }
-
     }
 
     @Override
