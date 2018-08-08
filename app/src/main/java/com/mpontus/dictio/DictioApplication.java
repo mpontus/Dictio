@@ -5,6 +5,7 @@ import android.os.StrictMode;
 import com.bugsnag.android.Bugsnag;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.google.android.gms.ads.MobileAds;
 import com.mpontus.dictio.di.DaggerApplicationComponent;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -45,6 +46,7 @@ public class DictioApplication extends DaggerApplication {
             }
         }
 
+        MobileAds.initialize(this, "ca-app-pub-6583925069146321~3110840115");
     }
 
     @Override
